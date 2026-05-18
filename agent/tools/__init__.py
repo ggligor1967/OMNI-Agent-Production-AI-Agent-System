@@ -20,6 +20,7 @@ from urllib.parse import quote
 
 import aiohttp
 from bs4 import BeautifulSoup
+from agent.ssrf import SSRFProtectionError, ensure_public_http_url
 from config import CONFIG
 
 logger = logging.getLogger(__name__)
@@ -43,15 +44,20 @@ class WebScraper:
 
     async def fetch(self, url: str) -> Dict[str, Any]:
         """Fetch a URL and return structured content."""
+        try:
+            safe_url = ensure_public_http_url(url)
+        except SSRFProtectionError as exc:
+            return {"error": str(exc), "url": url}
+
         for attempt in range(CONFIG.SCRAPER_MAX_RETRIES):
             try:
                 async with aiohttp.ClientSession(headers=self.headers) as session:
-                    async with session.get(url, timeout=self.timeout) as resp:
+                    async with session.get(safe_url, timeout=self.timeout) as resp:
                         html = await resp.text(errors="replace")
-                        return self._parse(html, url, resp.status)
+                        return self._parse(html, safe_url, resp.status)
             except Exception as e:
                 if attempt == CONFIG.SCRAPER_MAX_RETRIES - 1:
-                    return {"error": str(e), "url": url}
+                    return {"error": str(e), "url": safe_url}
                 await asyncio.sleep(2 ** attempt)
 
     def _parse(self, html: str, url: str, status: int) -> Dict:
@@ -380,13 +386,8 @@ class SecurityToolkit:
         return h.hexdigest()
 
     def validate_url(self, url: str) -> Dict[str, Any]:
-        pattern = re.compile(
-            r'^https?://'
-            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'
-            r'localhost|\d{1,3}(?:\.\d{1,3}){3})'
-            r'(?::\d+)?(?:/?|[/?]\S+)$', re.IGNORECASE
-        )
-        is_valid = bool(pattern.match(url))
-        is_localhost = bool(re.search(r'localhost|127\.|0\.0\.0\.0|::1', url))
-        return {"valid": is_valid, "is_localhost": is_localhost,
-                "safe": is_valid and not is_localhost}
+        try:
+            ensure_public_http_url(url)
+        except SSRFProtectionError as exc:
+            return {"valid": False, "is_localhost": True, "safe": False, "error": str(exc)}
+        return {"valid": True, "is_localhost": False, "safe": True}

@@ -30,6 +30,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
+from agent.ssrf import ensure_public_http_url
 
 logger = logging.getLogger(__name__)
 
@@ -194,20 +195,21 @@ class ImageLoader:
         return await self._from_file(src)
 
     async def _from_url(self, url: str) -> ImageData:
+        safe_url = ensure_public_http_url(url)
         try:
             import aiohttp
             async with aiohttp.ClientSession() as session:
                 async with session.get(
-                    url, timeout=aiohttp.ClientTimeout(total=15)
+                    safe_url, timeout=aiohttp.ClientTimeout(total=15)
                 ) as resp:
                     if resp.status != 200:
-                        raise ValueError(f"HTTP {resp.status} fetching {url}")
+                        raise ValueError(f"HTTP {resp.status} fetching {safe_url}")
                     raw = await resp.read()
                     mime = resp.headers.get("Content-Type", "").split(";")[0].strip()
         except ImportError:
             raise RuntimeError("aiohttp required for URL loading")
 
-        img = self._from_bytes(raw, url)
+        img = self._from_bytes(raw, safe_url)
         if mime and img.fmt == ImageFormat.UNKNOWN:
             img.fmt = self._mime_to_fmt(mime)
             img.mime_type = mime
