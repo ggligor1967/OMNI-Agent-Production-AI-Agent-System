@@ -251,8 +251,8 @@ class ToolParamValidator:
                     parsed = json.loads(value)
                     if isinstance(parsed, list):
                         return parsed
-                except Exception:
-                    pass
+                except json.JSONDecodeError:
+                    parsed = None
                 return [v.strip() for v in value.split(",") if v.strip()]
             return list(value)
         elif t == ParamType.OBJECT:
@@ -413,8 +413,12 @@ class ToolRegistry:
         hints = {}
         try:
             hints = get_type_hints(fn)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug(
+                "Falling back to raw signature for tool '%s': %s",
+                getattr(fn, "__name__", "<unknown>"),
+                exc,
+            )
 
         sig = inspect.signature(fn)
         params = []

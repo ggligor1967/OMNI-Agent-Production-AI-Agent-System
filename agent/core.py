@@ -352,11 +352,10 @@ class OmniAgent:
         try:
             return json.loads(candidate)
         except json.JSONDecodeError:
-            pass
-        try:
-            return ast.literal_eval(candidate)
-        except (ValueError, SyntaxError):
-            return candidate.strip('"\'')
+            try:
+                return ast.literal_eval(candidate)
+            except (ValueError, SyntaxError):
+                return candidate.strip('"\'')
 
     @staticmethod
     def _split_tool_args(args_str: str) -> List[str]:

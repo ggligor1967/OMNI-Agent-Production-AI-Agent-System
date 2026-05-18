@@ -133,7 +133,8 @@ def verify_jwt(token: str, secret: str) -> Optional[Dict]:
         if payload.get("exp", 0) < time.time():
             return None
         return payload
-    except Exception:
+    except Exception as exc:
+        logger.debug("JWT verification failed: %s", exc)
         return None
 
 

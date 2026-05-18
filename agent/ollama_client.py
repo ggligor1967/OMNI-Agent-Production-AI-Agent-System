@@ -38,7 +38,8 @@ class OllamaClient:
             session = await self._get_session()
             async with session.get(f"{self.base_url}/api/tags") as resp:
                 return resp.status == 200
-        except Exception:
+        except Exception as exc:
+            logger.debug("Ollama availability check failed for %s: %s", self.base_url, exc)
             return False
 
     async def list_models(self) -> List[str]:

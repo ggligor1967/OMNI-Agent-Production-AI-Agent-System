@@ -411,8 +411,8 @@ _sys.__stdout__.write(_json_mod.dumps({
                 try:
                     proc.kill()
                     await proc.communicate()
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logger.warning("Failed to terminate timed out sandbox process: %s", exc)
                 exit_code = -1
         except Exception as e:
             error = str(e)

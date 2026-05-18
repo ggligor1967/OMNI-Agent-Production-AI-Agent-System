@@ -223,8 +223,12 @@ class CodeExecutor:
             if source_path and os.path.exists(source_path):
                 try:
                     os.unlink(source_path)
-                except OSError:
-                    pass
+                except OSError as exc:
+                    logger.debug(
+                        "Failed to remove temporary source file %s: %s",
+                        source_path,
+                        exc,
+                    )
 
         return result
 
