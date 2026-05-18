@@ -1,0 +1,11 @@
+
+== Benchmarking 1000 chunks ==
+{'size': 1000, 'status': 'MEASURED', 'query_count': 15, 'build_seconds': 0.212, 'p50_ms': 91.591, 'p95_ms': 104.855, 'max_ms': 107.585, 'db_size_mb': 0.512, 'peak_traced_memory_mb': 1.514, 'note': 'deterministic synthetic embeddings; brute-force cosine similarity'}
+
+== Benchmarking 10000 chunks ==
+{'size': 10000, 'status': 'MEASURED', 'query_count': 15, 'build_seconds': 2.091, 'p50_ms': 836.574, 'p95_ms': 1027.294, 'max_ms': 1133.687, 'db_size_mb': 4.922, 'peak_traced_memory_mb': 13.2, 'note': 'deterministic synthetic embeddings; brute-force cosine similarity'}
+
+== Benchmarking 100000 chunks ==
+{'size': 100000, 'status': 'SKIPPED_RESOURCE_LIMIT', 'query_count': 0, 'build_seconds': None, 'p50_ms': None, 'p95_ms': None, 'max_ms': None, 'db_size_mb': None, 'peak_traced_memory_mb': None, 'note': 'SKIPPED_RESOURCE_LIMIT: 10k max retrieval latency 1133.687 ms exceeded local threshold 750.0 ms'}
+
+Wrote benchmark summary to C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\snapshot-phase-2\rag_benchmark_results.md
