@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 
 import pytest
@@ -23,6 +24,17 @@ def test_dashboard_html_contains_dedicated_job_search_button():
     assert "run_job_search_tank_adr_improved" in DASHBOARD_HTML
     assert "job-search-export" in DASHBOARD_HTML
     assert "job-search-out" in DASHBOARD_HTML
+
+
+def test_dashboard_html_uses_session_storage_and_escaped_innerhtml_sinks():
+    from agent.dashboard import DASHBOARD_HTML
+
+    assert "sessionStorage" in DASHBOARD_HTML
+    assert "localStorage" not in DASHBOARD_HTML
+    assert "escHtml(d.status||'running')" in DASHBOARD_HTML
+    assert "escAttr(m.id)" in DASHBOARD_HTML
+    assert "escHtml(res.model||'?')" in DASHBOARD_HTML
+    assert "escHtml(t.name||t.id)" in DASHBOARD_HTML
 
 
 @pytest.mark.asyncio
@@ -54,3 +66,39 @@ async def test_dashboard_route_serves_dedicated_job_search_ui():
     assert "ADR Tanker Job Search" in html
     assert "Run ADR Job Search" in html
     assert "run_job_search_tank_adr_improved" in html
+
+
+@pytest.mark.asyncio
+async def test_dashboard_route_sets_nonce_based_csp_header():
+    from agent.dashboard import register_dashboard
+
+    class DummyMemory:
+        def get_audit_log(self, limit=30):
+            return []
+
+    class DummyAgent:
+        memory = DummyMemory()
+
+    app = web.Application()
+    register_dashboard(app, DummyAgent())
+
+    server = TestServer(app)
+    client = TestClient(server)
+    await client.start_server()
+    try:
+        response = await client.get("/dashboard")
+        html = await response.text()
+    finally:
+        await client.close()
+
+    csp = response.headers.get("Content-Security-Policy", "")
+    assert response.status == 200
+    assert "default-src 'self'" in csp
+    assert "script-src 'self' 'nonce-" in csp
+    assert "style-src 'self' 'nonce-" in csp
+    assert "unsafe-inline" not in csp
+
+    nonce_match = re.search(r"'nonce-([^']+)'", csp)
+    assert nonce_match is not None
+    nonce = nonce_match.group(1)
+    assert f'nonce="{nonce}"' in html

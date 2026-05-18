@@ -4,6 +4,7 @@ Real-time HTML dashboard served over aiohttp.
 Accessible at http://localhost:8000/dashboard
 """
 import logging
+import secrets
 from typing import TYPE_CHECKING
 
 from aiohttp import web
@@ -13,13 +14,29 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+CSP_NONCE_PLACEHOLDER = "__OMNI_DASHBOARD_CSP_NONCE__"
+
+
+def _dashboard_csp(nonce: str) -> str:
+  return "; ".join([
+    "default-src 'self'",
+    "base-uri 'none'",
+    "object-src 'none'",
+    "frame-ancestors 'none'",
+    "img-src 'self' data: https:",
+    f"style-src 'self' 'nonce-{nonce}'",
+    f"script-src 'self' 'nonce-{nonce}'",
+    "connect-src 'self'",
+    "form-action 'self'",
+  ])
+
 DASHBOARD_HTML = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OMNI Agent — Control Panel</title>
-<style>
+<style nonce="__OMNI_DASHBOARD_CSP_NONCE__">
 :root{
   --bg:#0f0f13;--card:#1a1a24;--card2:#12121c;--border:#2a2a3a;
   --green:#00ff88;--blue:#4a9eff;--red:#ff4466;--yellow:#ffcc44;
@@ -482,13 +499,13 @@ a:hover{text-decoration:underline;}
 
 </div><!-- /panels -->
 
-<script>
+<script nonce="__OMNI_DASHBOARD_CSP_NONCE__">
 // ── Auth ──────────────────────────────────────────────────────────
 function saveKey(){
   const v=document.getElementById('key-inp').value.trim();
-  if(v){localStorage.setItem('omni_api_key',v);document.getElementById('key-ok').textContent='✓ saved';}
+  if(v){sessionStorage.setItem('omni_api_key',v);document.getElementById('key-ok').textContent='✓ saved for this tab';}
 }
-function getKey(){return localStorage.getItem('omni_api_key')||'';}
+function getKey(){return sessionStorage.getItem('omni_api_key')||'';}
 (function(){const k=getKey();if(k)document.getElementById('key-inp').value=k;})();
 async function apiFetch(url,opts={}){
   const h=Object.assign({'Content-Type':'application/json'},opts.headers||{});
@@ -521,15 +538,15 @@ function showTab(name){
 async function initOverview(){
   try{
     const r=await apiFetch('/status');const d=await r.json();
-    document.getElementById('srv-status').innerHTML='<span class="ok">●</span> '+(d.status||'running');
+    document.getElementById('srv-status').innerHTML='<span class="ok">●</span> '+escHtml(d.status||'running');
     const cards=[
       {title:'Status',stats:[{l:'State',v:d.status,c:'ok'},{l:'Version',v:d.version||'—'},{l:'Mode',v:d.mode||'api'}]},
       {title:'Agent',stats:[{l:'Models',v:d.models||'—'},{l:'Skills',v:d.skills||'—'},{l:'Pipelines',v:d.pipelines||'—'}]},
       {title:'Memory',stats:[{l:'Conversations',v:d.conversations||'—'},{l:'Memories',v:d.memories||'—'},{l:'DB',v:d.db||'SQLite',c:'info'}]},
     ];
     document.getElementById('ov-stats').innerHTML=cards.map(c=>
-      '<div class="card"><div class="ct">'+c.title+'</div>'+
-      c.stats.map(s=>'<div class="stat"><span class="sl">'+s.l+'</span><span class="sv '+(s.c?s.c+'"':'"')+'>'+s.v+'</span></div>').join('')+
+      '<div class="card"><div class="ct">'+escHtml(c.title)+'</div>'+
+      c.stats.map(s=>'<div class="stat"><span class="sl">'+escHtml(s.l)+'</span><span class="sv '+(s.c?s.c+'"':'"')+'>'+escHtml(s.v)+'</span></div>').join('')+
       '</div>'
     ).join('');
   }catch(e){document.getElementById('srv-status').innerHTML='<span class="fail">✗ offline</span>';}
@@ -537,14 +554,14 @@ async function initOverview(){
     const rj=await apiFetch('/status');const dj=await rj.json();
     const jobs=dj.jobs||[];
     document.getElementById('ov-jobs').innerHTML=jobs.length?
-      jobs.map(j=>'<div class="stat"><span class="sl">'+(j.id||j.name)+'</span><span class="sv info">'+(j.schedule||j.next_run||j.status||'—')+'</span></div>').join(''):
+      jobs.map(j=>'<div class="stat"><span class="sl">'+escHtml(j.id||j.name)+'</span><span class="sv info">'+escHtml(j.schedule||j.next_run||j.status||'—')+'</span></div>').join(''):
       '<span style="color:var(--muted);font-size:0.8rem">No scheduled jobs</span>';
   }catch(e){document.getElementById('ov-jobs').textContent='unavailable';}
   try{
     const r=await apiFetch('/cache/stats');const d=await r.json();
     const e=d.stats||d;
     document.getElementById('ov-cache').innerHTML=Object.entries(e).map(([k,v])=>
-      '<div class="stat"><span class="sl">'+k+'</span><span class="sv">'+JSON.stringify(v)+'</span></div>'
+      '<div class="stat"><span class="sl">'+escHtml(k)+'</span><span class="sv">'+escHtml(JSON.stringify(v))+'</span></div>'
     ).join('')||'<span style="color:var(--muted)">No stats</span>';
   }catch(e){document.getElementById('ov-cache').textContent='unavailable';}
   loadAudit();
@@ -553,7 +570,7 @@ async function loadAudit(){
   try{
     const r=await apiFetch('/audit?limit=20');const d=await r.json();
     const lines=(d.log||[]).slice().reverse().map(l=>
-      '<div class="log-line"><span style="color:var(--muted)">'+(l.timestamp||'')+'</span> <span style="color:var(--blue)">'+(l.action||l.event||'')+'</span> '+(l.details||l.message||'')+'</div>'
+      '<div class="log-line"><span style="color:var(--muted)">'+escHtml(l.timestamp||'')+'</span> <span style="color:var(--blue)">'+escHtml(l.action||l.event||'')+'</span> '+escHtml(l.details||l.message||'')+'</div>'
     );
     document.getElementById('ov-audit').innerHTML=lines.join('')||'Empty audit log';
   }catch(e){document.getElementById('ov-audit').textContent='unavailable';}
@@ -567,7 +584,7 @@ async function loadChatModels(){
     const current=sel.value;
     const available=(d.models||[]).filter(m=>m.available!==false);
     sel.innerHTML='<option value="">Auto-route</option>'+
-      available.map(m=>'<option value="'+m.id+'">'+m.id+' ('+m.tier+')</option>').join('');
+      available.map(m=>'<option value="'+escAttr(m.id)+'">'+escHtml(m.id)+' ('+escHtml(m.tier)+')</option>').join('');
     sel.value=available.some(m=>m.id===current)?current:'';
   }catch(e){
     const sel=document.getElementById('chat-model');
@@ -595,7 +612,7 @@ async function sendChat(){
 function appendMsg(role,text){
   const div=document.createElement('div');div.className='msg';
   const colors={user:'var(--blue)',assistant:'var(--green)',error:'var(--red)'};
-  div.innerHTML='<div class="msg-role" style="color:'+(colors[role]||'var(--muted)')+'">'+role+'</div><div class="msg-body">'+escHtml(text)+'</div>';
+  div.innerHTML='<div class="msg-role" style="color:'+(colors[role]||'var(--muted)')+'">'+escHtml(role)+'</div><div class="msg-body">'+escHtml(text)+'</div>';
   const box=document.getElementById('chat-msgs');
   box.appendChild(div);box.scrollTop=box.scrollHeight;
 }
@@ -635,8 +652,8 @@ async function runCompare(){
     document.getElementById('cmp-status').textContent='Done — '+results.length+' responses';
     document.getElementById('cmp-results').innerHTML=results.map(res=>
       '<div class="card cmp-col" style="min-width:260px;flex:1;">'+
-      '<div class="cmp-title">'+(res.model||'?')+'</div>'+
-      '<div style="font-size:0.72rem;color:var(--muted);margin-bottom:6px;">'+(res.latency_ms||'')+'ms · '+(res.tokens||'')+' tok</div>'+
+      '<div class="cmp-title">'+escHtml(res.model||'?')+'</div>'+
+      '<div style="font-size:0.72rem;color:var(--muted);margin-bottom:6px;">'+escHtml((res.latency_ms||'')+'ms · '+(res.tokens||'')+' tok')+'</div>'+
       '<div class="out out-sm">'+escHtml(res.response||res.error||JSON.stringify(res))+'</div>'+
       '</div>'
     ).join('');
@@ -669,7 +686,7 @@ async function ragQuery(){
     const chunks=d.results||d.chunks||[];
     document.getElementById('rag-query-out').innerHTML=chunks.map((c,i)=>
       '<div style="border-bottom:1px solid var(--border);padding:6px 0;">'+
-      '<div style="font-size:0.72rem;color:var(--muted)">['+i+'] score: '+((c.score||0).toFixed(3))+' · doc: '+(c.doc_id||'—')+'</div>'+
+      '<div style="font-size:0.72rem;color:var(--muted)">['+i+'] score: '+escHtml((c.score||0).toFixed(3))+' · doc: '+escHtml(c.doc_id||'—')+'</div>'+
       '<div style="font-size:0.83rem;margin-top:2px;">'+escHtml(c.text||c.content||'')+'</div>'+
       '</div>'
     ).join('')||'No results';
@@ -681,7 +698,7 @@ async function loadRagDocs(){
     const docs=d.documents||[];
     document.getElementById('rag-docs').innerHTML=docs.length?
       '<table><thead><tr><th>Doc ID</th><th>Source</th><th>Chunks</th><th>Created</th></tr></thead><tbody>'+
-      docs.map(doc=>'<tr><td>'+(doc.doc_id||'')+'</td><td>'+(doc.source||'')+'</td><td>'+(doc.chunk_count||'—')+'</td><td>'+(doc.created_at||'—')+'</td></tr>').join('')+
+      docs.map(doc=>'<tr><td>'+escHtml(doc.doc_id||'')+'</td><td>'+escHtml(doc.source||'')+'</td><td>'+escHtml(doc.chunk_count||'—')+'</td><td>'+escHtml(doc.created_at||'—')+'</td></tr>').join('')+
       '</tbody></table>':
       '<span style="color:var(--muted);font-size:0.8rem">No documents ingested yet</span>';
   }catch(e){document.getElementById('rag-docs').textContent='unavailable';}
@@ -693,7 +710,7 @@ async function loadPipelines(){
     const r=await apiFetch('/pipelines');const d=await r.json();
     const pipes=d.pipelines||[];
     document.getElementById('pipe-list').innerHTML=pipes.length?
-      pipes.map(p=>'<div class="stat"><span class="sl">'+(p.id||p.name)+'</span><span class="sv info">'+(p.steps||'?')+' steps</span></div>').join(''):
+      pipes.map(p=>'<div class="stat"><span class="sl">'+escHtml(p.id||p.name)+'</span><span class="sv info">'+escHtml((p.steps||'?')+' steps')+'</span></div>').join(''):
       '<span style="color:var(--muted);font-size:0.8rem">No pipelines</span>';
   }catch(e){document.getElementById('pipe-list').textContent='unavailable';}
 }
@@ -702,7 +719,7 @@ async function loadWorkflows(){
     const r=await apiFetch('/workflows');const d=await r.json();
     const wfs=d.workflows||[];
     document.getElementById('wf-list').innerHTML=wfs.length?
-      wfs.map(w=>'<div class="stat"><span class="sl">'+(w.name||w.id)+'</span><span class="sv info">'+(w.steps||'—')+' steps</span></div>').join(''):
+      wfs.map(w=>'<div class="stat"><span class="sl">'+escHtml(w.name||w.id)+'</span><span class="sv info">'+escHtml((w.steps||'—')+' steps')+'</span></div>').join(''):
       '<span style="color:var(--muted);font-size:0.8rem">No workflows</span>';
   }catch(e){document.getElementById('wf-list').textContent='unavailable';}
 }
@@ -732,9 +749,9 @@ function renderAdrJobSearchSummary(prefix,summary){
   const htmlUri=summary.html_report_uri||'';
   const statusBits=[
     '<span class="ok">✓ Completed</span>',
-    'results: '+(summary.total_results??'—'),
-    'high: '+(summary.high_relevance??'—'),
-    'sources: '+(summary.unique_sources??'—')
+    'results: '+escHtml(summary.total_results??'—'),
+    'high: '+escHtml(summary.high_relevance??'—'),
+    'sources: '+escHtml(summary.unique_sources??'—')
   ];
   adrJobSearchEl(prefix,'status').innerHTML=statusBits.join(' &middot; ');
 
@@ -796,7 +813,7 @@ async function loadSandboxHistory(){
     document.getElementById('sb-hist').innerHTML=hist.length?
       hist.slice().reverse().map(h=>
         '<div style="border-bottom:1px solid var(--border);padding:6px 0;">'+
-        '<div style="font-size:0.72rem;color:var(--muted)">'+(h.timestamp||'')+' · '+(h.language||'')+' · <span class="'+(h.success?'ok':'fail')+'">'+(h.success?'ok':'fail')+'</span></div>'+
+        '<div style="font-size:0.72rem;color:var(--muted)">'+escHtml(h.timestamp||'')+' · '+escHtml(h.language||'')+' · <span class="'+(h.success?'ok':'fail')+'">'+escHtml(h.success?'ok':'fail')+'</span></div>'+
         '<div class="out out-sm" style="margin-top:4px;">'+escHtml((h.code||'').substring(0,200))+((h.code||'').length>200?'…':'')+'</div>'+
         '</div>'
       ).join(''):
@@ -850,7 +867,7 @@ async function loadTools(){
     const tools=d.tools||[];
     document.getElementById('tools-list').innerHTML=tools.length?
       '<table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>'+
-      tools.map(t=>'<tr><td style="color:var(--green)">'+(t.name||t.id)+'</td><td style="color:var(--muted);font-size:0.78rem">'+(t.description||'')+'</td></tr>').join('')+
+      tools.map(t=>'<tr><td style="color:var(--green)">'+escHtml(t.name||t.id)+'</td><td style="color:var(--muted);font-size:0.78rem">'+escHtml(t.description||'')+'</td></tr>').join('')+
       '</tbody></table>':
       '<span style="color:var(--muted);font-size:0.8rem">No tools registered</span>';
   }catch(e){document.getElementById('tools-list').textContent='unavailable';}
@@ -884,7 +901,7 @@ async function loadTracing(){
   try{
     const r=await apiFetch('/tracing/summary');const d=await r.json();
     document.getElementById('trace-out').innerHTML=Object.entries(d).map(([k,v])=>
-      '<div class="stat"><span class="sl">'+k+'</span><span class="sv">'+JSON.stringify(v)+'</span></div>'
+      '<div class="stat"><span class="sl">'+escHtml(k)+'</span><span class="sv">'+escHtml(JSON.stringify(v))+'</span></div>'
     ).join('')||'<span style="color:var(--muted)">No tracing data</span>';
   }catch(e){document.getElementById('trace-out').textContent='unavailable';}
 }
@@ -909,12 +926,12 @@ async function fetchModels(){
         const contextLabel=typeof m.context_k==='number' ? (m.context_k+'k') : '—';
         return (
       '<tr>'+
-      '<td style="color:var(--text)">'+m.id+'</td>'+
-      '<td style="color:var(--muted)">'+m.provider+'</td>'+
-      '<td><span class="bdg '+(tierCol[m.tier]||'bdg-b')+'">'+m.tier+'</span></td>'+
-      '<td style="color:var(--blue);text-align:right">'+contextLabel+'</td>'+
-      '<td style="color:var(--muted);font-size:0.75rem">'+bestFor+'</td>'+
-      '<td style="font-size:0.72rem">'+capabilities.map(c=>'<span class="bdg bdg-p">'+c+'</span>').join(' ')+'</td>'+
+      '<td style="color:var(--text)">'+escHtml(m.id)+'</td>'+
+      '<td style="color:var(--muted)">'+escHtml(m.provider)+'</td>'+
+      '<td><span class="bdg '+(tierCol[m.tier]||'bdg-b')+'">'+escHtml(m.tier)+'</span></td>'+
+      '<td style="color:var(--blue);text-align:right">'+escHtml(contextLabel)+'</td>'+
+      '<td style="color:var(--muted);font-size:0.75rem">'+escHtml(bestFor)+'</td>'+
+      '<td style="font-size:0.72rem">'+capabilities.map(c=>'<span class="bdg bdg-p">'+escHtml(c)+'</span>').join(' ')+'</td>'+
       '</tr>'
         );
       }
@@ -929,7 +946,7 @@ async function loadPersonas(){
     const r=await apiFetch('/personas');const d=await r.json();
     const ps=d.personas||[];
     document.getElementById('persona-list').innerHTML=ps.length?
-      ps.map(p=>'<div class="stat"><span class="sl">'+(p.id||p.name)+'</span><span class="sv" style="color:var(--muted);font-size:0.75rem">'+((p.description||'').substring(0,50))+'</span></div>').join(''):
+      ps.map(p=>'<div class="stat"><span class="sl">'+escHtml(p.id||p.name)+'</span><span class="sv" style="color:var(--muted);font-size:0.75rem">'+escHtml((p.description||'').substring(0,50))+'</span></div>').join(''):
       '<span style="color:var(--muted);font-size:0.8rem">No personas defined</span>';
   }catch(e){document.getElementById('persona-list').textContent='unavailable';}
 }
@@ -947,7 +964,7 @@ async function loadTemplates(){
     const r=await apiFetch('/templates');const d=await r.json();
     const ts=d.templates||[];
     document.getElementById('tmpl-list').innerHTML=ts.length?
-      ts.map(t=>'<div class="stat"><span class="sl">'+(t.name||t.id)+'</span><span class="sv info">'+(t.variables||0)+' vars</span></div>').join(''):
+      ts.map(t=>'<div class="stat"><span class="sl">'+escHtml(t.name||t.id)+'</span><span class="sv info">'+escHtml((t.variables||0)+' vars')+'</span></div>').join(''):
       '<span style="color:var(--muted);font-size:0.8rem">No templates</span>';
   }catch(e){document.getElementById('tmpl-list').textContent='unavailable';}
 }
@@ -956,7 +973,7 @@ async function loadMemories(){
     const r=await apiFetch('/memories');const d=await r.json();
     const ms=d.memories||[];
     document.getElementById('mem-list').innerHTML=ms.length?
-      ms.slice(0,10).map(m=>'<div class="stat"><span class="sl" style="font-size:0.75rem;max-width:200px;overflow:hidden;text-overflow:ellipsis">'+escHtml((m.content||'').substring(0,60))+'</span><span class="sv" style="color:var(--muted);font-size:0.72rem">'+(m.type||'')+'</span></div>').join(''):
+      ms.slice(0,10).map(m=>'<div class="stat"><span class="sl" style="font-size:0.75rem;max-width:200px;overflow:hidden;text-overflow:ellipsis">'+escHtml((m.content||'').substring(0,60))+'</span><span class="sv" style="color:var(--muted);font-size:0.72rem">'+escHtml(m.type||'')+'</span></div>').join(''):
       '<span style="color:var(--muted);font-size:0.8rem">No memories stored</span>';
   }catch(e){document.getElementById('mem-list').textContent='unavailable';}
 }
@@ -977,7 +994,16 @@ def register_dashboard(app: web.Application, agent: "OmniAgent"):
     """Register dashboard routes on an existing aiohttp app."""
 
     async def dashboard(request):
-        return web.Response(text=DASHBOARD_HTML, content_type="text/html")
+        nonce = secrets.token_urlsafe(16)
+        html = DASHBOARD_HTML.replace(CSP_NONCE_PLACEHOLDER, nonce)
+        return web.Response(
+            text=html,
+            content_type="text/html",
+            headers={
+                "Cache-Control": "no-store",
+                "Content-Security-Policy": _dashboard_csp(nonce),
+            },
+        )
 
     async def audit_endpoint(request):
         limit = int(request.rel_url.query.get("limit", "30"))
