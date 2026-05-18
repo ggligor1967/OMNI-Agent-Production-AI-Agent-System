@@ -329,7 +329,9 @@ class AlertManager:
 
     def _fingerprint(self, rule: AlertRule) -> str:
         raw = f"{rule.name}:{rule.source}:{sorted(rule.labels.items())}"
-        return hashlib.md5(raw.encode()).hexdigest()[:12]
+        return hashlib.md5(  # nosec B324 - deterministic alert fingerprint only
+            raw.encode(), usedforsecurity=False
+        ).hexdigest()[:12]
 
     # ── NOTIFICATION ──────────────────────────────────────────────────
 

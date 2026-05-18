@@ -354,7 +354,12 @@ class ABRouter:
 
         if exp.sticky:
             # Deterministic hash → same user always lands in same bucket
-            h = int(hashlib.md5(f"{exp.id}:{sticky_key}".encode()).hexdigest(), 16)
+            h = int(
+                hashlib.md5(  # nosec B324 - sticky rollout bucketing only
+                    f"{exp.id}:{sticky_key}".encode(), usedforsecurity=False
+                ).hexdigest(),
+                16,
+            )
             bucket = (h % 10000) / 10000.0 * total_weight
         else:
             import random

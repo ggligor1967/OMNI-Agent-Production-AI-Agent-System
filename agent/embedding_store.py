@@ -42,7 +42,12 @@ def _normalize(v: List[float]) -> List[float]:
 
 def hash_embed(text: str, dim: int = 128) -> List[float]:
     """Deterministic pseudo-embedding from text hash (for testing)."""
-    seed = int(hashlib.md5(text.encode()).hexdigest(), 16)
+    seed = int(
+        hashlib.md5(  # nosec B324 - deterministic test embedding seed only
+            text.encode(), usedforsecurity=False
+        ).hexdigest(),
+        16,
+    )
     rng = random.Random(seed)
     vec = [rng.gauss(0, 1) for _ in range(dim)]
     return _normalize(vec)

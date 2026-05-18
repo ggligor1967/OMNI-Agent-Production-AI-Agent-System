@@ -28,7 +28,9 @@ class ModuleRecord:
 def _file_hash(path: str) -> str:
     try:
         with open(path, "rb") as f:
-            return hashlib.md5(f.read()).hexdigest()
+            return hashlib.md5(  # nosec B324 - file change detection only
+                f.read(), usedforsecurity=False
+            ).hexdigest()
     except OSError:
         return ""
 

@@ -42,7 +42,9 @@ class RuleOp(str, Enum):
 
 def _hash_bucket(flag: str, user_id: str) -> int:
     """Deterministic 0-99 bucket for a user+flag combination."""
-    h = hashlib.md5(f"{flag}:{user_id}".encode()).hexdigest()
+    h = hashlib.md5(  # nosec B324 - feature rollout bucketing only
+        f"{flag}:{user_id}".encode(), usedforsecurity=False
+    ).hexdigest()
     return int(h[:8], 16) % 100
 
 def _eval_rule(op: RuleOp, field_val: Any, target: Any) -> bool:

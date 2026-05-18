@@ -3,7 +3,7 @@ Cryptographic primitives: hashing, HMAC, symmetric encryption (AES-GCM),
 key derivation (PBKDF2/HKDF), JWT signing, and password hashing.
 
 Features:
-- Hashing: SHA-256, SHA-512, MD5, BLAKE2b; with hex/base64 output
+- Hashing: SHA-256, SHA-512, BLAKE2b; with hex/base64 output
 - HMAC: HMAC-SHA256/512 for message authentication
 - AES-GCM: 256-bit authenticated encryption; random nonce per message
 - AES-CBC: with PKCS7 padding; IV prepended to ciphertext
@@ -47,8 +47,7 @@ def hash_sha512(data: bytes | str, hex_out: bool = True) -> str:
     return h.hex() if hex_out else b64url_encode(h)
 
 def hash_md5(data: bytes | str) -> str:
-    if isinstance(data, str): data = data.encode()
-    return hashlib.md5(data).hexdigest()
+    raise ValueError("MD5 is insecure and unsupported; use SHA-256 or BLAKE2b")
 
 def hash_blake2b(data: bytes | str, digest_size: int = 32) -> str:
     if isinstance(data, str): data = data.encode()
@@ -348,7 +347,18 @@ class CryptoUtils:
             d = await req.json()
             algo = d.get("algo","sha256")
             data = d.get("data","")
-            result = getattr(self, algo, self.sha256)(data)
+            allowed_hashes = {
+                "sha256": self.sha256,
+                "sha512": self.sha512,
+                "blake2b": self.blake2b,
+            }
+            hasher = allowed_hashes.get(algo)
+            if hasher is None:
+                return web.json_response(
+                    {"error": "Unsupported hash algorithm; use sha256, sha512, or blake2b"},
+                    status=400,
+                )
+            result = hasher(data)
             return web.json_response({"hash": result, "algo": algo})
         async def encrypt_ep(req):
             d = await req.json()

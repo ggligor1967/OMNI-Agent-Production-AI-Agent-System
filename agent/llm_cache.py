@@ -71,7 +71,12 @@ class TFIDFEmbedder:
             for i in range(max(1, len(text) - 2)):
                 ngrams.append(text[i:i+3])
         for ng in ngrams:
-            idx = int(hashlib.md5(ng.encode()).hexdigest(), 16) % self.DIM
+            idx = int(
+                hashlib.md5(  # nosec B324 - cache embedding hash only
+                    ng.encode(), usedforsecurity=False
+                ).hexdigest(),
+                16,
+            ) % self.DIM
             vec[idx] += 1.0
         return _normalize(vec)
 

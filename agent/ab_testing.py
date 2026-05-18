@@ -163,9 +163,10 @@ class ABStore:
         return {"experiments": ne, "assignments": na, "conversions": nc}
 
 def _bucket(exp_id: str, user_id: str) -> int:
-    """Deterministic bucket 0-99 using HMAC-MD5."""
-    digest = hmac.new(exp_id.encode(), user_id.encode(),
-                       hashlib.md5).hexdigest()
+    """Deterministic bucket 0-99 using a stable, non-cryptographic digest."""
+    digest = hmac.new(
+        exp_id.encode(), user_id.encode(), hashlib.md5  # nosec B324 - deterministic experiment bucketing only
+    ).hexdigest()
     return int(digest[:4], 16) % 100
 
 def _z_test_two_proportions(n1: int, c1: int, n2: int, c2: int

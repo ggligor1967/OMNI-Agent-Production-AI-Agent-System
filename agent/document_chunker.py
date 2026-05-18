@@ -145,7 +145,9 @@ class DocumentChunker:
             tc = _estimate_tokens(content)
             if tc < self.min_chunk_tokens:
                 continue
-            ch = hashlib.md5(content.encode()).hexdigest()
+            ch = hashlib.md5(  # nosec B324 - content deduplication key only
+                content.encode(), usedforsecurity=False
+            ).hexdigest()
             if self.dedup and ch in self._seen_hashes:
                 continue
             if self.dedup:

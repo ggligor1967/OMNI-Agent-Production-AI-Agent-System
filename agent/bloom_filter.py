@@ -49,7 +49,9 @@ def _hash_fns(item: str, k: int, seed: int = 0) -> List[int]:
     return [(h1 + i * h2) for i in range(k)]
 
 def _murmur_lite(item: str, seed: int = 0) -> int:
-    h = hashlib.md5(f"{seed}:{item}".encode()).digest()
+    h = hashlib.md5(  # nosec B324 - bloom filter hashing only
+        f"{seed}:{item}".encode(), usedforsecurity=False
+    ).digest()
     return struct.unpack("<Q", h[:8])[0]
 
 # ── Bloom Filter ──────────────────────────────────────────────────────────────

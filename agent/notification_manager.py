@@ -207,7 +207,10 @@ class NotificationManager:
     def on_send(self, fn: Callable): self._hooks.append(fn)
 
     def _dedup_key(self, channel: Channel, event_type: str, body: str) -> str:
-        return hashlib.md5(f"{channel.value}:{event_type}:{body[:100]}".encode()).hexdigest()
+        return hashlib.md5(  # nosec B324 - notification deduplication key only
+            f"{channel.value}:{event_type}:{body[:100]}".encode(),
+            usedforsecurity=False,
+        ).hexdigest()
 
     def _is_rate_limited(self, channel: Channel) -> bool:
         cfg = self._channels.get(channel)

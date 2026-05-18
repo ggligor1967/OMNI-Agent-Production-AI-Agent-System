@@ -61,7 +61,12 @@ CHUNK_STRATEGIES = {"fixed":_chunk_fixed,"paragraph":_chunk_paragraphs,"sentence
 def _embed(text, dim=128):
     vec = [0.0]*dim; text = text.lower()
     for i in range(max(1,len(text)-2)):
-        idx = int(hashlib.md5(text[i:i+3].encode()).hexdigest(),16) % dim
+        idx = int(
+            hashlib.md5(  # nosec B324 - deterministic embedding hash only
+                text[i:i+3].encode(), usedforsecurity=False
+            ).hexdigest(),
+            16,
+        ) % dim
         vec[idx] += 1.0
     n = math.sqrt(sum(x*x for x in vec)); return [x/n for x in vec] if n else vec
 

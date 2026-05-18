@@ -344,7 +344,9 @@ class GraphExecutor:
                       for inp_id in node.inputs if inp_id in self._nodes}
         raw = json.dumps({"node": node.node_id,
                           "inputs": input_vals}, sort_keys=True)
-        return hashlib.md5(raw.encode()).hexdigest()
+        return hashlib.md5(  # nosec B324 - graph cache key only
+            raw.encode(), usedforsecurity=False
+        ).hexdigest()
 
     # ── HOOKS ─────────────────────────────────────────────────────────
 

@@ -202,9 +202,11 @@ class EmbeddingPipeline:
 
     @staticmethod
     def _hash_embed(dim: int) -> Callable[[str], List[float]]:
-        """Deterministic mock embedder using MD5 → float vector."""
+        """Deterministic mock embedder using a stable digest → float vector."""
         def embed(text: str) -> List[float]:
-            h = hashlib.md5(text.encode()).digest()
+            h = hashlib.md5(  # nosec B324 - deterministic mock embedding only
+                text.encode(), usedforsecurity=False
+            ).digest()
             # Extend to dim floats by repeating hash bytes
             raw = list(h) * (dim // 16 + 1)
             vec = [(b / 127.5) - 1.0 for b in raw[:dim]]

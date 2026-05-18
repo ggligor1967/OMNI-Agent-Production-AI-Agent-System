@@ -19,7 +19,7 @@ Features:
 - Purge: delete all messages in a queue
 - Peek: inspect messages without receiving (no visibility lock)
 - Consumer groups: multiple consumers share a queue
-- Message dedup: content-based MD5 dedup window (per queue, 5 min)
+- Message dedup: content-hash dedup window (per queue, 5 min)
 - Hooks: on_send, on_receive, on_ack, on_dlq
 - SQLite persistence: messages, receipts, dlq
 - REST API: send, receive, ack, nack, purge, stats
@@ -252,7 +252,7 @@ class MessageQueue:
         self._hooks_receive: List[Callable] = []
         self._hooks_ack:     List[Callable] = []
         self._hooks_dlq:     List[Callable] = []
-        self._dedup: Dict[str, float] = {}   # md5 → sent_at
+        self._dedup: Dict[str, float] = {}   # dedup_hash → sent_at
 
     def on_send(self, fn):    self._hooks_send.append(fn)
     def on_receive(self, fn): self._hooks_receive.append(fn)
@@ -278,7 +278,12 @@ class MessageQueue:
         return self._queues[name]
 
     def _dedup_key(self, queue: str, body: Any) -> str:
-        return f"{queue}:{hashlib.md5(json.dumps(body,default=str).encode()).hexdigest()}"
+        return (
+            f"{queue}:"
+            f"{hashlib.md5(  # nosec B324 - queue deduplication key only
+                json.dumps(body, default=str).encode(), usedforsecurity=False
+            ).hexdigest()}"
+        )
 
     def send(self, queue: str, body: Any,
               attrs: Dict = None, priority: int = 5,

@@ -17,7 +17,7 @@ Features:
 - Listing: list objects by prefix, delimiter (simulated directory)
 - Head: get metadata without body
 - Delete marker: soft delete in versioned buckets
-- ETag: MD5 hex digest of content for integrity
+- ETag: stable hex digest of content for integrity metadata
 - Size tracking: per-bucket used bytes
 - SQLite persistence: bucket configs, object metadata, versions, parts
 - REST API: create_bucket, put, get, delete, list, head, copy, stats
@@ -66,7 +66,9 @@ class StoredObject:
 
     def __post_init__(self):
         if not self.etag:
-            self.etag = hashlib.md5(self.content).hexdigest()
+            self.etag = hashlib.md5(  # nosec B324 - storage ETag only
+                self.content, usedforsecurity=False
+            ).hexdigest()
         if not self.size:
             self.size = len(self.content)
 
@@ -354,7 +356,9 @@ class ObjectStorage:
         mp = self._multiparts.get(upload_id)
         if not mp: raise KeyError(f"Upload {upload_id!r} not found")
         mp.parts[part_num] = data
-        return hashlib.md5(data).hexdigest()
+        return hashlib.md5(  # nosec B324 - multipart ETag only
+            data, usedforsecurity=False
+        ).hexdigest()
 
     def complete_multipart(self, upload_id: str) -> StoredObject:
         mp = self._multiparts.pop(upload_id, None)

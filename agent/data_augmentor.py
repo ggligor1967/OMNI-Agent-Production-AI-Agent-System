@@ -201,7 +201,9 @@ class DataAugmentor:
                 for _ in range(cfg.n_augments):
                     aug_text = self._apply_strategy(cfg, record["text"])
                     if deduplicate:
-                        h = hashlib.md5(aug_text.encode()).hexdigest()
+                        h = hashlib.md5(  # nosec B324 - augmentation dedup key only
+                            aug_text.encode(), usedforsecurity=False
+                        ).hexdigest()
                         if h in self._seen_hashes:
                             continue
                         self._seen_hashes.add(h)
