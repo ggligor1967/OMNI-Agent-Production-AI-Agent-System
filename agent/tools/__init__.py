@@ -10,13 +10,12 @@ import json
 import logging
 import hashlib
 import asyncio
+import shlex
 import textwrap
 import subprocess
 import tempfile
 import os
 from typing import Any, Dict, List, Optional
-from io import StringIO
-from contextlib import redirect_stdout, redirect_stderr
 from urllib.parse import quote
 
 import aiohttp
@@ -153,44 +152,103 @@ class CodeExecutor:
 
     BLOCKED_IMPORTS = {"os", "subprocess", "sys", "shutil", "socket",
                        "ctypes", "importlib", "__builtins__"}
+    SHELL_CONTROL_TOKENS = {"&&", "||", "|", ";", "&", ">", ">>", "<"}
 
     def execute_python(self, code: str, timeout: int = 10,
                        safe_mode: bool = True) -> Dict[str, Any]:
-        """Execute Python in-process with stdout capture (safe_mode blocks dangerous imports)."""
+        """Execute Python in an isolated subprocess (safe_mode blocks dangerous imports)."""
         if safe_mode:
             violation = self._check_safety(code)
             if violation:
                 return {"error": f"Security violation: {violation}", "output": "", "success": False}
-
-        stdout_capture = StringIO()
-        stderr_capture = StringIO()
         result = {"output": "", "error": "", "return_value": None, "success": False}
+        wrapper = textwrap.dedent("""
+            import json
+            import sys
+            from pathlib import Path
+
+            RESULT_MARKER = "__OMNI_EXEC_RESULT__"
+
+            source_path = Path(sys.argv[1])
+            code = source_path.read_text(encoding="utf-8")
+            local_ns = {}
+            payload = {"return_value": None, "error": "", "success": False}
+
+            try:
+                exec(compile(code, str(source_path), "exec"), {"__builtins__": __builtins__}, local_ns)
+                payload["return_value"] = local_ns.get("result", local_ns.get("output"))
+                payload["success"] = True
+            except Exception as exc:
+                payload["error"] = f"{type(exc).__name__}: {exc}"
+
+            print(RESULT_MARKER + json.dumps(payload, default=str))
+        """)
+        source_path = None
 
         try:
-            local_ns: Dict = {}
-            with redirect_stdout(stdout_capture), redirect_stderr(stderr_capture):
-                exec(compile(code, "<omni>", "exec"), {"__builtins__": __builtins__}, local_ns)
-            result["output"] = stdout_capture.getvalue()
-            result["error"] = stderr_capture.getvalue()
-            result["return_value"] = local_ns.get("result") or local_ns.get("output")
-            result["success"] = True
+            with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False, encoding="utf-8") as temp_source:
+                temp_source.write(code)
+                source_path = temp_source.name
+
+            proc = subprocess.run(
+                [sys.executable, "-I", "-c", wrapper, source_path],
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+            )
+
+            marker = "__OMNI_EXEC_RESULT__"
+            stdout = proc.stdout or ""
+            if marker in stdout:
+                output, _, payload_json = stdout.partition(marker)
+                payload = json.loads(payload_json.strip() or "{}")
+                result["output"] = output
+                result["error"] = payload.get("error", "") or (proc.stderr or "")
+                result["return_value"] = payload.get("return_value")
+                result["success"] = bool(payload.get("success"))
+            else:
+                result["output"] = stdout
+                result["error"] = proc.stderr or "Execution result marker missing"
+        except subprocess.TimeoutExpired:
+            result["error"] = "Timeout"
         except Exception as e:
             result["error"] = f"{type(e).__name__}: {e}"
-            result["output"] = stdout_capture.getvalue()
+        finally:
+            if source_path and os.path.exists(source_path):
+                try:
+                    os.unlink(source_path)
+                except OSError:
+                    pass
 
         return result
 
     def execute_shell(self, command: str, timeout: int = 15) -> Dict[str, Any]:
-        """Execute shell command in subprocess (use with caution)."""
+        """Execute a single process without invoking a system shell."""
+        if not isinstance(command, str) or not command.strip():
+            return {"error": "Command must be a non-empty string", "success": False}
+        if "\n" in command or "\r" in command:
+            return {"error": "Multiline commands are not allowed", "success": False}
+
         try:
+            argv = shlex.split(command.strip())
+            if not argv:
+                return {"error": "Command must include an executable", "success": False}
+            if any(token in self.SHELL_CONTROL_TOKENS for token in argv):
+                return {
+                    "error": "Shell control operators are not allowed",
+                    "success": False,
+                }
+
             proc = subprocess.run(
-                command, shell=True, capture_output=True,
+                argv, shell=False, capture_output=True,
                 text=True, timeout=timeout
             )
             return {
                 "stdout": proc.stdout, "stderr": proc.stderr,
                 "returncode": proc.returncode, "success": proc.returncode == 0
             }
+        except ValueError as e:
+            return {"error": f"Invalid command: {e}", "success": False}
         except subprocess.TimeoutExpired:
             return {"error": "Timeout", "success": False}
         except Exception as e:

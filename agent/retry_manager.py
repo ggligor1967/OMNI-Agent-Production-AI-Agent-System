@@ -132,15 +132,27 @@ class RMStore:
 
     def stats(self, policy: str = None) -> Dict:
         with self._conn() as c:
-            where = f"WHERE policy='{policy}'" if policy else ""
-            n  = c.execute(f"SELECT COUNT(*) FROM executions {where}").fetchone()[0]
-            ns = c.execute(
-                f"SELECT COUNT(*) FROM executions {where} AND success=1"
-                if where else "SELECT COUNT(*) FROM executions WHERE success=1"
-            ).fetchone()[0]
-            avg = c.execute(
-                f"SELECT AVG(attempts) FROM executions {where}"
-            ).fetchone()[0] or 0
+            if policy is not None:
+                n = c.execute(
+                    "SELECT COUNT(*) FROM executions WHERE policy=?",
+                    (policy,),
+                ).fetchone()[0]
+                ns = c.execute(
+                    "SELECT COUNT(*) FROM executions WHERE policy=? AND success=1",
+                    (policy,),
+                ).fetchone()[0]
+                avg = c.execute(
+                    "SELECT AVG(attempts) FROM executions WHERE policy=?",
+                    (policy,),
+                ).fetchone()[0] or 0
+            else:
+                n = c.execute("SELECT COUNT(*) FROM executions").fetchone()[0]
+                ns = c.execute(
+                    "SELECT COUNT(*) FROM executions WHERE success=1"
+                ).fetchone()[0]
+                avg = c.execute(
+                    "SELECT AVG(attempts) FROM executions"
+                ).fetchone()[0] or 0
         return {"total": n, "success": ns, "failure": n - ns,
                 "success_rate": round(ns / max(1, n), 4),
                 "avg_attempts": round(avg, 2)}
@@ -210,9 +222,11 @@ class RetryManager:
                 except: pass
 
             try:
-                coro = fn(*args, **kwargs) if asyncio.iscoroutinefunction(fn) \
-                    else asyncio.get_event_loop().run_in_executor(None,
-                          lambda: fn(*args, **kwargs))
+                if asyncio.iscoroutinefunction(fn):
+                    coro = fn(*args, **kwargs)
+                else:
+                    loop = asyncio.get_running_loop()
+                    coro = loop.run_in_executor(None, lambda: fn(*args, **kwargs))
                 if policy.attempt_timeout_s > 0:
                     result = await asyncio.wait_for(coro,
                                                      timeout=policy.attempt_timeout_s)
@@ -288,8 +302,7 @@ class RetryManager:
                 return r.result
             @functools.wraps(fn)
             def sync_wrapper(*args, **kwargs):
-                r = asyncio.get_event_loop().run_until_complete(
-                    self.execute(policy_name, fn, *args, **kwargs))
+                r = asyncio.run(self.execute(policy_name, fn, *args, **kwargs))
                 if not r.success: raise r.exception
                 return r.result
             return async_wrapper if asyncio.iscoroutinefunction(fn) else sync_wrapper

@@ -239,6 +239,22 @@ class TestCodeExecutor:
         assert not result["success"]
         assert "ZeroDivisionError" in result["error"]
 
+    def test_execute_shell_runs_single_command(self):
+        from agent.tools import CodeExecutor
+        ex = CodeExecutor()
+        result = ex.execute_shell(f'"{sys.executable}" -c "print(42)"')
+        assert result["success"]
+        assert "42" in result["stdout"]
+
+    def test_execute_shell_rejects_shell_control_operators(self):
+        from agent.tools import CodeExecutor
+        ex = CodeExecutor()
+        result = ex.execute_shell(
+            f'"{sys.executable}" -c "print(1)" && "{sys.executable}" -c "print(2)"'
+        )
+        assert not result["success"]
+        assert "not allowed" in result["error"].lower()
+
 
 class TestSemanticAnalyzer:
 
@@ -370,6 +386,77 @@ class TestSkillsManager:
 
         skills = skills_mgr.list_skills()
         assert any(s["name"] == "listed" for s in skills)
+
+    def test_load_db_skill_from_import_reference(self, skills_mgr, tmp_path, monkeypatch):
+        module_path = tmp_path / "db_skill_module.py"
+        module_path.write_text(
+            "def handler(name):\n"
+            "    return f'Hello, {name}!'\n",
+            encoding="utf-8",
+        )
+        monkeypatch.syspath_prepend(str(tmp_path))
+
+        skills_mgr.save_skill_to_db(
+            "db_greet",
+            "Greets from a module reference",
+            "db_skill_module:handler",
+            triggers=["db greet"],
+        )
+        skills_mgr.load_from_db()
+
+        result = asyncio.run(skills_mgr.execute("db_greet", "Alice"))
+        assert result == "Hello, Alice!"
+
+    def test_save_skill_to_db_rejects_inline_code(self, skills_mgr):
+        with pytest.raises(ValueError):
+            skills_mgr.save_skill_to_db(
+                "inline_code",
+                "Should be rejected",
+                "def handler():\n    return 'unsafe'\n",
+            )
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# RETRY MANAGER TESTS
+# ══════════════════════════════════════════════════════════════════════════════
+
+class TestRetryManagerSecurity:
+
+    def test_stats_uses_parameterized_policy_filter(self, tmp_path):
+        from agent.retry_manager import RetryManager, RetryResult
+
+        rm = RetryManager(db_path=str(tmp_path / "retry.db"))
+        rm._store.log("safe_policy", "ok", RetryResult(success=True, attempts=1))
+        rm._store.log("other_policy", "ok", RetryResult(success=True, attempts=1))
+
+        stats = rm.stats("safe_policy' OR 1=1 --")
+        assert stats["total"] == 0
+        assert stats["success"] == 0
+        assert stats["failure"] == 0
+
+    def test_retry_sync_decorator_runs_without_precreated_event_loop(self, tmp_path):
+        from agent.retry_manager import RetryManager, BackoffStrategy, JitterMode
+
+        rm = RetryManager(db_path=str(tmp_path / "retry.db"))
+        rm.register(
+            "sync_retry",
+            max_attempts=2,
+            base_delay_s=0.001,
+            strategy=BackoffStrategy.FIXED,
+            jitter=JitterMode.NONE,
+        )
+
+        calls = {"count": 0}
+
+        @rm.retry("sync_retry")
+        def flaky():
+            calls["count"] += 1
+            if calls["count"] == 1:
+                raise RuntimeError("boom")
+            return "ok"
+
+        assert flaky() == "ok"
+        assert calls["count"] == 2
 
 
 # ══════════════════════════════════════════════════════════════════════════════

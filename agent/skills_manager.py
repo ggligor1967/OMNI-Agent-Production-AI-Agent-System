@@ -2,12 +2,13 @@
 OMNI AGENT - Skills Manager
 Dynamic skill loading, execution, and hot-reload from DB and filesystem.
 """
+import importlib
 import importlib.util
 import inspect
 import logging
 import json
 import textwrap
-from typing import Dict, Any, Optional, List, Callable
+from typing import Dict, Any, Optional, List, Callable, Tuple
 from pathlib import Path
 from agent.memory import MemoryDB
 from agent.hooks import hooks, Event, EventType
@@ -82,19 +83,14 @@ class SkillsManager:
                 logger.error(f"Failed to load skill {path.name}: {e}")
 
     def load_from_db(self):
-        """Load skills stored as code strings in the database."""
+        """Load DB skills from importable handler references."""
         with self.db._conn() as conn:
             rows = conn.execute(
                 "SELECT name, description, code, triggers FROM skills WHERE enabled=1"
             ).fetchall()
         for row in rows:
             try:
-                ns: Dict = {}
-                exec(textwrap.dedent(row["code"]), ns)
-                handler = ns.get("handler") or ns.get("run") or ns.get("execute")
-                if not handler:
-                    logger.warning(f"DB skill '{row['name']}' has no handler/run/execute function")
-                    continue
+                handler = self._load_db_handler(row["code"])
                 triggers = json.loads(row["triggers"]) if row["triggers"] else []
                 skill = Skill(name=row["name"], description=row["description"] or "",
                              handler=handler, triggers=triggers)
@@ -105,6 +101,8 @@ class SkillsManager:
 
     def save_skill_to_db(self, name: str, description: str, code: str,
                          triggers: List[str] = None):
+        module_name, callable_name = self._parse_db_skill_reference(code)
+        handler_ref = json.dumps({"module": module_name, "callable": callable_name})
         with self.db._conn() as conn:
             conn.execute("""
                 INSERT INTO skills (name, description, code, triggers)
@@ -113,7 +111,55 @@ class SkillsManager:
                     description=excluded.description,
                     code=excluded.code,
                     triggers=excluded.triggers
-            """, (name, description, code, json.dumps(triggers or [])))
+            """, (name, description, handler_ref, json.dumps(triggers or [])))
+
+    def _parse_db_skill_reference(self, raw_code: str) -> Tuple[str, str]:
+        text = textwrap.dedent(raw_code or "").strip()
+        if not text:
+            raise ValueError("DB skill reference cannot be empty")
+
+        payload: Optional[Dict[str, Any]] = None
+        try:
+            decoded = json.loads(text)
+            if isinstance(decoded, dict):
+                payload = decoded
+        except json.JSONDecodeError:
+            payload = None
+
+        if payload is not None:
+            module_name = str(payload.get("module", "")).strip()
+            callable_name = str(
+                payload.get("callable")
+                or payload.get("handler")
+                or payload.get("function")
+                or ""
+            ).strip()
+        elif ":" in text and "\n" not in text and "def " not in text and "class " not in text:
+            module_name, callable_name = (part.strip() for part in text.split(":", 1))
+        else:
+            raise ValueError(
+                "Inline DB skill code is disabled; store an import reference like "
+                "'package.module:handler'"
+            )
+
+        if not module_name or not callable_name:
+            raise ValueError("DB skill reference must include both module and callable")
+        return module_name, callable_name
+
+    def _resolve_callable(self, module: Any, callable_name: str) -> Callable:
+        current = module
+        for attr in callable_name.split("."):
+            if not hasattr(current, attr):
+                raise ValueError(f"Callable '{callable_name}' not found")
+            current = getattr(current, attr)
+        if not callable(current):
+            raise ValueError(f"Resolved object '{callable_name}' is not callable")
+        return current
+
+    def _load_db_handler(self, raw_code: str) -> Callable:
+        module_name, callable_name = self._parse_db_skill_reference(raw_code)
+        module = importlib.import_module(module_name)
+        return self._resolve_callable(module, callable_name)
 
     def get(self, name: str) -> Optional[Skill]:
         return self._skills.get(name)
