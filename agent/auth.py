@@ -31,6 +31,7 @@ from collections import deque
 logger = logging.getLogger(__name__)
 
 MIN_SECRET_LENGTH = 32
+OWNED_SESSION_NAMESPACE = "user"
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -196,6 +197,61 @@ class AuthContext:
 
     def can_access(self, endpoint: str) -> bool:
         return self.authenticated and has_permission(self.role, endpoint)
+
+
+def auth_context_from_request(request: Any) -> AuthContext:
+    """Safely extract the auth context from an aiohttp request-like object."""
+    ctx = request.get("auth") if hasattr(request, "get") else None
+    if isinstance(ctx, AuthContext):
+        return ctx
+    return AuthContext(
+        authenticated=False,
+        auth_method="anonymous",
+        error="Authentication required",
+    )
+
+
+def owned_session_prefix(user_id: str) -> str:
+    return f"{OWNED_SESSION_NAMESPACE}:{user_id}:"
+
+
+def session_owner(session_id: str) -> str:
+    parts = (session_id or "").split(":", 2)
+    if len(parts) == 3 and parts[0] == OWNED_SESSION_NAMESPACE and parts[1]:
+        return parts[1]
+    return ""
+
+
+def effective_user_id(ctx: AuthContext, requested_user_id: str = "",
+                      default_user_id: str = "api_user") -> str:
+    if ctx.authenticated and ctx.user_id:
+        return ctx.user_id
+    candidate = (requested_user_id or "").strip()
+    return candidate or default_user_id
+
+
+def scoped_session_id(ctx: AuthContext, requested_session_id: str = "",
+                      default_session_id: str = "api") -> str:
+    candidate = (requested_session_id or "").strip()
+    default_candidate = (default_session_id or "api").strip() or "api"
+    if not ctx.authenticated:
+        return candidate or default_candidate
+
+    owner = session_owner(candidate)
+    if owner and owner != ctx.user_id:
+        raise PermissionError("session_id does not belong to the authenticated user")
+    if owner == ctx.user_id:
+        return candidate
+
+    return f"{owned_session_prefix(ctx.user_id)}{candidate or default_candidate}"
+
+
+def visible_session_ids(ctx: AuthContext, session_ids: List[str]) -> List[str]:
+    ordered = list(dict.fromkeys(session_ids))
+    if not ctx.authenticated:
+        return ordered
+    prefix = owned_session_prefix(ctx.user_id)
+    return [session_id for session_id in ordered if session_id.startswith(prefix)]
 
 
 # ══════════════════════════════════════════════════════════════════════════════

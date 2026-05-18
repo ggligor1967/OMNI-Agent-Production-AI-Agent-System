@@ -189,11 +189,28 @@ def _api_bind_ports() -> list[int]:
 async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
     """Minimal aiohttp REST API server."""
     from aiohttp import web
+    from agent.auth import auth_context_from_request, effective_user_id, scoped_session_id
 
     async def chat_endpoint(request: web.Request) -> web.Response:
         data = await request.json()
-        user_id = data.get("user_id", "api_user")
-        session_id = data.get("session_id", f"api:{user_id}")
+        ctx = auth_context_from_request(request)
+        user_id = effective_user_id(
+            ctx,
+            requested_user_id=data.get("user_id", "api_user"),
+            default_user_id="api_user",
+        )
+        default_session_id = f"api:{user_id}" if not ctx.authenticated else "api"
+        try:
+            session_id = scoped_session_id(
+                ctx,
+                requested_session_id=data.get("session_id", ""),
+                default_session_id=default_session_id,
+            )
+        except PermissionError as exc:
+            return web.json_response(
+                {"error": "forbidden", "detail": str(exc)},
+                status=403,
+            )
         text = data.get("message", "")
         model_override = data.get("model")          # optional model override
         if not text:
@@ -274,7 +291,18 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
         """POST /route — preview routing decision"""
         data = await request.json()
         text = data.get("text", "")
-        session_id = data.get("session_id", "")
+        ctx = auth_context_from_request(request)
+        try:
+            session_id = scoped_session_id(
+                ctx,
+                requested_session_id=data.get("session_id", ""),
+                default_session_id="route",
+            )
+        except PermissionError as exc:
+            return web.json_response(
+                {"error": "forbidden", "detail": str(exc)},
+                status=403,
+            )
         has_image = data.get("has_image", False)
         decision = agent.llm.router.route(text, session_id=session_id,
                                            has_image=has_image)
@@ -445,10 +473,22 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
         """POST /tools/call"""
         data = await request.json()
         from agent.tools_registry import ToolCall
+        ctx = auth_context_from_request(request)
+        try:
+            session_id = scoped_session_id(
+                ctx,
+                requested_session_id=data.get("session_id", "api"),
+                default_session_id="api",
+            )
+        except PermissionError as exc:
+            return web.json_response(
+                {"error": "forbidden", "detail": str(exc)},
+                status=403,
+            )
         call = ToolCall(
             tool_name=data.get("tool", ""),
             arguments=data.get("arguments", {}),
-            session_id=data.get("session_id", "api"),
+            session_id=session_id,
         )
         result = await agent.tool_registry.call(call)
         return web.json_response(result.to_dict())
@@ -542,7 +582,18 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
         return web.json_response({"personas": agent.persona_registry.list_personas(tag)})
 
     async def persona_set_endpoint(request: web.Request) -> web.Response:
-        session_id = request.match_info.get("session_id", "")
+        ctx = auth_context_from_request(request)
+        try:
+            session_id = scoped_session_id(
+                ctx,
+                requested_session_id=request.match_info.get("session_id", ""),
+                default_session_id="persona",
+            )
+        except PermissionError as exc:
+            return web.json_response(
+                {"error": "forbidden", "detail": str(exc)},
+                status=403,
+            )
         data = await request.json()
         name = data.get("persona", "assistant")
         ok = agent.persona_manager.set_session_persona(session_id, name)
@@ -551,7 +602,18 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
         return web.json_response(agent.persona_manager.session_info(session_id))
 
     async def persona_info_endpoint(request: web.Request) -> web.Response:
-        session_id = request.match_info.get("session_id", "")
+        ctx = auth_context_from_request(request)
+        try:
+            session_id = scoped_session_id(
+                ctx,
+                requested_session_id=request.match_info.get("session_id", ""),
+                default_session_id="persona",
+            )
+        except PermissionError as exc:
+            return web.json_response(
+                {"error": "forbidden", "detail": str(exc)},
+                status=403,
+            )
         return web.json_response(agent.persona_manager.session_info(session_id))
 
     # ── Evaluation ────────────────────────────────────────────────────────────

@@ -240,6 +240,14 @@ async def stream_chat_tokens(agent, prompt: str, session_id: str,
 def register_streaming_routes(app, agent):
     """Register all SSE streaming routes on an aiohttp Application."""
     from aiohttp import web
+    from agent.auth import (
+        auth_context_from_request,
+        owned_session_prefix,
+        scoped_session_id,
+    )
+
+    def _forbidden(detail: str) -> web.Response:
+        return web.json_response({"error": "forbidden", "detail": detail}, status=403)
 
     async def stream_chat(request):
         """
@@ -247,8 +255,15 @@ def register_streaming_routes(app, agent):
         Streams tokens as SSE.
         """
         prompt = request.rel_url.query.get("prompt", "")
-        session_id = request.rel_url.query.get("session_id",
-                                                f"stream:{int(time.time())}")
+        ctx = auth_context_from_request(request)
+        try:
+            session_id = scoped_session_id(
+                ctx,
+                requested_session_id=request.rel_url.query.get("session_id", ""),
+                default_session_id=f"stream:{int(time.time())}",
+            )
+        except PermissionError as exc:
+            return _forbidden(str(exc))
         model = request.rel_url.query.get("model") or None
 
         if not prompt:
@@ -277,9 +292,19 @@ def register_streaming_routes(app, agent):
         GET /stream/events?session_id=...&events=token,tool_call,...
         Live SSE event stream from the internal event bus.
         """
-        session_id = request.rel_url.query.get("session_id", "")
+        ctx = auth_context_from_request(request)
+        requested_session_id = request.rel_url.query.get("session_id", "")
+        try:
+            session_id = scoped_session_id(
+                ctx,
+                requested_session_id=requested_session_id,
+                default_session_id="events",
+            ) if requested_session_id else ""
+        except PermissionError as exc:
+            return _forbidden(str(exc))
         event_filter_str = request.rel_url.query.get("events", "")
         timeout = float(request.rel_url.query.get("timeout", "120"))
+        session_prefix = owned_session_prefix(ctx.user_id) if ctx.authenticated and not session_id else ""
 
         event_filter = None
         if event_filter_str:
@@ -309,6 +334,8 @@ def register_streaming_routes(app, agent):
 
                 # Filter by session if specified
                 if session_id and msg.session_id and msg.session_id != session_id:
+                    continue
+                if session_prefix and (not msg.session_id or not msg.session_id.startswith(session_prefix)):
                     continue
 
                 await response.write(msg.to_sse().encode())

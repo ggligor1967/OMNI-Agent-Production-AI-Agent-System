@@ -558,9 +558,21 @@ class Exporter:
 
     def register_routes(self, app, prefix: str = ""):
         from aiohttp import web
+        from agent.auth import auth_context_from_request, scoped_session_id, visible_session_ids
+
+        def _forbidden(detail: str) -> web.Response:
+            return web.json_response({"error": "forbidden", "detail": detail}, status=403)
 
         async def export_conv(request):
-            session_id = request.match_info.get("session_id", "")
+            ctx = auth_context_from_request(request)
+            try:
+                session_id = scoped_session_id(
+                    ctx,
+                    requested_session_id=request.match_info.get("session_id", ""),
+                    default_session_id="conversation",
+                )
+            except PermissionError as exc:
+                return _forbidden(str(exc))
             fmt_str = request.rel_url.query.get("format", "markdown")
             try:
                 fmt = ExportFormat(fmt_str)
@@ -599,8 +611,24 @@ class Exporter:
             return web.Response(text=content, content_type=_content_type(fmt))
 
         async def export_dump(request):
+            ctx = auth_context_from_request(request)
             data = await request.json() if request.content_length else {}
-            sessions = data.get("sessions")
+            raw_sessions = data.get("sessions")
+            try:
+                if raw_sessions is None:
+                    sessions = visible_session_ids(ctx, self._list_sessions())
+                else:
+                    requested_sessions = raw_sessions if isinstance(raw_sessions, list) else [str(raw_sessions)]
+                    sessions = list(dict.fromkeys(
+                        scoped_session_id(
+                            ctx,
+                            requested_session_id=str(session_id),
+                            default_session_id="conversation",
+                        )
+                        for session_id in requested_sessions
+                    ))
+            except PermissionError as exc:
+                return _forbidden(str(exc))
             archive = self.full_dump(session_ids=sessions)
             ts = time.strftime("%Y%m%d_%H%M%S")
             return web.Response(
