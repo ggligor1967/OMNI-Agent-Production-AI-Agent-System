@@ -1,67 +1,80 @@
 # OMNI Agent Test Support Matrix
 
-Generated: 2026-05-18
-Active Suite Status: **PASSING** (325/325 tests)
+Documentation baseline: phase-2-complete
+Generated: 2026-05-19
+Active Suite Status: **PASSING** (417/417 tests)
 Model Catalog Contract: **27 cloud models**
 
 ---
 
-## Active Suite Tests (`tests/`)
+## CI Contract
 
-| File | Pass | Fail | Category | Action |
-| ---- | ---: | ---: | -------- | ------ |
-| `test_models.py` | 51 | 0 | Runtime contract | KEEP |
-| `test_advanced_modules.py` | 87 | 0 | Runtime modules | KEEP |
-| `test_new_modules.py` | 93 | 0 | Runtime modules | KEEP |
-| `test_suite.py` | 73 | 0 | Core modules | KEEP |
-| `test_security_auth_tools.py` | 6 | 0 | Security gates | KEEP |
-| `test_startup_security.py` | 3 | 0 | Startup security | KEEP |
-| `test_core_init_sanity.py` | 1 | 0 | Core init AST audit | KEEP |
-| `test_dashboard.py` | 2 | 0 | Dashboard UI | KEEP |
-| `test_job_search_tank_adr_improved.py` | 9 | 0 | Job search | KEEP |
-| **Active subtotal** | **325** | **0** | | **PASSING** |
+- Python 3.12
+- Python 3.13
+- Blocking lane: `release-gate`
+- Audit lanes: `full-agent-bandit-audit`, `legacy-audit`
 
----
-
-## Archived Legacy Suite
-
-Legacy versioned tests are quarantined from the blocking release gate. They remain available for reference and non-blocking audit work.
-
-| Path | Status | Action |
-| ---- | ------ | ------ |
-| `tests/_archive/legacy/` | archived | Run only in `legacy-audit` |
-| `agent/_legacy/` | archived | Excluded from release-gate tooling |
-
----
-
-## Current Contract Notes
-
-- The runtime model registry source of truth is **27 models**.
-- The catalog includes `deepseek-v3.2:cloud`, `minimax-m2.7:cloud`, and `nemotron-3-super:cloud`.
-- `ministral-3:8b-cloud`, `devstral-2:123b-cloud`, and `devstral-small-2:24b-cloud` are normalized under **Mistral AI**.
-- `TaskType.CHAT` call sites were resolved to `TaskType.GENERAL` for explicit-model and `auto_route=False` paths.
-- Python 3.13-sensitive sync tests now use `asyncio.run(...)`.
-
----
-
-## Release-Gate Summary
-
-The active release-gate test command is:
+### Blocking release-gate commands
 
 ```bash
+python -m compileall agent main.py
 pytest tests/ -q
+ruff check .
+coverage erase && coverage run -m pytest tests/ && coverage report
 ```
 
-Current result:
-
-- **325 passed**
-- **0 failed**
-- **0 errors**
+Bandit remains a blocking active-path gate in `.github/workflows/ci.yml`, with policy sourced from `bandit.yaml`.
 
 ---
 
-## Recommendations
+## Latest Verified Local Evidence
 
-1. Keep `tests/_archive/legacy/` and `agent/_legacy/` out of the blocking CI lane.
-2. Use `docs/adr/ADR-001-model-registry.md` as the source of truth for the 27-model decision.
-3. Treat Bandit HIGH findings and security-critical MEDIUM findings as follow-on Sprint 0 blockers until remediated.
+- **417 passed** — `snapshot-phase-3-1/gate_3_1_3_pytest.log`
+- Ruff passed — `snapshot-phase-3-1/gate_3_1_3_ruff.log`
+- Documentation consistency report — `snapshot-phase-3-1/documentation_consistency_report_gate_3_1_3.md`
+
+---
+
+## Active Release-Gate Suite Inventory
+
+The blocking suite is `pytest tests/ -q` with discovery controlled by `pytest.ini`.
+
+- `test_advanced_modules.py` — runtime modules
+- `test_auth_bootstrap_cli.py` — auth bootstrap
+- `test_auth_ownership_binding.py` — auth ownership binding
+- `test_core_init_sanity.py` — core init AST audit
+- `test_dashboard.py` — dashboard UI
+- `test_documentation_consistency.py` — documentation contract checker
+- `test_export_api_contracts.py` — export API compatibility
+- `test_job_search_tank_adr_improved.py` — job search improvements
+- `test_md5_sweep.py` — active-path MD5 sweep
+- `test_models.py` — model registry and routing
+- `test_new_modules.py` — RAG, cache, templates, pipeline
+- `test_phase2_import_compatibility.py` — Phase 2 import compatibility
+- `test_phase2_refactor_equivalence.py` — Phase 2 behavior equivalence
+- `test_redis_asyncio_cache.py` — Redis asyncio alignment
+- `test_security_auth_tools.py` — auth and tool enforcement
+- `test_security_event_audit.py` — security audit logging
+- `test_silent_exception_sweep.py` — silent exception sweep
+- `test_sql_injection_sweep.py` — SQL parameterization checks
+- `test_ssrf_validator.py` — SSRF validation
+- `test_startup_security.py` — startup security
+- `test_suite.py` — core modules
+- `test_tool_registry_enforcement.py` — tool registry enforcement
+
+---
+
+## Archived / Non-Blocking Paths
+
+- `tests/_archive/` — non-blocking legacy audit path
+- `agent/_legacy/` — excluded from release-gate tooling and Bandit active-path enforcement
+
+---
+
+## Contract Notes
+
+- The runtime model registry source of truth is `agent/model_registry.py` with **27 cloud models**.
+- Use `docs/adr/ADR-001-model-registry.md` for the model-catalog decision history.
+- Use `docs/adr/ADR-002-enterprise-module-deduplication.md` for Phase 2 canonical-module decisions.
+- Use `docs/adr/ADR-003-db-strategy.md` for the SQLite-local / Postgres-production storage policy.
+- The support matrix lives at `tests/SUPPORT_MATRIX.md`; there is no separate root-level `SUPPORT_MATRIX.md`.

@@ -51,6 +51,12 @@ MODEL_COUNT_DOCS = (
     Path(".env.example"),
     Path("docs/adr/ADR-001-model-registry.md"),
 )
+STALE_MODEL_COUNT_DOCS = (
+    Path("README.md"),
+    Path("AGENTS.md"),
+    Path("CLAUDE.md"),
+    Path("tests/SUPPORT_MATRIX.md"),
+)
 LEGACY_PATH_DOCS = (
     Path("AGENTS.md"),
     Path("CLAUDE.md"),
@@ -82,7 +88,12 @@ class RepoFacts:
 
 
 def read_text(path: Path) -> str:
-    return path.read_text(encoding="utf-8")
+    for encoding in ("utf-8", "utf-8-sig", "utf-16", "utf-16-le", "utf-16-be"):
+        try:
+            return path.read_text(encoding=encoding)
+        except UnicodeError:
+            continue
+    return path.read_text(encoding="utf-8", errors="replace")
 
 
 def extract_model_facts(path: Path) -> tuple[int, int | None]:
@@ -170,6 +181,18 @@ def extract_pytest_pass_count(path: Path) -> int | None:
     return int(matches[-1]) if matches else None
 
 
+def extract_preferred_pytest_pass_count(root: Path) -> int | None:
+    candidates = (
+        root / "snapshot-phase-3-1/gate_3_1_3_pytest.log",
+        root / "snapshot-phase-3-1/pytest_start.log",
+    )
+    for candidate in candidates:
+        count = extract_pytest_pass_count(candidate)
+        if count is not None:
+            return count
+    return None
+
+
 def collect_repo_facts(root: Path) -> RepoFacts:
     ci_text = read_text(root / ".github/workflows/ci.yml")
     model_count, docstring_count = extract_model_facts(root / "agent/model_registry.py")
@@ -185,7 +208,7 @@ def collect_repo_facts(root: Path) -> RepoFacts:
         ),
         bandit_skips=extract_bandit_skips(root / "bandit.yaml"),
         phase_tags=get_phase_tags(root),
-        pytest_pass_count=extract_pytest_pass_count(root / "snapshot-phase-3-1/pytest_start.log"),
+        pytest_pass_count=extract_preferred_pytest_pass_count(root),
         baseline_tag="phase-2-complete",
         adr_files=tuple(path.name for path in ADR_FILES),
     )
@@ -289,7 +312,7 @@ def run_checks(root: Path) -> tuple[RepoFacts, list[CheckResult]]:
             continue
         if not text_mentions_model_count(text, facts.model_count):
             bad_model_docs.append(relative_path.as_posix())
-        if re.search(r'\b24\s+models\b', text, flags=re.IGNORECASE):
+        if relative_path in STALE_MODEL_COUNT_DOCS and re.search(r'\b24\s+models\b', text, flags=re.IGNORECASE):
             stale_model_docs.append(relative_path.as_posix())
     model_docs_ok = not bad_model_docs and not stale_model_docs
     pieces: list[str] = []

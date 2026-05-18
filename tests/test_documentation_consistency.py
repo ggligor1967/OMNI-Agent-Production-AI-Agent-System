@@ -174,6 +174,32 @@ def test_run_checks_flags_critical_bandit_skips(tmp_path, monkeypatch) -> None:
     assert "DOC009" in failing_codes(results)
 
 
+def test_historical_adr_context_does_not_trigger_stale_model_failure(tmp_path, monkeypatch) -> None:
+    build_valid_repo(tmp_path)
+    write(
+        tmp_path / "docs/adr/ADR-001-model-registry.md",
+        "# ADR-001\n"
+        "The runtime MODELS registry contains 27 entries, while older docs still described the catalog as 24 models.\n"
+        "Tests and docs must assert 27 models, not 24.\n",
+    )
+    monkeypatch.setattr(
+        DOC_CHECK,
+        "get_phase_tags",
+        lambda root: ("phase-0-complete", "phase-1-complete", "phase-2-complete"),
+    )
+
+    _, results = DOC_CHECK.run_checks(tmp_path)
+
+    assert "DOC004" not in failing_codes(results)
+
+
+def test_extract_pytest_pass_count_reads_utf16_logs(tmp_path) -> None:
+    log_path = tmp_path / "pytest.log"
+    log_path.write_text("============================= 417 passed in 9.99s =============================\n", encoding="utf-16")
+
+    assert DOC_CHECK.extract_pytest_pass_count(log_path) == 417
+
+
 def test_main_returns_zero_in_report_only_mode(tmp_path, monkeypatch) -> None:
     build_valid_repo(tmp_path)
     write(tmp_path / "README.md", "stale docs\n")

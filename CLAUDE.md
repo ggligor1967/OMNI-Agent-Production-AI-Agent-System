@@ -6,6 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 OMNI Agent is a modular, async Python AI agent system that routes requests across 27 cloud LLM models. It supports four run modes: CLI, REST API (aiohttp on :8000), Telegram bot, and all-at-once. The system uses Ollama as its LLM backend with auto-routing to select the best model per task type (code, math, vision, multilingual, etc.).
 
+## Documentation Contract
+
+Documentation baseline: phase-2-complete
+
+- Model catalog source of truth: `agent/model_registry.py` (**27 cloud models**)
+- Support matrix path: `tests/SUPPORT_MATRIX.md`
+- ADR index: `docs/adr/README.md`
+- CI release gate: Python 3.12 and 3.13 with `pytest tests/ -q` and `ruff check .`
+- Storage strategy: SQLite for local development and tests; Postgres is the production target (see `docs/adr/ADR-003-db-strategy.md`)
+
 ## Commands
 
 ```bash
@@ -16,15 +26,16 @@ python main.py --mode telegram     # Telegram bot
 python main.py --mode all          # All modes
 
 # Tests
-pytest tests/ -v                   # All tests
-pytest tests/test_models.py -v     # Model registry + router (canonical)
-pytest tests/test_new_modules.py -v # RAG, cache, templates, pipeline
-pytest tests/test_suite.py -v      # Core modules
+pytest tests/ -q                   # Active release-gate suite
+ruff check .                       # Active release-gate lint command
+python tools/check_documentation_consistency.py --root . --report-only
 pytest -k "test_name" -v           # Single test by name
 
 # Docker
 docker-compose up -d               # omni-agent(:8000), ollama(:11434), searxng(:8080)
 ```
+
+Use `tests/SUPPORT_MATRIX.md` as the inventory of active release-gate test files and CI lane names.
 
 ## Architecture
 
@@ -104,10 +115,10 @@ These four modules form the critical model contract — changes must stay consis
 | `agent/dashboard.py` | Real-time web dashboard at /dashboard |
 
 ### Legacy / quarantine
-`agent/legacy/` contains ~65 `_v2`/`_v3` duplicate modules from version drift. These are **not** on the runtime hot path. Do not import from `agent/legacy/` in nucleus modules.
+`agent/_legacy/` contains archived duplicate modules from version drift. These are **not** on the runtime hot path. Do not import from `agent/_legacy/` in nucleus modules.
 
 ### Test files
-`tests/test_suite.py`, `tests/test_models.py`, and `tests/test_new_modules.py` are the canonical test files. The `tests/test_v*.py` files (v6–v70) are generated/legacy — focus on the three canonical suites.
+The blocking release gate is `pytest tests/ -q`. Use `tests/SUPPORT_MATRIX.md` for the active suite inventory; `tests/_archive/` remains a non-blocking audit path.
 
 ## Configuration
 
