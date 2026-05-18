@@ -473,6 +473,7 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
         """POST /tools/call"""
         data = await request.json()
         from agent.tools_registry import ToolCall
+        from agent.tools_registry import confirmation_policy, parse_confirmation_flag
         ctx = auth_context_from_request(request)
         try:
             session_id = scoped_session_id(
@@ -485,12 +486,29 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
                 {"error": "forbidden", "detail": str(exc)},
                 status=403,
             )
+        tool = agent.tool_registry.get(data.get("tool", ""))
+        confirmed = parse_confirmation_flag(data.get("confirmed", False))
+        allow_confirmed_tools, rejection_detail = confirmation_policy(
+            tool,
+            ctx.role,
+            confirmed,
+        )
+        if not allow_confirmed_tools and rejection_detail:
+            status = 403 if confirmed else 400
+            error = "forbidden" if confirmed else "confirmation_required"
+            return web.json_response(
+                {"error": error, "detail": rejection_detail},
+                status=status,
+            )
         call = ToolCall(
             tool_name=data.get("tool", ""),
             arguments=data.get("arguments", {}),
             session_id=session_id,
         )
-        result = await agent.tool_registry.call(call)
+        result = await agent.tool_registry.call(
+            call,
+            allow_confirmed_tools=bool(tool and tool.requires_confirmation and confirmed),
+        )
         return web.json_response(result.to_dict())
 
     # ── Tracing ───────────────────────────────────────────────────────────────

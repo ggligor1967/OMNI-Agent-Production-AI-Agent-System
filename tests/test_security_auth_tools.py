@@ -116,6 +116,59 @@ class TestToolConfirmationGuards(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(allowed.success)
         self.assertEqual(allowed.output, {"ran": True})
 
+    async def test_builtin_mutating_tools_require_confirmation(self):
+        from agent.tools_registry import ToolCall, build_default_tools
+
+        class DummyAgent:
+            pass
+
+        tools = build_default_tools(DummyAgent())
+
+        for tool_name in [
+            "remember",
+            "rag_ingest",
+            "run_pipeline",
+            "run_job_search_tank_adr_improved",
+        ]:
+            result = await tools.call(ToolCall(tool_name=tool_name, arguments={}))
+            self.assertFalse(result.success, msg=tool_name)
+            self.assertIn("confirmation", result.error.lower(), msg=tool_name)
+
+    async def test_confirmation_policy_requires_privileged_role(self):
+        from agent.auth import AuthContext, Role
+        from agent.tools_registry import build_default_tools, confirmation_policy
+
+        class DummyAgent:
+            pass
+
+        tool = build_default_tools(DummyAgent()).get("remember")
+        self.assertIsNotNone(tool)
+
+        user_ctx = AuthContext(
+            authenticated=True,
+            user_id="user-1",
+            role=Role.USER,
+            auth_method="jwt",
+        )
+        developer_ctx = AuthContext(
+            authenticated=True,
+            user_id="dev-1",
+            role=Role.DEVELOPER,
+            auth_method="jwt",
+        )
+
+        allowed, detail = confirmation_policy(tool, user_ctx.role, confirmed=True)
+        self.assertFalse(allowed)
+        self.assertIn("admin or developer", detail.lower())
+
+        allowed, detail = confirmation_policy(tool, developer_ctx.role, confirmed=False)
+        self.assertFalse(allowed)
+        self.assertIn("explicit confirmation", detail.lower())
+
+        allowed, detail = confirmation_policy(tool, developer_ctx.role, confirmed=True)
+        self.assertTrue(allowed)
+        self.assertEqual(detail, "")
+
     async def test_builtin_execute_python_uses_sandbox_when_explicitly_allowed(self):
         from agent.tools_registry import ToolCall, build_default_tools
 
@@ -177,7 +230,8 @@ class TestToolConfirmationGuards(unittest.IsolatedAsyncioTestCase):
                 ToolCall(
                     tool_name="run_job_search_tank_adr_improved",
                     arguments={"export_format": "html", "verbose": False},
-                )
+                ),
+                allow_confirmed_tools=True,
             )
 
         self.assertTrue(result.success)

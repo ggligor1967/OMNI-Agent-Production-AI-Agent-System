@@ -271,6 +271,29 @@ class ToolParamValidator:
 MiddlewareFn = Callable[[ToolCall, "ToolRegistry"], Any]
 
 
+def parse_confirmation_flag(value: Any) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return value != 0
+    return str(value).strip().lower() in {"1", "true", "yes", "y", "confirmed"}
+
+
+def confirmation_policy(tool: Optional[RegisteredTool], role: Any,
+                        confirmed: bool) -> tuple[bool, str]:
+    if tool is None or not tool.requires_confirmation:
+        return True, ""
+
+    if not confirmed:
+        return False, "Tool requires explicit confirmation"
+
+    role_value = getattr(role, "value", str(role or "")).lower()
+    if role_value not in {"admin", "developer"}:
+        return False, "Confirmed tool execution requires admin or developer role"
+
+    return True, ""
+
+
 def logging_middleware(call: ToolCall, registry: "ToolRegistry") -> None:
     """Log every tool invocation."""
     logger.info(f"Tool call: {call.tool_name}({list(call.arguments.keys())})"
@@ -658,6 +681,7 @@ def build_default_tools(agent) -> ToolRegistry:
                      required=False, default=5),
         ],
         category="memory",
+        requires_confirmation=True,
     )
     async def remember(key: str, value: str, category: str = "agent",
                       importance: int = 5) -> str:
@@ -700,6 +724,7 @@ def build_default_tools(agent) -> ToolRegistry:
                      required=False, default="untitled"),
         ],
         category="rag", tags=["document", "ingest"],
+        requires_confirmation=True,
     )
     async def rag_ingest(text: str, title: str = "untitled") -> Dict:
         doc = await agent.rag.ingest_text(text, title=title)
@@ -726,6 +751,7 @@ def build_default_tools(agent) -> ToolRegistry:
                      required=False, default={}),
         ],
         category="pipeline",
+        requires_confirmation=True,
     )
     async def run_pipeline(name: str, context: dict = {}) -> Dict:
         run = await agent.pipeline_executor.run_by_name(name, context)
@@ -760,6 +786,7 @@ def build_default_tools(agent) -> ToolRegistry:
         category="automation",
         tags=["jobs", "search", "adr", "switzerland"],
         timeout=900.0,
+        requires_confirmation=True,
         name="run_job_search_tank_adr_improved",
     )
     async def run_job_search_tank_adr_improved(
