@@ -97,6 +97,201 @@ FALLBACK_CHAINS: Dict[str, List[str]] = {
 }
 
 
+TASK_SCORING_RULES: Dict[TaskType, Dict[str, Any]] = {
+    TaskType.MATH: {
+        "strong_weight": 2.0,
+        "medium_weight": 1.0,
+        "strong": [
+            r'\b(solve|compute|calculate|simplify|differentiate|integrate|derive|find\s+the\s+(value|solution|root|limit))\b',
+            r'\b(equation|formula|inequality|expression|polynomial|matrix|vector|tensor|determinant)\b',
+            r'\b(integral|derivative|differential\s+equation|partial\s+derivative|gradient|laplacian|fourier|taylor)\b',
+            r'\b(proof|theorem|lemma|corollary|hypothesis|conjecture)\b',
+            r'\b(eigenvalue|eigenvector|linear\s+algebra|basis|span|orthogonal)\b',
+        ],
+        "medium": [
+            r'\b(calculus|algebra|geometry|trigonometry|statistic|probability|combinatorics|topology)\b',
+            r'\b(sqrt|log|ln|exp|sin|cos|tan|asin|acos|atan|ceil|floor|abs|mod|gcd|lcm)\b',
+            r'\b(sum|product|factorial|permutation|combination|series|sequence|limit|infinity)\b',
+            r'(?<![a-z])(dy\s*/\s*dx|d[²³]?[a-z]\s*/\s*d[a-z][²³]?|∫|∑|∏|√|∂|∇|≈|≠|≤|≥)',
+            r'\b(\d+\s*[\+\-\*\/]\s*\d+|\d+\s*\^\s*\d+|\d+\s*%\s*\d+)\b',
+            r'\b(pi\b|euler|fibonacci|prime\s+number|complex\s+number|imaginary)',
+        ],
+    },
+    TaskType.CODE: {
+        "strong_weight": 2.0,
+        "medium_weight": 1.0,
+        "strong": [
+            r'\b(write\s+(a\s+)?(python|javascript|typescript|java|c\+\+|c#|go|rust|ruby|php|swift|kotlin|scala|r|bash|powershell)\s+(function|class|script|program|code))\b',
+            r'\b(implement|refactor|debug|fix\s+the\s+bug|optimize\s+(this\s+)?code)\b',
+            r'\b(def\s+\w+\s*\(|class\s+\w+\s*[:\(]|import\s+\w+)\b',
+            r'\b(function\s+\w+\s*\(|const\s+\w+\s*=|let\s+\w+\s*=|var\s+\w+\s*=)\b',
+            r'\bimport\s+(numpy|pandas|torch|tensorflow|sklearn|flask|django|fastapi|aiohttp|asyncio|requests)\b',
+        ],
+        "medium": [
+            r'\b(algorithm|data\s+structure|sorting|recursion|iteration|loop|array|stack|queue|tree|graph|hash)\b',
+            r'\b(api|endpoint|rest|graphql|websocket|http|json|xml|yaml|csv|sql|database|orm|migration)\b',
+            r'\b(compile|build|deploy|dockerfile|ci\s*/\s*cd|github\s+actions|pipeline|package|dependency)\b',
+            r'\b(unit\s+test|integration\s+test|mock|assert|coverage|pytest|jest|mocha)\b',
+            r'\b(html|css|react|vue|angular|webpack|vite|node|npm|pip|cargo|maven)\b',
+            r'\b(regex|parse|serialize|deserialize|encode|decode|compress|encrypt|decrypt)\b',
+            r'\b(print|len|int|str|float|list|dict|set|tuple|range|map|filter|lambda)\s*\(',
+        ],
+    },
+    TaskType.TRANSLATION: {
+        "strong_weight": 2.5,
+        "medium_weight": 1.0,
+        "strong": [
+            r'\b(translate|translation|traduce|übersetze|traduire|tradurre)\b',
+            r'\btranslate\s+(this|the|from|to|into)\b',
+            r'\b(from\s+(english|spanish|french|german|italian|portuguese|russian|chinese|japanese|korean|arabic|hindi|romanian|dutch|polish|turkish|ukrainian)\s+to)\b',
+            r'\b(into\s+(english|spanish|french|german|italian|portuguese|russian|chinese|japanese|korean|arabic|hindi|romanian|dutch|polish|turkish|ukrainian))\b',
+        ],
+        "medium": [
+            r'\b(spanish|french|german|italian|portuguese|russian|chinese|japanese|korean|arabic|hindi|romanian|dutch|polish|turkish|ukrainian)\s+(version|translation|equivalent)\b',
+            r'\b(multilingual|bilingual|localize|localization|i18n|l10n)\b',
+            r'\b(what\s+does\s+.{1,30}\s+mean\s+in)\b',
+            r'\b(how\s+do\s+you\s+say\s+.{1,30}\s+in)\b',
+        ],
+    },
+    TaskType.VISION: {
+        "strong_weight": 2.5,
+        "medium_weight": 0.8,
+        "strong": [
+            r'\b(describe\s+(this|the)\s+image|what\s+(is|are)\s+in\s+(this|the)\s+(image|photo|picture|screenshot))\b',
+            r'\b(ocr|extract\s+text\s+from|read\s+the\s+text\s+in)\b',
+            r'\b(bounding\s+box|object\s+detection|image\s+recognition|face\s+recognition|segmentation)\b',
+            r'\b(visual\s+question|vqa|caption\s+this|image\s+caption)\b',
+        ],
+        "medium": [
+            r'\b(image|photo|picture|screenshot|diagram|chart|graph|figure|thumbnail|icon|logo)\b',
+            r'\b(pixel|resolution|color|shape|object|scene|background|foreground)\b',
+            r'\b(look\s+at|see\s+in|shown\s+in|visible\s+in)\b',
+        ],
+    },
+    TaskType.CREATIVE: {
+        "strong_weight": 2.5,
+        "medium_weight": 1.0,
+        "strong": [
+            r'\b(write\s+(me\s+)?(a\s+)?(poem|story|essay|blog\s+post|short\s+story|script|screenplay|song|lyrics|haiku|sonnet|limerick|ode|slogan|tagline|ad\s+copy))\b',
+            r'\b((compose|make|create|craft|generate)\s+(me\s+)?(a\s+)?(poem|song|melody|haiku|sonnet|limerick|story|tale|script))\b',
+            r'\b(imagine|invent|brainstorm|come\s+up\s+with|generate\s+(ideas?|concepts?|names?|slogans?))\b',
+        ],
+        "medium": [
+            r'\b(creative\s+writing|fiction|non-fiction|narrative|prose|poetry|rhyme|metaphor|simile)\b',
+            r'\b(character|plot|setting|theme|conflict|climax|resolution|protagonist|antagonist)\b',
+            r'\b(art|artwork|design|illustration|concept\s+art|visual\s+design|ux\s+design)\b',
+        ],
+    },
+    TaskType.REASONING: {
+        "strong_weight": 2.0,
+        "medium_weight": 1.0,
+        "strong": [
+            r'\b(why\s+(is|does|would|should|did|will)|explain\s+why|analyze\s+(the|this)|evaluate\s+(the|this))\b',
+            r'\b(compare\s+(and\s+contrast|the\s+(pros|cons|advantages|disadvantages)|\w+\s+(vs|versus|against|over)))\b',
+            r'\b(critically\s+assess|argue\s+(for|against)|make\s+the\s+case|debate)\b',
+            r'\b(first\s+principles|step\s+by\s+step|chain\s+of\s+thought|reason\s+through)\b',
+            r'\b(pros\s+and\s+cons\s+of|compare\s+\w+.{1,20}vs|\w+\s+vs\.?\s+\w+.{0,30}(better|worse|prefer|recommend|choose))\b',
+        ],
+        "medium": [
+            r'\b(analyze|analysis|examine|evaluate|assess|critique|review|reflect|compare|contrast)\b',
+            r'\b(therefore|consequently|hence|thus|since|because|it\s+follows\s+that)\b',
+            r'\b(pros\s+and\s+cons|trade\s*-?\s*off|strengths?\s+and\s+weaknesses?|impact)\b',
+            r'\b(logic|logical|rational|infer|deduce|deduction|induction|abduction)\b',
+        ],
+    },
+    TaskType.AGENT: {
+        "strong_weight": 2.0,
+        "medium_weight": 1.0,
+        "strong": [
+            r'\b(search\s+the\s+(web|internet|online)|look\s+(it\s+)?up\s+online|find\s+(me\s+)?on\s+the\s+internet)\b',
+            r'\b(scrape|fetch\s+from|call\s+(the\s+)?api|make\s+a\s+(get|post|put|delete)\s+request)\b',
+            r'\b(schedule\s+(a\s+)?(task|job|reminder|meeting)|set\s+an?\s+(alarm|reminder))\b',
+            r'\b(run\s+(the\s+)?tool|use\s+(the\s+)?tool|execute\s+(the\s+)?tool)\b',
+        ],
+        "medium": [
+            r'\b(weather\s+(in|for|today|tomorrow)|current\s+(stock|price|rate|news))\b',
+            r'\b(automate|automation|workflow|pipeline|orchestrat)\b',
+            r'\b(monitor|alert|notify|trigger|event\-?driven)\b',
+        ],
+    },
+}
+
+TASK_PRIORITY = [
+    TaskType.MATH,
+    TaskType.CODE,
+    TaskType.TRANSLATION,
+    TaskType.VISION,
+    TaskType.CREATIVE,
+    TaskType.AGENT,
+    TaskType.REASONING,
+    TaskType.FAST,
+    TaskType.GENERAL,
+]
+
+FAST_GREETING_PATTERN = re.compile(
+    r'^(hi|hey|hello|ok|okay|yes|no|thanks|thx|bye|sup|yo)[!?.]?$'
+)
+
+FAST_BLOCKING_TASKS = (
+    TaskType.MATH,
+    TaskType.CODE,
+    TaskType.TRANSLATION,
+    TaskType.VISION,
+    TaskType.CREATIVE,
+    TaskType.AGENT,
+    TaskType.REASONING,
+)
+
+
+def _score_pattern_group(text_lower: str, patterns: List[str], weight: float) -> float:
+    return sum(weight for pattern in patterns if re.search(pattern, text_lower))
+
+
+def _apply_task_scoring_rules(text_lower: str, scores: Dict[TaskType, float]) -> None:
+    for task_type, rule in TASK_SCORING_RULES.items():
+        scores[task_type] += _score_pattern_group(
+            text_lower,
+            rule["strong"],
+            rule["strong_weight"],
+        )
+        scores[task_type] += _score_pattern_group(
+            text_lower,
+            rule["medium"],
+            rule["medium_weight"],
+        )
+
+
+def _apply_fast_score(text_lower: str, scores: Dict[TaskType, float]) -> None:
+    word_count = len(text_lower.split())
+    fast_greetings = FAST_GREETING_PATTERN.search(text_lower)
+    if word_count <= 2 or fast_greetings:
+        scores[TaskType.FAST] += 3.0
+        return
+
+    if word_count <= 4 and not any(scores[task] > 0 for task in FAST_BLOCKING_TASKS):
+        scores[TaskType.FAST] += 0.8
+
+
+def _pick_highest_priority_task(scores: Dict[TaskType, float]) -> Tuple[TaskType, float]:
+    max_score = max(scores.values())
+    if max_score == 0.0:
+        return TaskType.GENERAL, max_score
+
+    for task in TASK_PRIORITY:
+        if scores[task] == max_score:
+            return task, max_score
+
+    return TaskType.GENERAL, max_score
+
+
+def _confidence_for_score(max_score: float, scores: Dict[TaskType, float]) -> float:
+    raw_confidence = min(0.5 + (max_score / 8.0), 1.0)
+    scoring_categories = sum(1 for value in scores.values() if value > 0)
+    if scoring_categories == 1:
+        raw_confidence = min(raw_confidence + 0.1, 1.0)
+    return round(raw_confidence, 2)
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # TASK CLASSIFICATION
 # ══════════════════════════════════════════════════════════════════════════════
@@ -124,199 +319,16 @@ def classify_task(text: str, has_image: bool = False) -> Tuple[TaskType, float]:
         return TaskType.FAST, 0.9
 
     text_lower = text.lower().strip()
-
-    # ── Scoring accumulators ──────────────────────────────────────────────────
     scores: Dict[TaskType, float] = {t: 0.0 for t in TaskType}
 
-    # ── MATH ──────────────────────────────────────────────────────────────────
-    # High-weight: explicit math verbs + equation/formula keywords
-    math_strong = [
-        r'\b(solve|compute|calculate|simplify|differentiate|integrate|derive|find\s+the\s+(value|solution|root|limit))\b',
-        # "function" excluded — too ambiguous with code (use "polynomial/matrix/equation" instead)
-        r'\b(equation|formula|inequality|expression|polynomial|matrix|vector|tensor|determinant)\b',
-        r'\b(integral|derivative|differential\s+equation|partial\s+derivative|gradient|laplacian|fourier|taylor)\b',
-        r'\b(proof|theorem|lemma|corollary|hypothesis|conjecture)\b',
-        r'\b(eigenvalue|eigenvector|linear\s+algebra|basis|span|orthogonal)\b',
-    ]
-    math_medium = [
-        r'\b(calculus|algebra|geometry|trigonometry|statistic|probability|combinatorics|topology)\b',
-        r'\b(sqrt|log|ln|exp|sin|cos|tan|asin|acos|atan|ceil|floor|abs|mod|gcd|lcm)\b',
-        r'\b(sum|product|factorial|permutation|combination|series|sequence|limit|infinity)\b',
-        r'(?<![a-z])(dy\s*/\s*dx|d[²³]?[a-z]\s*/\s*d[a-z][²³]?|∫|∑|∏|√|∂|∇|≈|≠|≤|≥)',
-        r'\b(\d+\s*[\+\-\*\/]\s*\d+|\d+\s*\^\s*\d+|\d+\s*%\s*\d+)\b',
-        r'\b(pi\b|euler|fibonacci|prime\s+number|complex\s+number|imaginary)',
-    ]
-    for p in math_strong:
-        if re.search(p, text_lower):
-            scores[TaskType.MATH] += 2.0
-    for p in math_medium:
-        if re.search(p, text_lower):
-            scores[TaskType.MATH] += 1.0
+    _apply_task_scoring_rules(text_lower, scores)
+    _apply_fast_score(text_lower, scores)
 
-    # ── CODE ──────────────────────────────────────────────────────────────────
-    code_strong = [
-        r'\b(write\s+(a\s+)?(python|javascript|typescript|java|c\+\+|c#|go|rust|ruby|php|swift|kotlin|scala|r|bash|powershell)\s+(function|class|script|program|code))\b',
-        r'\b(implement|refactor|debug|fix\s+the\s+bug|optimize\s+(this\s+)?code)\b',
-        r'\b(def\s+\w+\s*\(|class\s+\w+\s*[:\(]|import\s+\w+)\b',
-        r'\b(function\s+\w+\s*\(|const\s+\w+\s*=|let\s+\w+\s*=|var\s+\w+\s*=)\b',
-        r'\bimport\s+(numpy|pandas|torch|tensorflow|sklearn|flask|django|fastapi|aiohttp|asyncio|requests)\b',
-    ]
-    code_medium = [
-        r'\b(algorithm|data\s+structure|sorting|recursion|iteration|loop|array|stack|queue|tree|graph|hash)\b',
-        r'\b(api|endpoint|rest|graphql|websocket|http|json|xml|yaml|csv|sql|database|orm|migration)\b',
-        r'\b(compile|build|deploy|dockerfile|ci\s*/\s*cd|github\s+actions|pipeline|package|dependency)\b',
-        r'\b(unit\s+test|integration\s+test|mock|assert|coverage|pytest|jest|mocha)\b',
-        r'\b(html|css|react|vue|angular|webpack|vite|node|npm|pip|cargo|maven)\b',
-        r'\b(regex|parse|serialize|deserialize|encode|decode|compress|encrypt|decrypt)\b',
-        r'\b(print|len|int|str|float|list|dict|set|tuple|range|map|filter|lambda)\s*\(',
-    ]
-    for p in code_strong:
-        if re.search(p, text_lower):
-            scores[TaskType.CODE] += 2.0
-    for p in code_medium:
-        if re.search(p, text_lower):
-            scores[TaskType.CODE] += 1.0
-
-    # ── TRANSLATION ───────────────────────────────────────────────────────────
-    translation_strong = [
-        r'\b(translate|translation|traduce|übersetze|traduire|tradurre)\b',
-        r'\btranslate\s+(this|the|from|to|into)\b',
-        r'\b(from\s+(english|spanish|french|german|italian|portuguese|russian|chinese|japanese|korean|arabic|hindi|romanian|dutch|polish|turkish|ukrainian)\s+to)\b',
-        r'\b(into\s+(english|spanish|french|german|italian|portuguese|russian|chinese|japanese|korean|arabic|hindi|romanian|dutch|polish|turkish|ukrainian))\b',
-    ]
-    translation_medium = [
-        r'\b(spanish|french|german|italian|portuguese|russian|chinese|japanese|korean|arabic|hindi|romanian|dutch|polish|turkish|ukrainian)\s+(version|translation|equivalent)\b',
-        r'\b(multilingual|bilingual|localize|localization|i18n|l10n)\b',
-        r'\b(what\s+does\s+.{1,30}\s+mean\s+in)\b',
-        r'\b(how\s+do\s+you\s+say\s+.{1,30}\s+in)\b',
-    ]
-    for p in translation_strong:
-        if re.search(p, text_lower):
-            scores[TaskType.TRANSLATION] += 2.5
-    for p in translation_medium:
-        if re.search(p, text_lower):
-            scores[TaskType.TRANSLATION] += 1.0
-
-    # ── VISION ────────────────────────────────────────────────────────────────
-    vision_strong = [
-        r'\b(describe\s+(this|the)\s+image|what\s+(is|are)\s+in\s+(this|the)\s+(image|photo|picture|screenshot))\b',
-        r'\b(ocr|extract\s+text\s+from|read\s+the\s+text\s+in)\b',
-        r'\b(bounding\s+box|object\s+detection|image\s+recognition|face\s+recognition|segmentation)\b',
-        r'\b(visual\s+question|vqa|caption\s+this|image\s+caption)\b',
-    ]
-    vision_medium = [
-        r'\b(image|photo|picture|screenshot|diagram|chart|graph|figure|thumbnail|icon|logo)\b',
-        r'\b(pixel|resolution|color|shape|object|scene|background|foreground)\b',
-        r'\b(look\s+at|see\s+in|shown\s+in|visible\s+in)\b',
-    ]
-    for p in vision_strong:
-        if re.search(p, text_lower):
-            scores[TaskType.VISION] += 2.5
-    for p in vision_medium:
-        if re.search(p, text_lower):
-            scores[TaskType.VISION] += 0.8
-
-    # ── CREATIVE ──────────────────────────────────────────────────────────────
-    creative_strong = [
-        r'\b(write\s+(me\s+)?(a\s+)?(poem|story|essay|blog\s+post|short\s+story|script|screenplay|song|lyrics|haiku|sonnet|limerick|ode|slogan|tagline|ad\s+copy))\b',
-        r'\b((compose|make|create|craft|generate)\s+(me\s+)?(a\s+)?(poem|song|melody|haiku|sonnet|limerick|story|tale|script))\b',
-        r'\b(imagine|invent|brainstorm|come\s+up\s+with|generate\s+(ideas?|concepts?|names?|slogans?))\b',
-    ]
-    creative_medium = [
-        r'\b(creative\s+writing|fiction|non-fiction|narrative|prose|poetry|rhyme|metaphor|simile)\b',
-        r'\b(character|plot|setting|theme|conflict|climax|resolution|protagonist|antagonist)\b',
-        r'\b(art|artwork|design|illustration|concept\s+art|visual\s+design|ux\s+design)\b',
-    ]
-    for p in creative_strong:
-        if re.search(p, text_lower):
-            scores[TaskType.CREATIVE] += 2.5
-    for p in creative_medium:
-        if re.search(p, text_lower):
-            scores[TaskType.CREATIVE] += 1.0
-
-    # ── REASONING ────────────────────────────────────────────────────────────
-    reasoning_strong = [
-        r'\b(why\s+(is|does|would|should|did|will)|explain\s+why|analyze\s+(the|this)|evaluate\s+(the|this))\b',
-        r'\b(compare\s+(and\s+contrast|the\s+(pros|cons|advantages|disadvantages)|\w+\s+(vs|versus|against|over)))\b',
-        r'\b(critically\s+assess|argue\s+(for|against)|make\s+the\s+case|debate)\b',
-        r'\b(first\s+principles|step\s+by\s+step|chain\s+of\s+thought|reason\s+through)\b',
-        r'\b(pros\s+and\s+cons\s+of|compare\s+\w+.{1,20}vs|\w+\s+vs\.?\s+\w+.{0,30}(better|worse|prefer|recommend|choose))\b',
-    ]
-    reasoning_medium = [
-        r'\b(analyze|analysis|examine|evaluate|assess|critique|review|reflect|compare|contrast)\b',
-        r'\b(therefore|consequently|hence|thus|since|because|it\s+follows\s+that)\b',
-        r'\b(pros\s+and\s+cons|trade\s*-?\s*off|strengths?\s+and\s+weaknesses?|impact)\b',
-        r'\b(logic|logical|rational|infer|deduce|deduction|induction|abduction)\b',
-    ]
-    for p in reasoning_strong:
-        if re.search(p, text_lower):
-            scores[TaskType.REASONING] += 2.0
-    for p in reasoning_medium:
-        if re.search(p, text_lower):
-            scores[TaskType.REASONING] += 1.0
-
-    # ── AGENT ────────────────────────────────────────────────────────────────
-    agent_strong = [
-        r'\b(search\s+the\s+(web|internet|online)|look\s+(it\s+)?up\s+online|find\s+(me\s+)?on\s+the\s+internet)\b',
-        r'\b(scrape|fetch\s+from|call\s+(the\s+)?api|make\s+a\s+(get|post|put|delete)\s+request)\b',
-        r'\b(schedule\s+(a\s+)?(task|job|reminder|meeting)|set\s+an?\s+(alarm|reminder))\b',
-        r'\b(run\s+(the\s+)?tool|use\s+(the\s+)?tool|execute\s+(the\s+)?tool)\b',
-    ]
-    agent_medium = [
-        r'\b(weather\s+(in|for|today|tomorrow)|current\s+(stock|price|rate|news))\b',
-        r'\b(automate|automation|workflow|pipeline|orchestrat)\b',
-        r'\b(monitor|alert|notify|trigger|event\-?driven)\b',
-    ]
-    for p in agent_strong:
-        if re.search(p, text_lower):
-            scores[TaskType.AGENT] += 2.0
-    for p in agent_medium:
-        if re.search(p, text_lower):
-            scores[TaskType.AGENT] += 1.0
-
-    # ── FAST (short/trivial) ──────────────────────────────────────────────────
-    # Only very short inputs (<=3 words) or clearly trivial greetings get FAST.
-    # Longer factual questions (e.g. "What is the capital of France") stay GENERAL.
-    word_count = len(text_lower.split())
-    fast_greetings = re.search(
-        r'^(hi|hey|hello|ok|okay|yes|no|thanks|thx|bye|sup|yo)[!?.]?$', text_lower
-    )
-    if word_count <= 2 or fast_greetings:
-        scores[TaskType.FAST] += 3.0
-    elif word_count <= 4 and not any(scores[t] > 0 for t in [
-        TaskType.MATH, TaskType.CODE, TaskType.TRANSLATION,
-        TaskType.VISION, TaskType.CREATIVE, TaskType.AGENT, TaskType.REASONING
-    ]):
-        scores[TaskType.FAST] += 0.8
-
-    # ── SELECT WINNER ─────────────────────────────────────────────────────────
-    # Priority order for tie-breaking (index = priority, lower = higher priority)
-    priority = [
-        TaskType.MATH, TaskType.CODE, TaskType.TRANSLATION, TaskType.VISION,
-        TaskType.CREATIVE, TaskType.AGENT, TaskType.REASONING, TaskType.FAST,
-        TaskType.GENERAL,
-    ]
-
-    max_score = max(scores.values())
-
+    winner, max_score = _pick_highest_priority_task(scores)
     if max_score == 0.0:
         return TaskType.GENERAL, 0.5
 
-    # Among tied winners, pick highest-priority one
-    winner = TaskType.GENERAL
-    for task in priority:
-        if scores[task] == max_score:
-            winner = task
-            break
-
-    # Normalise confidence: saturates at 1.0 for score ≥ 4.0
-    raw_confidence = min(0.5 + (max_score / 8.0), 1.0)
-    # Boost if only one category scored (unambiguous)
-    scoring_categories = sum(1 for v in scores.values() if v > 0)
-    if scoring_categories == 1:
-        raw_confidence = min(raw_confidence + 0.1, 1.0)
-
-    return winner, round(raw_confidence, 2)
+    return winner, _confidence_for_score(max_score, scores)
 
 
 # ══════════════════════════════════════════════════════════════════════════════

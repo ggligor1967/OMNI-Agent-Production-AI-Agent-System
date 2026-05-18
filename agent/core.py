@@ -194,135 +194,204 @@ class OmniAgent:
     async def chat(self, user_id: Any, session_id: str, user_text: str,
                    use_rag: bool = False, rag_doc_id: Optional[str] = None) -> str:
         """Main entry point: process a user message and return a response."""
-
-        # Security checks
         safe_text = self.security.sanitize_input(user_text)
-        injection_check = self.security.check_prompt_injection(safe_text)
-        if not injection_check["safe"]:
-            logger.warning(f"Injection attempt from {user_id}: {injection_check['threats']}")
-            self.memory.audit("security.injection", actor=str(user_id),
-                             details=injection_check)
-            await hooks.emit(Event(EventType.SECURITY_ALERT, {
-                "user_id": user_id, "threats": injection_check["threats"]
-            }))
-            return "⚠️ I detected a potentially unsafe input and cannot process it."
 
-        rate = self.security.rate_check(str(user_id))
-        if not rate["allowed"]:
-            await hooks.emit(Event(EventType.RATE_LIMIT_HIT, {"user_id": user_id}))
-            return f"⏱️ Rate limit reached. Try again in {rate['retry_after']:.0f}s."
+        blocked_response = await self._maybe_block_prompt_injection(user_id, safe_text)
+        if blocked_response:
+            return blocked_response
 
-        # Save user message
+        blocked_response = await self._maybe_block_rate_limit(user_id)
+        if blocked_response:
+            return blocked_response
+
         self.memory.add_message(session_id, "user", safe_text)
 
-        # Conversation manager: intent detection + quick responses
-        conv = self.conversations.process(session_id, user_id, safe_text)
-        if conv["quick_response"]:
-            self.memory.add_message(session_id, "assistant", conv["quick_response"])
-            return conv["quick_response"]
+        quick_response = self._maybe_return_quick_response(session_id, user_id, safe_text)
+        if quick_response:
+            return quick_response
 
-        # Check skill triggers
-        triggered = self.skills.find_by_trigger(safe_text)
-        if triggered:
-            try:
-                skill_result = await triggered[0].execute(safe_text, session_id)
-                response = str(skill_result)
-                self.memory.add_message(session_id, "assistant", response,
-                                       {"via_skill": triggered[0].name})
-                return response
-            except Exception as e:
-                logger.error(f"Skill trigger failed: {e}")
+        skill_response = await self._maybe_execute_triggered_skill(safe_text, session_id)
+        if skill_response:
+            return skill_response
 
-        # Build context from history, with auto-summarization
-        history = self.memory.get_history(session_id, limit=50)
-        messages = [{"role": m["role"], "content": m["content"]}
-                   for m in history if m["role"] in ("user", "assistant")]
+        messages = self._history_messages(session_id)
+        messages = await self._maybe_compress_messages(messages)
+        await self._maybe_apply_rag(messages, safe_text, use_rag, rag_doc_id)
 
-        # Auto-compress if conversation is getting long
-        if len(messages) >= self.summarizer.threshold:
-            messages, summary_meta = await self.summarizer.maybe_compress(messages)
-            if summary_meta:
-                logger.info(f"Auto-compressed: {summary_meta.original_messages} → "
-                           f"{summary_meta.compressed_messages} msgs "
-                           f"({summary_meta.strategy})")
+        cache_key = self._chat_cache_key(session_id, messages)
+        cached_response = await self._maybe_return_cached_response(session_id, cache_key)
+        if cached_response:
+            return cached_response
 
-        # Optional RAG augmentation
-        effective_text = safe_text
-        if use_rag or rag_doc_id:
-            try:
-                effective_text, rag_results = await self.rag.augment_prompt(
-                    safe_text, top_k=4, doc_id=rag_doc_id
-                )
-                if rag_results:
-                    logger.debug(f"RAG: {len(rag_results)} chunks retrieved "
-                                f"(top score={rag_results[0].score:.2f})")
-                    # Replace last user message with augmented version
-                    if messages and messages[-1]["role"] == "user":
-                        messages[-1]["content"] = effective_text
-            except Exception as e:
-                logger.warning(f"RAG augmentation failed: {e}")
-
-        # Check response cache
-        cache_key = self.cache._response_key(
-            self.router.get_session_model(session_id) or "auto",
-            messages[-4:] if len(messages) > 4 else messages
-        )
-        cached_resp = await self.cache.get(cache_key)
-        if cached_resp and isinstance(cached_resp, dict):
-            cached_content = cached_resp.get("response", {}).get("content", "")
-            if cached_content:
-                logger.debug(f"Cache HIT for session {session_id}")
-                self.memory.add_message(session_id, "assistant", cached_content,
-                                       {"cached": True})
-                return cached_content
-
-        # LLM call
         try:
-            llm_available = await self.llm.is_available()
-            if llm_available:
-                # Build persona-aware system prompt
-                effective_system = self.persona_manager.build_system_prompt(
-                    session_id, str(user_id), SYSTEM_PROMPT
-                )
-                # Auto-detect persona if enabled
-                if self.config_mgr.flag("persona_auto"):
-                    self.persona_manager.auto_detect_and_set(session_id, safe_text)
-                response_data = await self.llm.chat(
-                    messages=messages,
-                    system=effective_system,
-                    temperature=0.7,
-                    session_id=session_id,
-                    auto_route=CONFIG.MODEL_AUTO_ROUTE,
-                )
-                raw_response = response_data["content"]
-                routed_to = response_data.get("_routed_to", "?")
-                task_type = response_data.get("_task_type", "?")
-                latency   = response_data.get("_latency_ms", 0)
-                logger.debug(f"[{task_type}] → {routed_to} ({latency}ms)")
-
-                # Cache successful response (TTL: 1 hour)
-                await self.cache.set(cache_key, {
-                    "response": response_data,
-                    "cached_at": time.time()
-                }, ttl=3600)
-            else:
-                raw_response = self._fallback_response(safe_text)
-
-            # Process tool calls in response
+            raw_response = await self._generate_raw_response(
+                user_id=user_id,
+                session_id=session_id,
+                safe_text=safe_text,
+                messages=messages,
+                cache_key=cache_key,
+            )
             final_response = await self._process_tool_calls(raw_response, session_id)
-
-            # Save response
-            self.memory.add_message(session_id, "assistant", final_response)
-
-            # Auto-extract memorable facts
-            self._auto_extract_memories(session_id, safe_text, final_response)
-
+            self._store_chat_response(session_id, safe_text, final_response)
             return final_response
 
         except Exception as e:
             logger.error(f"Chat error: {e}")
             await hooks.emit(Event(EventType.AGENT_ERROR, {"error": str(e)}))
             return f"⚠️ I encountered an error: {str(e)[:200]}"
+
+    async def _maybe_block_prompt_injection(self, user_id: Any,
+                                            safe_text: str) -> Optional[str]:
+        injection_check = self.security.check_prompt_injection(safe_text)
+        if injection_check["safe"]:
+            return None
+
+        logger.warning(f"Injection attempt from {user_id}: {injection_check['threats']}")
+        self.memory.audit("security.injection", actor=str(user_id),
+                         details=injection_check)
+        await hooks.emit(Event(EventType.SECURITY_ALERT, {
+            "user_id": user_id,
+            "threats": injection_check["threats"],
+        }))
+        return "⚠️ I detected a potentially unsafe input and cannot process it."
+
+    async def _maybe_block_rate_limit(self, user_id: Any) -> Optional[str]:
+        rate = self.security.rate_check(str(user_id))
+        if rate["allowed"]:
+            return None
+
+        await hooks.emit(Event(EventType.RATE_LIMIT_HIT, {"user_id": user_id}))
+        return f"⏱️ Rate limit reached. Try again in {rate['retry_after']:.0f}s."
+
+    def _maybe_return_quick_response(self, session_id: str,
+                                     user_id: Any,
+                                     safe_text: str) -> Optional[str]:
+        conv = self.conversations.process(session_id, user_id, safe_text)
+        quick_response = conv.get("quick_response")
+        if not quick_response:
+            return None
+
+        self.memory.add_message(session_id, "assistant", quick_response)
+        return quick_response
+
+    async def _maybe_execute_triggered_skill(self, safe_text: str,
+                                             session_id: str) -> Optional[str]:
+        triggered = self.skills.find_by_trigger(safe_text)
+        if not triggered:
+            return None
+
+        try:
+            skill_result = await triggered[0].execute(safe_text, session_id)
+            response = str(skill_result)
+            self.memory.add_message(session_id, "assistant", response,
+                                   {"via_skill": triggered[0].name})
+            return response
+        except Exception as e:
+            logger.error(f"Skill trigger failed: {e}")
+            return None
+
+    def _history_messages(self, session_id: str) -> List[Dict[str, str]]:
+        history = self.memory.get_history(session_id, limit=50)
+        return [
+            {"role": item["role"], "content": item["content"]}
+            for item in history
+            if item["role"] in ("user", "assistant")
+        ]
+
+    async def _maybe_compress_messages(self, messages: List[Dict[str, str]]) -> List[Dict[str, str]]:
+        if len(messages) < self.summarizer.threshold:
+            return messages
+
+        messages, summary_meta = await self.summarizer.maybe_compress(messages)
+        if summary_meta:
+            logger.info(f"Auto-compressed: {summary_meta.original_messages} → "
+                       f"{summary_meta.compressed_messages} msgs "
+                       f"({summary_meta.strategy})")
+        return messages
+
+    async def _maybe_apply_rag(self, messages: List[Dict[str, str]],
+                               safe_text: str,
+                               use_rag: bool,
+                               rag_doc_id: Optional[str]) -> None:
+        if not (use_rag or rag_doc_id):
+            return
+        try:
+            effective_text, rag_results = await self.rag.augment_prompt(
+                safe_text,
+                top_k=4,
+                doc_id=rag_doc_id,
+            )
+            if rag_results:
+                logger.debug(f"RAG: {len(rag_results)} chunks retrieved "
+                            f"(top score={rag_results[0].score:.2f})")
+                if messages and messages[-1]["role"] == "user":
+                    messages[-1]["content"] = effective_text
+        except Exception as e:
+            logger.warning(f"RAG augmentation failed: {e}")
+
+    def _chat_cache_key(self, session_id: str,
+                        messages: List[Dict[str, str]]) -> str:
+        return self.cache._response_key(
+            self.router.get_session_model(session_id) or "auto",
+            messages[-4:] if len(messages) > 4 else messages,
+        )
+
+    async def _maybe_return_cached_response(self, session_id: str,
+                                            cache_key: str) -> Optional[str]:
+        cached_resp = await self.cache.get(cache_key)
+        if not cached_resp or not isinstance(cached_resp, dict):
+            return None
+
+        cached_content = cached_resp.get("response", {}).get("content", "")
+        if not cached_content:
+            return None
+
+        logger.debug(f"Cache HIT for session {session_id}")
+        self.memory.add_message(session_id, "assistant", cached_content,
+                               {"cached": True})
+        return cached_content
+
+    async def _generate_raw_response(self, user_id: Any,
+                                     session_id: str,
+                                     safe_text: str,
+                                     messages: List[Dict[str, str]],
+                                     cache_key: str) -> str:
+        llm_available = await self.llm.is_available()
+        if not llm_available:
+            return self._fallback_response(safe_text)
+
+        effective_system = self.persona_manager.build_system_prompt(
+            session_id,
+            str(user_id),
+            SYSTEM_PROMPT,
+        )
+        if self.config_mgr.flag("persona_auto"):
+            self.persona_manager.auto_detect_and_set(session_id, safe_text)
+
+        response_data = await self.llm.chat(
+            messages=messages,
+            system=effective_system,
+            temperature=0.7,
+            session_id=session_id,
+            auto_route=CONFIG.MODEL_AUTO_ROUTE,
+        )
+        raw_response = response_data["content"]
+        routed_to = response_data.get("_routed_to", "?")
+        task_type = response_data.get("_task_type", "?")
+        latency = response_data.get("_latency_ms", 0)
+        logger.debug(f"[{task_type}] → {routed_to} ({latency}ms)")
+
+        await self.cache.set(cache_key, {
+            "response": response_data,
+            "cached_at": time.time(),
+        }, ttl=3600)
+        return raw_response
+
+    def _store_chat_response(self, session_id: str,
+                             safe_text: str,
+                             final_response: str) -> None:
+        self.memory.add_message(session_id, "assistant", final_response)
+        self._auto_extract_memories(session_id, safe_text, final_response)
 
     # ── Tool Processing ───────────────────────────────────────────────────────
 

@@ -178,119 +178,133 @@ class SchemaValidator:
     def is_valid(self, data: Any, schema_or_name: Union[str, Dict]) -> bool:
         return len(self.validate(data, schema_or_name)) == 0
 
-    def _validate_node(self, data: Any, schema: Dict,
-                        path: str, errors: List, coerce: bool):
-        if not isinstance(schema, dict): return
-        # $ref not supported; skip
-        # type check
+    def _validate_expected_type(self, data: Any, schema: Dict,
+                                path: str, errors: List,
+                                coerce: bool) -> Tuple[bool, Any]:
         expected_type = schema.get("type")
-        if expected_type:
-            if coerce: data = _coerce_value(data, schema)
-            actual = _type_of(data)
-            if expected_type == "number" and actual == "integer":
-                actual = "number"   # int satisfies number
-            if actual != expected_type and expected_type != "any":
-                errors.append(ValidationError(path,
-                    f"Expected {expected_type}, got {actual}", data))
-                return   # Further checks meaningless
-        # enum
+        if not expected_type:
+            return True, data
+
+        if coerce:
+            data = _coerce_value(data, schema)
+
+        actual = _type_of(data)
+        if expected_type == "number" and actual == "integer":
+            actual = "number"
+        if actual != expected_type and expected_type != "any":
+            errors.append(ValidationError(path,
+                f"Expected {expected_type}, got {actual}", data))
+            return False, data
+        return True, data
+
+    def _validate_enum_and_const(self, data: Any, schema: Dict,
+                                 path: str, errors: List) -> None:
         if "enum" in schema and data not in schema["enum"]:
             errors.append(ValidationError(path,
                 f"Value {data!r} not in enum {schema['enum']}", data))
-        # const
         if "const" in schema and data != schema["const"]:
             errors.append(ValidationError(path,
                 f"Expected const {schema['const']!r}, got {data!r}", data))
-        # String keywords
-        if isinstance(data, str):
-            mn = schema.get("minLength")
-            if mn is not None and len(data) < mn:
-                errors.append(ValidationError(path, f"String too short (min {mn})", data))
-            mx = schema.get("maxLength")
-            if mx is not None and len(data) > mx:
-                errors.append(ValidationError(path, f"String too long (max {mx})", data))
-            pat = schema.get("pattern")
-            if pat and not re.search(pat, data):
-                errors.append(ValidationError(path, f"Doesn't match pattern {pat!r}", data))
-            fmt = schema.get("format")
-            if fmt and fmt in _FORMATS:
-                if not _FORMATS[fmt](data):
-                    errors.append(ValidationError(path, f"Invalid format: {fmt}", data))
-        # Number keywords
-        if isinstance(data, (int, float)) and not isinstance(data, bool):
-            for kw, op, desc in [
-                ("minimum",          lambda v,lim: v >= lim, "minimum"),
-                ("maximum",          lambda v,lim: v <= lim, "maximum"),
-                ("exclusiveMinimum", lambda v,lim: v >  lim, "exclusiveMinimum"),
-                ("exclusiveMaximum", lambda v,lim: v <  lim, "exclusiveMaximum")]:
-                if kw in schema and not op(data, schema[kw]):
-                    errors.append(ValidationError(path,
-                        f"Violates {desc} {schema[kw]}", data))
-            mo = schema.get("multipleOf")
-            if mo and data % mo != 0:
-                errors.append(ValidationError(path, f"Not a multiple of {mo}", data))
-        # Array keywords
-        if isinstance(data, list):
-            mn = schema.get("minItems")
-            if mn is not None and len(data) < mn:
-                errors.append(ValidationError(path, f"Array too short (min {mn})", data))
-            mx = schema.get("maxItems")
-            if mx is not None and len(data) > mx:
-                errors.append(ValidationError(path, f"Array too long (max {mx})", data))
-            if schema.get("uniqueItems") and len(data) != len(set(
-                    json.dumps(i, sort_keys=True) for i in data)):
-                errors.append(ValidationError(path, "Array items not unique", data))
-            items_schema = schema.get("items")
-            if items_schema:
-                for i, item in enumerate(data):
-                    self._validate_node(item, items_schema,
-                                         f"{path}[{i}]", errors, coerce)
-        # Object keywords
-        if isinstance(data, dict):
-            props = schema.get("properties", {})
-            required = schema.get("required", [])
-            for r in required:
-                if r not in data:
-                    errors.append(ValidationError(f"{path}.{r}",
-                        f"Required field {r!r} missing"))
-            for k, sub in props.items():
-                if k in data:
-                    self._validate_node(data[k], sub,
-                                         f"{path}.{k}", errors, coerce)
-            if self.strict or schema.get("additionalProperties") is False:
-                for k in data:
-                    if k not in props:
-                        errors.append(ValidationError(f"{path}.{k}",
-                            f"Additional property {k!r} not allowed"))
-            mn = schema.get("minProperties")
-            if mn is not None and len(data) < mn:
-                errors.append(ValidationError(path, f"Too few properties (min {mn})", data))
-            # dependencies
-            for dep_field, dep_required in schema.get("dependencies", {}).items():
-                if dep_field in data and isinstance(dep_required, list):
-                    for req in dep_required:
-                        if req not in data:
-                            errors.append(ValidationError(f"{path}.{req}",
-                                f"Required when {dep_field!r} is present"))
-        # Combiners
+
+    def _validate_string_keywords(self, data: str, schema: Dict,
+                                  path: str, errors: List) -> None:
+        mn = schema.get("minLength")
+        if mn is not None and len(data) < mn:
+            errors.append(ValidationError(path, f"String too short (min {mn})", data))
+        mx = schema.get("maxLength")
+        if mx is not None and len(data) > mx:
+            errors.append(ValidationError(path, f"String too long (max {mx})", data))
+        pat = schema.get("pattern")
+        if pat and not re.search(pat, data):
+            errors.append(ValidationError(path, f"Doesn't match pattern {pat!r}", data))
+        fmt = schema.get("format")
+        if fmt and fmt in _FORMATS and not _FORMATS[fmt](data):
+            errors.append(ValidationError(path, f"Invalid format: {fmt}", data))
+
+    def _validate_number_keywords(self, data: Union[int, float], schema: Dict,
+                                  path: str, errors: List) -> None:
+        for kw, op, desc in [
+            ("minimum",          lambda v, lim: v >= lim, "minimum"),
+            ("maximum",          lambda v, lim: v <= lim, "maximum"),
+            ("exclusiveMinimum", lambda v, lim: v > lim,  "exclusiveMinimum"),
+            ("exclusiveMaximum", lambda v, lim: v < lim,  "exclusiveMaximum"),
+        ]:
+            if kw in schema and not op(data, schema[kw]):
+                errors.append(ValidationError(path,
+                    f"Violates {desc} {schema[kw]}", data))
+        mo = schema.get("multipleOf")
+        if mo and data % mo != 0:
+            errors.append(ValidationError(path, f"Not a multiple of {mo}", data))
+
+    def _validate_array_keywords(self, data: List[Any], schema: Dict,
+                                 path: str, errors: List,
+                                 coerce: bool) -> None:
+        mn = schema.get("minItems")
+        if mn is not None and len(data) < mn:
+            errors.append(ValidationError(path, f"Array too short (min {mn})", data))
+        mx = schema.get("maxItems")
+        if mx is not None and len(data) > mx:
+            errors.append(ValidationError(path, f"Array too long (max {mx})", data))
+        if schema.get("uniqueItems") and len(data) != len(set(
+                json.dumps(item, sort_keys=True) for item in data)):
+            errors.append(ValidationError(path, "Array items not unique", data))
+        items_schema = schema.get("items")
+        if items_schema:
+            for index, item in enumerate(data):
+                self._validate_node(item, items_schema,
+                                    f"{path}[{index}]", errors, coerce)
+
+    def _validate_object_keywords(self, data: Dict[str, Any], schema: Dict,
+                                  path: str, errors: List,
+                                  coerce: bool) -> None:
+        props = schema.get("properties", {})
+        required = schema.get("required", [])
+        for field_name in required:
+            if field_name not in data:
+                errors.append(ValidationError(f"{path}.{field_name}",
+                    f"Required field {field_name!r} missing"))
+        for key, sub_schema in props.items():
+            if key in data:
+                self._validate_node(data[key], sub_schema,
+                                    f"{path}.{key}", errors, coerce)
+        if self.strict or schema.get("additionalProperties") is False:
+            for key in data:
+                if key not in props:
+                    errors.append(ValidationError(f"{path}.{key}",
+                        f"Additional property {key!r} not allowed"))
+        mn = schema.get("minProperties")
+        if mn is not None and len(data) < mn:
+            errors.append(ValidationError(path, f"Too few properties (min {mn})", data))
+        for dep_field, dep_required in schema.get("dependencies", {}).items():
+            if dep_field in data and isinstance(dep_required, list):
+                for req in dep_required:
+                    if req not in data:
+                        errors.append(ValidationError(f"{path}.{req}",
+                            f"Required when {dep_field!r} is present"))
+
+    def _validate_combiners(self, data: Any, schema: Dict,
+                            path: str, errors: List,
+                            coerce: bool) -> None:
         if "allOf" in schema:
-            for sub in schema["allOf"]:
-                self._validate_node(data, sub, path, errors, coerce)
+            for sub_schema in schema["allOf"]:
+                self._validate_node(data, sub_schema, path, errors, coerce)
         if "anyOf" in schema:
             any_errors = []
-            for sub in schema["anyOf"]:
+            for sub_schema in schema["anyOf"]:
                 sub_errs: List[ValidationError] = []
-                self._validate_node(data, sub, path, sub_errs, coerce)
-                if not sub_errs: break
+                self._validate_node(data, sub_schema, path, sub_errs, coerce)
+                if not sub_errs:
+                    break
                 any_errors.extend(sub_errs)
             else:
                 errors.append(ValidationError(path, "Fails all anyOf schemas", data))
         if "oneOf" in schema:
             passes = 0
-            for sub in schema["oneOf"]:
+            for sub_schema in schema["oneOf"]:
                 sub_errs: List[ValidationError] = []
-                self._validate_node(data, sub, path, sub_errs, coerce)
-                if not sub_errs: passes += 1
+                self._validate_node(data, sub_schema, path, sub_errs, coerce)
+                if not sub_errs:
+                    passes += 1
             if passes != 1:
                 errors.append(ValidationError(path,
                     f"Must match exactly one of oneOf (matched {passes})", data))
@@ -299,14 +313,44 @@ class SchemaValidator:
             self._validate_node(data, schema["not"], path, sub_errs, coerce)
             if not sub_errs:
                 errors.append(ValidationError(path, "Must NOT match 'not' schema", data))
-        # if/then/else
-        if "if" in schema:
-            cond_errs: List[ValidationError] = []
-            self._validate_node(data, schema["if"], path, cond_errs, coerce)
-            if not cond_errs and "then" in schema:
-                self._validate_node(data, schema["then"], path, errors, coerce)
-            elif cond_errs and "else" in schema:
-                self._validate_node(data, schema["else"], path, errors, coerce)
+
+    def _validate_conditionals(self, data: Any, schema: Dict,
+                               path: str, errors: List,
+                               coerce: bool) -> None:
+        if "if" not in schema:
+            return
+        cond_errs: List[ValidationError] = []
+        self._validate_node(data, schema["if"], path, cond_errs, coerce)
+        if not cond_errs and "then" in schema:
+            self._validate_node(data, schema["then"], path, errors, coerce)
+        elif cond_errs and "else" in schema:
+            self._validate_node(data, schema["else"], path, errors, coerce)
+
+    def _validate_node(self, data: Any, schema: Dict,
+                        path: str, errors: List, coerce: bool):
+        if not isinstance(schema, dict):
+            return
+
+        type_ok, data = self._validate_expected_type(data, schema, path, errors, coerce)
+        if not type_ok:
+            return
+
+        self._validate_enum_and_const(data, schema, path, errors)
+
+        if isinstance(data, str):
+            self._validate_string_keywords(data, schema, path, errors)
+
+        if isinstance(data, (int, float)) and not isinstance(data, bool):
+            self._validate_number_keywords(data, schema, path, errors)
+
+        if isinstance(data, list):
+            self._validate_array_keywords(data, schema, path, errors, coerce)
+
+        if isinstance(data, dict):
+            self._validate_object_keywords(data, schema, path, errors, coerce)
+
+        self._validate_combiners(data, schema, path, errors, coerce)
+        self._validate_conditionals(data, schema, path, errors, coerce)
 
     def coerce_data(self, data: Any,
                      schema_or_name: Union[str, Dict]) -> Tuple[Any, List[ValidationError]]:
