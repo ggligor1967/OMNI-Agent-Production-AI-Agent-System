@@ -357,15 +357,23 @@ class VectorStore:
     def keyword_search(self, query: str, top_k: int = 5,
                        doc_id: Optional[str] = None) -> List[RetrievalResult]:
         """Fallback keyword search when no embeddings are available."""
-        terms = query.lower().split()
-        sql = "SELECT * FROM chunks WHERE " + " AND ".join(
-            ["LOWER(text) LIKE ?" for _ in terms]
-        )
+        try:
+            limit = max(1, int(top_k))
+        except (TypeError, ValueError) as exc:
+            raise ValueError("top_k must be an integer") from exc
+
+        terms = [term for term in query.lower().split() if term]
+        clauses = ["LOWER(text) LIKE ?" for _ in terms]
         params = [f"%{t}%" for t in terms]
         if doc_id:
-            sql += " AND doc_id=?"
+            clauses.append("doc_id=?")
             params.append(doc_id)
-        sql += f" LIMIT {top_k}"
+
+        sql = "SELECT * FROM chunks"
+        if clauses:
+            sql += " WHERE " + " AND ".join(clauses)
+        sql += " LIMIT ?"
+        params.append(limit)
 
         with self._conn() as conn:
             rows = conn.execute(sql, params).fetchall()
