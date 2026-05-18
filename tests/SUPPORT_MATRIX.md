@@ -1,7 +1,7 @@
 # OMNI Agent Test Support Matrix
 
 Generated: 2026-05-18
-Active Suite Status: **PASSING** (324/324 tests)
+Active Suite Status: **PASSING** (325/325 tests)
 Model Catalog Contract: **27 cloud models**
 
 ---
@@ -16,9 +16,10 @@ Model Catalog Contract: **27 cloud models**
 | `test_suite.py` | 73 | 0 | Core modules | KEEP |
 | `test_security_auth_tools.py` | 6 | 0 | Security gates | KEEP |
 | `test_startup_security.py` | 3 | 0 | Startup security | KEEP |
+| `test_core_init_sanity.py` | 1 | 0 | Core init AST audit | KEEP |
 | `test_dashboard.py` | 2 | 0 | Dashboard UI | KEEP |
 | `test_job_search_tank_adr_improved.py` | 9 | 0 | Job search | KEEP |
-| **Active subtotal** | **324** | **0** | | **PASSING** |
+| **Active subtotal** | **325** | **0** | | **PASSING** |
 
 ---
 
@@ -53,7 +54,7 @@ pytest tests/ -q
 
 Current result:
 
-- **324 passed**
+- **325 passed**
 - **0 failed**
 - **0 errors**
 
