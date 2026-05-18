@@ -1,0 +1,6 @@
+PWD: C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System
+BRANCH: main
+HEAD: 6db220142fe2c4022b28cbcc8fe9ec6c27931df1
+PHASE0_TAGS: phase-0-complete
+PHASE0_TARGET: 6db220142fe2c4022b28cbcc8fe9ec6c27931df1
+PYTHON: Python 3.13.3
