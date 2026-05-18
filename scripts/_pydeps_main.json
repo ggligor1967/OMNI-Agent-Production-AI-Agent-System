@@ -1,0 +1,737 @@
+﻿{
+    "aiohttp": {
+        "bacon": 1,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.client",
+            "aiohttp.client_middleware_digest_auth",
+            "aiohttp.connector",
+            "aiohttp.formdata",
+            "aiohttp.helpers",
+            "aiohttp.http",
+            "aiohttp.payload",
+            "aiohttp.web_app",
+            "aiohttp.web_fileresponse",
+            "aiohttp.web_request",
+            "aiohttp.web_response",
+            "aiohttp.web_routedef",
+            "aiohttp.web_urldispatcher",
+            "aiohttp.web_ws",
+            "aiohttp.worker",
+            "main.py"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.client",
+            "aiohttp.client_middleware_digest_auth",
+            "aiohttp.client_middlewares",
+            "aiohttp.compression_utils",
+            "aiohttp.connector",
+            "aiohttp.cookiejar",
+            "aiohttp.formdata",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.http",
+            "aiohttp.multipart",
+            "aiohttp.payload",
+            "aiohttp.payload_streamer",
+            "aiohttp.resolver",
+            "aiohttp.streams",
+            "aiohttp.tracing",
+            "aiohttp.worker"
+        ],
+        "name": "aiohttp",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\__init__.py"
+    },
+    "aiohttp.abc": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.client",
+            "aiohttp.connector",
+            "aiohttp.cookiejar",
+            "aiohttp.multipart",
+            "aiohttp.payload",
+            "aiohttp.payload_streamer",
+            "aiohttp.resolver",
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_fileresponse",
+            "aiohttp.web_log",
+            "aiohttp.web_protocol",
+            "aiohttp.web_request",
+            "aiohttp.web_response",
+            "aiohttp.web_routedef",
+            "aiohttp.web_server",
+            "aiohttp.web_urldispatcher",
+            "aiohttp.web_ws"
+        ],
+        "imports": [
+            "aiohttp.typedefs",
+            "aiohttp.web_app",
+            "aiohttp.web_exceptions",
+            "aiohttp.web_request",
+            "aiohttp.web_response"
+        ],
+        "name": "aiohttp.abc",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\abc.py"
+    },
+    "aiohttp.client": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.connector",
+            "aiohttp.tracing"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.abc",
+            "aiohttp.client_middlewares",
+            "aiohttp.connector",
+            "aiohttp.cookiejar",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.http",
+            "aiohttp.payload",
+            "aiohttp.tracing",
+            "aiohttp.typedefs"
+        ],
+        "name": "aiohttp.client",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\client.py"
+    },
+    "aiohttp.client_middleware_digest_auth": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.client_middlewares",
+            "aiohttp.hdrs",
+            "aiohttp.payload"
+        ],
+        "name": "aiohttp.client_middleware_digest_auth",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\client_middleware_digest_auth.py"
+    },
+    "aiohttp.client_middlewares": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.client",
+            "aiohttp.client_middleware_digest_auth"
+        ],
+        "name": "aiohttp.client_middlewares",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\client_middlewares.py"
+    },
+    "aiohttp.compression_utils": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.multipart",
+            "aiohttp.web_response"
+        ],
+        "name": "aiohttp.compression_utils",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\compression_utils.py"
+    },
+    "aiohttp.connector": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.client"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.abc",
+            "aiohttp.client",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.log",
+            "aiohttp.resolver",
+            "aiohttp.tracing"
+        ],
+        "name": "aiohttp.connector",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\connector.py"
+    },
+    "aiohttp.cookiejar": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.client"
+        ],
+        "imports": [
+            "aiohttp.abc",
+            "aiohttp.helpers",
+            "aiohttp.typedefs"
+        ],
+        "name": "aiohttp.cookiejar",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\cookiejar.py"
+    },
+    "aiohttp.formdata": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.multipart",
+            "aiohttp.payload"
+        ],
+        "name": "aiohttp.formdata",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\formdata.py"
+    },
+    "aiohttp.hdrs": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.client",
+            "aiohttp.client_middleware_digest_auth",
+            "aiohttp.connector",
+            "aiohttp.formdata",
+            "aiohttp.helpers",
+            "aiohttp.multipart",
+            "aiohttp.payload",
+            "aiohttp.web_app",
+            "aiohttp.web_fileresponse",
+            "aiohttp.web_request",
+            "aiohttp.web_response",
+            "aiohttp.web_routedef",
+            "aiohttp.web_urldispatcher",
+            "aiohttp.web_ws"
+        ],
+        "name": "aiohttp.hdrs",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\hdrs.py"
+    },
+    "aiohttp.helpers": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.client",
+            "aiohttp.connector",
+            "aiohttp.cookiejar",
+            "aiohttp.formdata",
+            "aiohttp.multipart",
+            "aiohttp.payload",
+            "aiohttp.streams",
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_fileresponse",
+            "aiohttp.web_protocol",
+            "aiohttp.web_request",
+            "aiohttp.web_response",
+            "aiohttp.web_urldispatcher",
+            "aiohttp.web_ws",
+            "aiohttp.worker"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.hdrs",
+            "aiohttp.log"
+        ],
+        "name": "aiohttp.helpers",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\helpers.py"
+    },
+    "aiohttp.http": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.client",
+            "aiohttp.multipart",
+            "aiohttp.web_protocol",
+            "aiohttp.web_response",
+            "aiohttp.web_urldispatcher",
+            "aiohttp.web_ws"
+        ],
+        "imports": [
+            "aiohttp"
+        ],
+        "name": "aiohttp.http",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\http.py"
+    },
+    "aiohttp.log": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.connector",
+            "aiohttp.helpers",
+            "aiohttp.multipart",
+            "aiohttp.streams",
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_protocol",
+            "aiohttp.web_ws"
+        ],
+        "name": "aiohttp.log",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\log.py"
+    },
+    "aiohttp.multipart": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.formdata",
+            "aiohttp.web_request"
+        ],
+        "imports": [
+            "aiohttp.abc",
+            "aiohttp.compression_utils",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.http",
+            "aiohttp.log",
+            "aiohttp.payload",
+            "aiohttp.streams"
+        ],
+        "name": "aiohttp.multipart",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\multipart.py"
+    },
+    "aiohttp.payload": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.client",
+            "aiohttp.client_middleware_digest_auth",
+            "aiohttp.formdata",
+            "aiohttp.multipart",
+            "aiohttp.payload_streamer",
+            "aiohttp.web_response"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.abc",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.streams",
+            "aiohttp.typedefs"
+        ],
+        "name": "aiohttp.payload",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\payload.py"
+    },
+    "aiohttp.payload_streamer": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp"
+        ],
+        "imports": [
+            "aiohttp.abc",
+            "aiohttp.payload"
+        ],
+        "name": "aiohttp.payload_streamer",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\payload_streamer.py"
+    },
+    "aiohttp.resolver": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.connector"
+        ],
+        "imports": [
+            "aiohttp.abc"
+        ],
+        "name": "aiohttp.resolver",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\resolver.py"
+    },
+    "aiohttp.streams": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.multipart",
+            "aiohttp.payload",
+            "aiohttp.web_app",
+            "aiohttp.web_protocol",
+            "aiohttp.web_request",
+            "aiohttp.web_server",
+            "aiohttp.web_ws"
+        ],
+        "imports": [
+            "aiohttp.helpers",
+            "aiohttp.log"
+        ],
+        "name": "aiohttp.streams",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\streams.py"
+    },
+    "aiohttp.tracing": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp",
+            "aiohttp.client",
+            "aiohttp.connector"
+        ],
+        "imports": [
+            "aiohttp.client"
+        ],
+        "name": "aiohttp.tracing",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\tracing.py"
+    },
+    "aiohttp.typedefs": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.abc",
+            "aiohttp.client",
+            "aiohttp.cookiejar",
+            "aiohttp.payload",
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_exceptions",
+            "aiohttp.web_fileresponse",
+            "aiohttp.web_middlewares",
+            "aiohttp.web_request",
+            "aiohttp.web_response",
+            "aiohttp.web_routedef",
+            "aiohttp.web_runner",
+            "aiohttp.web_urldispatcher",
+            "aiohttp.web_ws"
+        ],
+        "imports": [
+            "aiohttp.web"
+        ],
+        "name": "aiohttp.typedefs",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\typedefs.py"
+    },
+    "aiohttp.web": {
+        "bacon": 1,
+        "imported_by": [
+            "aiohttp.typedefs",
+            "aiohttp.worker",
+            "main.py"
+        ],
+        "imports": [
+            "aiohttp.abc",
+            "aiohttp.helpers",
+            "aiohttp.log",
+            "aiohttp.typedefs",
+            "aiohttp.web_app",
+            "aiohttp.web_exceptions",
+            "aiohttp.web_fileresponse",
+            "aiohttp.web_log",
+            "aiohttp.web_middlewares",
+            "aiohttp.web_protocol",
+            "aiohttp.web_request",
+            "aiohttp.web_response",
+            "aiohttp.web_routedef",
+            "aiohttp.web_runner",
+            "aiohttp.web_server",
+            "aiohttp.web_urldispatcher",
+            "aiohttp.web_ws"
+        ],
+        "name": "aiohttp.web",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web.py"
+    },
+    "aiohttp.web_app": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.abc",
+            "aiohttp.web",
+            "aiohttp.web_middlewares",
+            "aiohttp.web_request",
+            "aiohttp.web_runner",
+            "aiohttp.web_urldispatcher",
+            "aiohttp.worker"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.abc",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.log",
+            "aiohttp.streams",
+            "aiohttp.typedefs",
+            "aiohttp.web_exceptions",
+            "aiohttp.web_log",
+            "aiohttp.web_middlewares",
+            "aiohttp.web_protocol",
+            "aiohttp.web_request",
+            "aiohttp.web_response",
+            "aiohttp.web_routedef",
+            "aiohttp.web_server",
+            "aiohttp.web_urldispatcher"
+        ],
+        "name": "aiohttp.web_app",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_app.py"
+    },
+    "aiohttp.web_exceptions": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.abc",
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_fileresponse",
+            "aiohttp.web_middlewares",
+            "aiohttp.web_protocol",
+            "aiohttp.web_request",
+            "aiohttp.web_urldispatcher",
+            "aiohttp.web_ws"
+        ],
+        "imports": [
+            "aiohttp.typedefs",
+            "aiohttp.web_response"
+        ],
+        "name": "aiohttp.web_exceptions",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_exceptions.py"
+    },
+    "aiohttp.web_fileresponse": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.web",
+            "aiohttp.web_urldispatcher"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.abc",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.typedefs",
+            "aiohttp.web_exceptions",
+            "aiohttp.web_request",
+            "aiohttp.web_response"
+        ],
+        "name": "aiohttp.web_fileresponse",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_fileresponse.py"
+    },
+    "aiohttp.web_log": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_protocol",
+            "aiohttp.worker"
+        ],
+        "imports": [
+            "aiohttp.abc",
+            "aiohttp.web_request",
+            "aiohttp.web_response"
+        ],
+        "name": "aiohttp.web_log",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_log.py"
+    },
+    "aiohttp.web_middlewares": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.web",
+            "aiohttp.web_app"
+        ],
+        "imports": [
+            "aiohttp.typedefs",
+            "aiohttp.web_app",
+            "aiohttp.web_exceptions",
+            "aiohttp.web_request",
+            "aiohttp.web_response",
+            "aiohttp.web_urldispatcher"
+        ],
+        "name": "aiohttp.web_middlewares",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_middlewares.py"
+    },
+    "aiohttp.web_protocol": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_request",
+            "aiohttp.web_server"
+        ],
+        "imports": [
+            "aiohttp.abc",
+            "aiohttp.helpers",
+            "aiohttp.http",
+            "aiohttp.log",
+            "aiohttp.streams",
+            "aiohttp.web_exceptions",
+            "aiohttp.web_log",
+            "aiohttp.web_request",
+            "aiohttp.web_response",
+            "aiohttp.web_server"
+        ],
+        "name": "aiohttp.web_protocol",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_protocol.py"
+    },
+    "aiohttp.web_request": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.abc",
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_fileresponse",
+            "aiohttp.web_log",
+            "aiohttp.web_middlewares",
+            "aiohttp.web_protocol",
+            "aiohttp.web_response",
+            "aiohttp.web_routedef",
+            "aiohttp.web_server",
+            "aiohttp.web_urldispatcher",
+            "aiohttp.web_ws"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.abc",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.multipart",
+            "aiohttp.streams",
+            "aiohttp.typedefs",
+            "aiohttp.web_app",
+            "aiohttp.web_exceptions",
+            "aiohttp.web_protocol",
+            "aiohttp.web_response",
+            "aiohttp.web_urldispatcher"
+        ],
+        "name": "aiohttp.web_request",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_request.py"
+    },
+    "aiohttp.web_response": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.abc",
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_exceptions",
+            "aiohttp.web_fileresponse",
+            "aiohttp.web_log",
+            "aiohttp.web_middlewares",
+            "aiohttp.web_protocol",
+            "aiohttp.web_request",
+            "aiohttp.web_routedef",
+            "aiohttp.web_urldispatcher",
+            "aiohttp.web_ws"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.abc",
+            "aiohttp.compression_utils",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.http",
+            "aiohttp.payload",
+            "aiohttp.typedefs",
+            "aiohttp.web_request"
+        ],
+        "name": "aiohttp.web_response",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_response.py"
+    },
+    "aiohttp.web_routedef": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_urldispatcher"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.abc",
+            "aiohttp.hdrs",
+            "aiohttp.typedefs",
+            "aiohttp.web_request",
+            "aiohttp.web_response",
+            "aiohttp.web_urldispatcher"
+        ],
+        "name": "aiohttp.web_routedef",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_routedef.py"
+    },
+    "aiohttp.web_runner": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.web"
+        ],
+        "imports": [
+            "aiohttp.typedefs",
+            "aiohttp.web_app",
+            "aiohttp.web_server"
+        ],
+        "name": "aiohttp.web_runner",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_runner.py"
+    },
+    "aiohttp.web_server": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_protocol",
+            "aiohttp.web_runner"
+        ],
+        "imports": [
+            "aiohttp.abc",
+            "aiohttp.streams",
+            "aiohttp.web_protocol",
+            "aiohttp.web_request"
+        ],
+        "name": "aiohttp.web_server",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_server.py"
+    },
+    "aiohttp.web_urldispatcher": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_middlewares",
+            "aiohttp.web_request",
+            "aiohttp.web_routedef"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.abc",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.http",
+            "aiohttp.typedefs",
+            "aiohttp.web_app",
+            "aiohttp.web_exceptions",
+            "aiohttp.web_fileresponse",
+            "aiohttp.web_request",
+            "aiohttp.web_response",
+            "aiohttp.web_routedef"
+        ],
+        "name": "aiohttp.web_urldispatcher",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_urldispatcher.py"
+    },
+    "aiohttp.web_ws": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp.web"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.abc",
+            "aiohttp.hdrs",
+            "aiohttp.helpers",
+            "aiohttp.http",
+            "aiohttp.log",
+            "aiohttp.streams",
+            "aiohttp.typedefs",
+            "aiohttp.web_exceptions",
+            "aiohttp.web_request",
+            "aiohttp.web_response"
+        ],
+        "name": "aiohttp.web_ws",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\web_ws.py"
+    },
+    "aiohttp.worker": {
+        "bacon": 2,
+        "imported_by": [
+            "aiohttp"
+        ],
+        "imports": [
+            "aiohttp",
+            "aiohttp.helpers",
+            "aiohttp.web",
+            "aiohttp.web_app",
+            "aiohttp.web_log"
+        ],
+        "name": "aiohttp.worker",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\.venv-1\\Lib\\site-packages\\aiohttp\\worker.py"
+    },
+    "config": {
+        "bacon": 1,
+        "imported_by": [
+            "main.py"
+        ],
+        "name": "config",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\config.py"
+    },
+    "main.py": {
+        "bacon": 0,
+        "imports": [
+            "aiohttp",
+            "aiohttp.web",
+            "config"
+        ],
+        "name": "main.py",
+        "path": null
+    }
+}

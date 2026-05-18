@@ -1,0 +1,63 @@
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# ── Testing / CI ──────────────────────────────────────────────────────────────
+.pytest_cache/
+.benchmarks/
+*.coverage
+.coverage
+htmlcov/
+
+# ── Root pipeline/test artifact files (no extension) ─────────────────────────
+# These are execution output files from pipeline/test runs
+/abort_test
+/async_test
+/chain
+/ckpt_test
+/cond_test
+/fallback_test
+/filter_test
+/reg_pipe
+/retry_test
+/skip_test
+/test
+
+# ── Databases & state ────────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+data/
+
+# ── Environment & secrets ────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── Build / dist ─────────────────────────────────────────────────────────────
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# ── Virtual environments ──────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+
+# ── Job search output files (always saved in data/job_results/) ───────────────
+/search_run*.txt
+/sprint2_*.txt
+/summary.txt
+/*_report.md
+/gun/
+
+# ── Job results data ──────────────────────────────────────────────────────────
+# data/ already excluded above; this is a reminder
+data/job_results/

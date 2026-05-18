@@ -1,0 +1,9 @@
+{
+  "typeCheckingMode": "basic",
+  "pythonVersion": "3.13",
+  "reportUnknownMemberType": false,
+  "reportUnknownArgumentType": false,
+  "reportUnknownVariableType": false,
+  "reportUnknownParameterType": false,
+  "reportMissingTypeArgument": false
+}

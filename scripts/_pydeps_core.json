@@ -1,0 +1,18 @@
+﻿{
+    "config": {
+        "bacon": 1,
+        "imported_by": [
+            "core.py"
+        ],
+        "name": "config",
+        "path": "C:\\Users\\gligo\\My Projects\\OMNI Agent \u2014 Production AI Agent System\\config.py"
+    },
+    "core.py": {
+        "bacon": 0,
+        "imports": [
+            "config"
+        ],
+        "name": "core.py",
+        "path": null
+    }
+}

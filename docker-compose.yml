@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+
+  # ── OMNI Agent ─────────────────────────────────────────────────────────────
+  omni-agent:
+    build: .
+    container_name: omni_agent
+    restart: unless-stopped
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - TELEGRAM_ALLOWED_USERS=${TELEGRAM_ALLOWED_USERS}
+      - DB_PATH=/data/omni_agent.db
+      - LOG_LEVEL=INFO
+      - HEARTBEAT_INTERVAL=60
+      - SEARXNG_URL=http://searxng:8080
+    volumes:
+      - agent_data:/data
+      - agent_logs:/app/logs
+    ports:
+      - "8000:8000"        # REST API
+    depends_on:
+      - ollama
+      - searxng
+    command: python main.py --mode all
+    networks:
+      - omni_net
+
+  # ── Ollama (Local LLM) ─────────────────────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: omni_ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    # For GPU: uncomment below and ensure NVIDIA drivers installed
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+    networks:
+      - omni_net
+
+  # ── SearXNG (Private Search) ───────────────────────────────────────────────
+  searxng:
+    image: searxng/searxng:latest
+    container_name: omni_searxng
+    restart: unless-stopped
+    environment:
+      - SEARXNG_HOSTNAME=searxng
+      - SEARXNG_SECRET_KEY=change_me_in_production
+    volumes:
+      - searxng_data:/etc/searxng
+    ports:
+      - "8080:8080"
+    networks:
+      - omni_net
+
+  # ── Optional: Redis ────────────────────────────────────────────────────────
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: omni_redis
+  #   restart: unless-stopped
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - omni_net
+
+volumes:
+  agent_data:
+  agent_logs:
+  ollama_data:
+  searxng_data:
+
+networks:
+  omni_net:
+    driver: bridge
