@@ -1,0 +1,34 @@
+﻿# Documentation Consistency Report
+
+Repository root: `C:\Users\gligo\My Projects\OMNI Agent ù Production AI Agent System`
+Status: PASS
+
+## Repository Facts
+
+- Model registry count: `27`
+- Model registry docstring count: `27`
+- CI Python matrix: `3.12, 3.13`
+- Baseline tag: `phase-2-complete`
+- Available phase tags: `phase-0-complete, phase-1-complete, phase-2-complete, phase-3.1-complete`
+- Snapshot pytest pass count: `417`
+- CI has pytest gate: `True`
+- CI has ruff gate: `True`
+- CI has coverage gate: `True`
+- CI has active Bandit gate: `True`
+- bandit.yaml skips: `[]`
+
+## Checks
+
+- [PASS] `DOC001` All required versioned documentation files exist.
+- [PASS] `DOC002` Phase completion tags phase-0/1/2 are present.
+- [PASS] `DOC003` Model registry docstring and MODELS dict both report 27 models.
+- [PASS] `DOC004` Model-count claims are synchronized across docs and config references.
+- [PASS] `DOC005` All primary docs include the baseline marker 'Documentation baseline: phase-2-complete'.
+- [PASS] `DOC006` Support matrix is synchronized with CI and baseline evidence.
+- [PASS] `DOC007` Agent guidance docs use the current '_legacy' path conventions.
+- [PASS] `DOC008` ADR index exists and references ADR-001/002/003.
+- [PASS] `DOC009` Bandit policy keeps B602/B102/B307/B608 enabled globally.
+- [PASS] `DOC010` README documents the SQLite-local / Postgres-production storage policy.
+
+Failures: `0`
+

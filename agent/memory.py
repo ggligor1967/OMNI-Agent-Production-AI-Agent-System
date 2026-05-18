@@ -116,7 +116,7 @@ class MemoryDB:
         with self._conn() as conn:
             rows = conn.execute(
                 "SELECT role, content, metadata, ts FROM conversations "
-                "WHERE session_id=? ORDER BY ts DESC LIMIT ?",
+                "WHERE session_id=? ORDER BY ts DESC, id DESC LIMIT ?",
                 (session_id, limit)
             ).fetchall()
         return [dict(r) for r in reversed(rows)]

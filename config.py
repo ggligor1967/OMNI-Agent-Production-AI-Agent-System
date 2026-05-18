@@ -7,6 +7,23 @@ from dataclasses import dataclass, field
 from typing import Optional, List
 
 
+def _env_bool(name: str, default: bool) -> bool:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _env_float(name: str, default: float) -> float:
+    raw = os.getenv(name)
+    if raw is None or not raw.strip():
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        return default
+
+
 @dataclass
 class Config:
     # ═══════════════════════════════════════════════════════════════════════
@@ -97,6 +114,15 @@ class Config:
     # ═══════════════════════════════════════════════════════════════════════
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     LOG_FILE: str = os.getenv("LOG_FILE", "logs/omni_agent.log")
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # OBSERVABILITY / TRACING
+    # ═══════════════════════════════════════════════════════════════════════
+    OTEL_ENABLED: bool = _env_bool("OTEL_ENABLED", False)
+    OTEL_SERVICE_NAME: str = os.getenv("OTEL_SERVICE_NAME", "omni-agent")
+    OTEL_EXPORTER: str = os.getenv("OTEL_EXPORTER", "none")
+    OTEL_ENDPOINT: str = os.getenv("OTEL_ENDPOINT", "")
+    OTEL_SAMPLE_RATE: float = _env_float("OTEL_SAMPLE_RATE", 1.0)
 
     # ═══════════════════════════════════════════════════════════════════════
     # API SERVER
