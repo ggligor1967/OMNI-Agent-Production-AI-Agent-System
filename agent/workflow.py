@@ -485,18 +485,12 @@ class WorkflowCompiler:
                     arguments=rendered_params,
                     session_id=ctx.get("_session_id", "workflow"),
                 )
-                if hasattr(agent, "tool_registry"):
-                    result = await agent.tool_registry.call(call)
-                    if not result.success:
-                        raise RuntimeError(result.error)
-                    return result.output
-                else:
-                    # Fallback: direct tool execution
-                    return await agent._execute_tool(
-                        spec.tool,
-                        json.dumps(rendered_params),
-                        ctx.get("_session_id", "workflow")
-                    )
+                if not hasattr(agent, "tool_registry"):
+                    raise RuntimeError("Tool registry is required for workflow tool steps")
+                result = await agent.tool_registry.call(call)
+                if not result.success:
+                    raise RuntimeError(result.error)
+                return result.output
             return tool_handler
 
         elif spec.action == "llm":

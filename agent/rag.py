@@ -326,7 +326,7 @@ class VectorStore:
 
     def similarity_search(self, query_embedding: List[float],
                           top_k: int = 5,
-                          doc_id: str = None,
+                          doc_id: Optional[str] = None,
                           min_score: float = 0.0) -> List[RetrievalResult]:
         """Brute-force cosine similarity over all embedded chunks."""
         with self._conn() as conn:
@@ -355,7 +355,7 @@ class VectorStore:
         ]
 
     def keyword_search(self, query: str, top_k: int = 5,
-                       doc_id: str = None) -> List[RetrievalResult]:
+                       doc_id: Optional[str] = None) -> List[RetrievalResult]:
         """Fallback keyword search when no embeddings are available."""
         terms = query.lower().split()
         sql = "SELECT * FROM chunks WHERE " + " AND ".join(
@@ -472,7 +472,7 @@ class RAGPipeline:
     # ── Retrieval ─────────────────────────────────────────────────────────────
 
     async def retrieve(self, query: str, top_k: int = 5,
-                       doc_id: str = None,
+                       doc_id: Optional[str] = None,
                        min_score: float = 0.1) -> List[RetrievalResult]:
         """Retrieve top-k relevant chunks for a query."""
         if self.embed_fn:
@@ -509,7 +509,7 @@ class RAGPipeline:
         return "\n".join(lines)
 
     async def augment_prompt(self, user_query: str, top_k: int = 5,
-                             doc_id: str = None) -> Tuple[str, List[RetrievalResult]]:
+                             doc_id: Optional[str] = None) -> Tuple[str, List[RetrievalResult]]:
         """
         Retrieve relevant context and build an augmented prompt.
         Returns (augmented_prompt, results).

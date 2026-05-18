@@ -7,6 +7,8 @@ import json
 import logging
 import asyncio
 import time
+import ast
+import csv
 from typing import Any, Dict, List, Optional
 from agent.memory import MemoryDB
 from agent.multi_model_client import MultiModelClient
@@ -337,43 +339,88 @@ class OmniAgent:
 
         return augmented
 
-    async def _execute_tool(self, name: str, args_str: str, session_id: str) -> Any:
-        """Execute a named tool with string args."""
-        args = args_str.strip().strip("\"'")
-        await hooks.emit(Event(EventType.TOOL_CALLED, {"tool": name, "args": args[:100]}))
-
+    @staticmethod
+    def _coerce_tool_value(raw_value: str) -> Any:
+        candidate = raw_value.strip()
+        if not candidate:
+            return ""
         try:
-            result = None
-            if name == "web_search":
-                result = await self.scraper.search(args)
-            elif name == "web_scrape":
-                result = await self.scraper.fetch(args)
-                result = result.get("body", "")[:1000]
-            elif name == "execute_python":
-                result = (await self.sandbox.run_python(args)).to_dict()
-            elif name == "analyze_text":
-                result = self.analyzer.analyze(args)
-            elif name == "remember":
-                k, _, v = args.partition(",")
-                self.memory.save_memory(k.strip(), v.strip(), category="agent")
-                result = f"Stored: {k.strip()}"
-            elif name == "recall":
-                result = self.memory.get_memory(args)
-            elif name == "search_memory":
-                result = self.memory.search_memories(args)
-            else:
-                # Try skills
-                result = await self.skills.execute(name, args)
+            return json.loads(candidate)
+        except json.JSONDecodeError:
+            pass
+        try:
+            return ast.literal_eval(candidate)
+        except (ValueError, SyntaxError):
+            return candidate.strip('"\'')
 
+    @staticmethod
+    def _split_tool_args(args_str: str) -> List[str]:
+        reader = csv.reader([args_str], skipinitialspace=True)
+        return [part.strip() for part in next(reader, []) if part.strip()]
+
+    def _build_tool_call(self, name: str, args_str: str, session_id: str):
+        from agent.tools_registry import ToolCall
+
+        tool = self.tool_registry.get(name) if hasattr(self, "tool_registry") else None
+        param_names = [param.name for param in tool.params] if tool else []
+        args_text = args_str.strip()
+        arguments: Dict[str, Any] = {}
+
+        if args_text:
+            if args_text.startswith(("{", "[")):
+                parsed = self._coerce_tool_value(args_text)
+            else:
+                parts = self._split_tool_args(args_text)
+                if parts and all("=" in part for part in parts):
+                    parsed = {
+                        key.strip(): self._coerce_tool_value(value)
+                        for key, value in (part.split("=", 1) for part in parts)
+                    }
+                elif len(parts) > 1:
+                    parsed = [self._coerce_tool_value(part) for part in parts]
+                elif parts:
+                    parsed = self._coerce_tool_value(parts[0])
+                else:
+                    parsed = {}
+
+            if isinstance(parsed, dict):
+                arguments = parsed
+            else:
+                values = list(parsed) if isinstance(parsed, (list, tuple)) else [parsed]
+                arguments = {
+                    param_name: values[idx]
+                    for idx, param_name in enumerate(param_names)
+                    if idx < len(values)
+                }
+                if not arguments and values:
+                    arguments = {"value": values[0]} if len(values) == 1 else {"values": values}
+
+        return ToolCall(tool_name=name, arguments=arguments, session_id=session_id)
+
+    async def _execute_tool(self, name: str, args_str: str, session_id: str) -> Any:
+        """Execute a named tool exclusively through the canonical tool registry."""
+        if not hasattr(self, "tool_registry"):
+            error = "Tool registry unavailable"
+            await hooks.emit(Event(EventType.TOOL_ERROR, {
+                "tool": name, "error": error
+            }))
+            return f"Error in {name}: {error}"
+
+        call = self._build_tool_call(name, args_str, session_id)
+        preview = json.dumps(call.arguments, default=str)[:100]
+        await hooks.emit(Event(EventType.TOOL_CALLED, {"tool": name, "args": preview}))
+
+        result = await self.tool_registry.call(call)
+        if result.success:
             await hooks.emit(Event(EventType.TOOL_RESULT, {
                 "tool": name, "success": True
             }))
-            return result
-        except Exception as e:
-            await hooks.emit(Event(EventType.TOOL_ERROR, {
-                "tool": name, "error": str(e)
-            }))
-            return f"Error in {name}: {e}"
+            return result.output
+
+        await hooks.emit(Event(EventType.TOOL_ERROR, {
+            "tool": name, "error": result.error
+        }))
+        return f"Error in {name}: {result.error}"
 
     # ── Memory Utilities ──────────────────────────────────────────────────────
 
