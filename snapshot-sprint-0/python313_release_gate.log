@@ -1,0 +1,1203 @@
+Python 3.13.13
+Collecting pytest
+  Downloading pytest-9.0.3-py3-none-any.whl.metadata (7.6 kB)
+Collecting ruff
+  Downloading ruff-0.15.13-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (26 kB)
+Collecting bandit
+  Downloading bandit-1.9.4-py3-none-any.whl.metadata (7.1 kB)
+Collecting pip-audit
+  Downloading pip_audit-2.10.0-py3-none-any.whl.metadata (28 kB)
+Collecting coverage
+  Downloading coverage-7.14.0-cp313-cp313-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (8.5 kB)
+Collecting pyyaml
+  Downloading pyyaml-6.0.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting aiohttp>=3.9.0 (from -r requirements.txt (line 2))
+  Downloading aiohttp-3.13.5-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.1 kB)
+Collecting aiofiles>=23.2.1 (from -r requirements.txt (line 3))
+  Downloading aiofiles-25.1.0-py3-none-any.whl.metadata (6.3 kB)
+Collecting anthropic>=0.25.0 (from -r requirements.txt (line 8))
+  Downloading anthropic-0.102.0-py3-none-any.whl.metadata (3.2 kB)
+Collecting python-telegram-bot>=20.7 (from -r requirements.txt (line 13))
+  Downloading python_telegram_bot-22.7-py3-none-any.whl.metadata (17 kB)
+Collecting asyncpg>=0.29.0 (from -r requirements.txt (line 17))
+  Downloading asyncpg-0.31.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (4.4 kB)
+Collecting redis>=5.0.1 (from -r requirements.txt (line 18))
+  Downloading redis-7.4.0-py3-none-any.whl.metadata (12 kB)
+Collecting beautifulsoup4>=4.12.0 (from -r requirements.txt (line 21))
+  Downloading beautifulsoup4-4.14.3-py3-none-any.whl.metadata (3.8 kB)
+Collecting lxml>=5.1.0 (from -r requirements.txt (line 22))
+  Downloading lxml-6.1.0-cp313-cp313-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (4.0 kB)
+Collecting rich>=13.7.0 (from -r requirements.txt (line 25))
+  Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting croniter>=2.0.1 (from -r requirements.txt (line 28))
+  Downloading croniter-6.2.2-py3-none-any.whl.metadata (22 kB)
+Collecting langdetect>=1.0.9 (from -r requirements.txt (line 33))
+  Downloading langdetect-1.0.9.tar.gz (981 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 981.5/981.5 kB 700.5 kB/s  0:00:01
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting cryptography>=42.0.0 (from -r requirements.txt (line 36))
+  Downloading cryptography-48.0.0-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (4.3 kB)
+Collecting pytest-asyncio>=0.23.0 (from -r requirements.txt (line 40))
+  Downloading pytest_asyncio-1.3.0-py3-none-any.whl.metadata (4.1 kB)
+Collecting pydantic>=2.6.0 (from -r requirements.txt (line 43))
+  Downloading pydantic-2.13.4-py3-none-any.whl.metadata (109 kB)
+Collecting iniconfig>=1.0.1 (from pytest)
+  Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting packaging>=22 (from pytest)
+  Downloading packaging-26.2-py3-none-any.whl.metadata (3.5 kB)
+Collecting pluggy<2,>=1.5 (from pytest)
+  Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+Collecting pygments>=2.7.2 (from pytest)
+  Downloading pygments-2.20.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting stevedore>=1.20.0 (from bandit)
+  Downloading stevedore-5.8.0-py3-none-any.whl.metadata (2.3 kB)
+Collecting CacheControl>=0.13.0 (from CacheControl[filecache]>=0.13.0->pip-audit)
+  Downloading cachecontrol-0.14.4-py3-none-any.whl.metadata (3.1 kB)
+Collecting cyclonedx-python-lib<12,>=5 (from pip-audit)
+  Downloading cyclonedx_python_lib-11.7.0-py3-none-any.whl.metadata (6.8 kB)
+Collecting pip-api>=0.0.28 (from pip-audit)
+  Downloading pip_api-0.0.34-py3-none-any.whl.metadata (6.6 kB)
+Collecting pip-requirements-parser>=32.0.0 (from pip-audit)
+  Downloading pip_requirements_parser-32.0.1-py3-none-any.whl.metadata (9.3 kB)
+Collecting requests>=2.31.0 (from pip-audit)
+  Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+Collecting tomli>=2.2.1 (from pip-audit)
+  Downloading tomli-2.4.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (10 kB)
+Collecting tomli-w>=1.2.0 (from pip-audit)
+  Downloading tomli_w-1.2.0-py3-none-any.whl.metadata (5.7 kB)
+Collecting platformdirs>=4.2.0 (from pip-audit)
+  Downloading platformdirs-4.9.6-py3-none-any.whl.metadata (4.7 kB)
+Collecting license-expression<31,>=30 (from cyclonedx-python-lib<12,>=5->pip-audit)
+  Downloading license_expression-30.4.4-py3-none-any.whl.metadata (11 kB)
+Collecting packageurl-python<2,>=0.11 (from cyclonedx-python-lib<12,>=5->pip-audit)
+  Downloading packageurl_python-0.17.6-py3-none-any.whl.metadata (5.1 kB)
+Collecting py-serializable<3.0.0,>=2.1.0 (from cyclonedx-python-lib<12,>=5->pip-audit)
+  Downloading py_serializable-2.1.0-py3-none-any.whl.metadata (4.3 kB)
+Collecting sortedcontainers<3.0.0,>=2.4.0 (from cyclonedx-python-lib<12,>=5->pip-audit)
+  Downloading sortedcontainers-2.4.0-py2.py3-none-any.whl.metadata (10 kB)
+Collecting boolean.py>=4.0 (from license-expression<31,>=30->cyclonedx-python-lib<12,>=5->pip-audit)
+  Downloading boolean_py-5.0-py3-none-any.whl.metadata (2.3 kB)
+Collecting defusedxml<0.8.0,>=0.7.1 (from py-serializable<3.0.0,>=2.1.0->cyclonedx-python-lib<12,>=5->pip-audit)
+  Downloading defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+Collecting aiohappyeyeballs>=2.5.0 (from aiohttp>=3.9.0->-r requirements.txt (line 2))
+  Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl.metadata (5.9 kB)
+Collecting aiosignal>=1.4.0 (from aiohttp>=3.9.0->-r requirements.txt (line 2))
+  Downloading aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+Collecting attrs>=17.3.0 (from aiohttp>=3.9.0->-r requirements.txt (line 2))
+  Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Collecting frozenlist>=1.1.1 (from aiohttp>=3.9.0->-r requirements.txt (line 2))
+  Downloading frozenlist-1.8.0-cp313-cp313-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+Collecting multidict<7.0,>=4.5 (from aiohttp>=3.9.0->-r requirements.txt (line 2))
+  Downloading multidict-6.7.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.3 kB)
+Collecting propcache>=0.2.0 (from aiohttp>=3.9.0->-r requirements.txt (line 2))
+  Downloading propcache-0.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (16 kB)
+Collecting yarl<2.0,>=1.17.0 (from aiohttp>=3.9.0->-r requirements.txt (line 2))
+  Downloading yarl-1.23.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
+Collecting idna>=2.0 (from yarl<2.0,>=1.17.0->aiohttp>=3.9.0->-r requirements.txt (line 2))
+  Downloading idna-3.15-py3-none-any.whl.metadata (7.7 kB)
+Collecting anyio<5,>=3.5.0 (from anthropic>=0.25.0->-r requirements.txt (line 8))
+  Downloading anyio-4.13.0-py3-none-any.whl.metadata (4.5 kB)
+Collecting distro<2,>=1.7.0 (from anthropic>=0.25.0->-r requirements.txt (line 8))
+  Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+Collecting docstring-parser<1,>=0.15 (from anthropic>=0.25.0->-r requirements.txt (line 8))
+  Downloading docstring_parser-0.18.0-py3-none-any.whl.metadata (3.5 kB)
+Collecting httpx<1,>=0.25.0 (from anthropic>=0.25.0->-r requirements.txt (line 8))
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting jiter<1,>=0.4.0 (from anthropic>=0.25.0->-r requirements.txt (line 8))
+  Downloading jiter-0.14.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)
+Collecting sniffio (from anthropic>=0.25.0->-r requirements.txt (line 8))
+  Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting typing-extensions<5,>=4.14 (from anthropic>=0.25.0->-r requirements.txt (line 8))
+  Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting annotated-types>=0.6.0 (from pydantic>=2.6.0->-r requirements.txt (line 43))
+  Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.46.4 (from pydantic>=2.6.0->-r requirements.txt (line 43))
+  Downloading pydantic_core-2.46.4-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+Collecting typing-inspection>=0.4.2 (from pydantic>=2.6.0->-r requirements.txt (line 43))
+  Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+Collecting certifi (from httpx<1,>=0.25.0->anthropic>=0.25.0->-r requirements.txt (line 8))
+  Downloading certifi-2026.4.22-py3-none-any.whl.metadata (2.5 kB)
+Collecting httpcore==1.* (from httpx<1,>=0.25.0->anthropic>=0.25.0->-r requirements.txt (line 8))
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1,>=0.25.0->anthropic>=0.25.0->-r requirements.txt (line 8))
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting soupsieve>=1.6.1 (from beautifulsoup4>=4.12.0->-r requirements.txt (line 21))
+  Downloading soupsieve-2.8.3-py3-none-any.whl.metadata (4.6 kB)
+Collecting markdown-it-py>=2.2.0 (from rich>=13.7.0->-r requirements.txt (line 25))
+  Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting python-dateutil (from croniter>=2.0.1->-r requirements.txt (line 28))
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Collecting six (from langdetect>=1.0.9->-r requirements.txt (line 33))
+  Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting cffi>=2.0.0 (from cryptography>=42.0.0->-r requirements.txt (line 36))
+  Downloading cffi-2.0.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+Collecting msgpack<2.0.0,>=0.5.2 (from CacheControl>=0.13.0->CacheControl[filecache]>=0.13.0->pip-audit)
+  Downloading msgpack-1.1.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.1 kB)
+Collecting filelock>=3.8.0 (from CacheControl[filecache]>=0.13.0->pip-audit)
+  Downloading filelock-3.29.0-py3-none-any.whl.metadata (2.0 kB)
+Collecting pycparser (from cffi>=2.0.0->cryptography>=42.0.0->-r requirements.txt (line 36))
+  Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.7.0->-r requirements.txt (line 25))
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Requirement already satisfied: pip in /usr/local/lib/python3.13/site-packages (from pip-api>=0.0.28->pip-audit) (26.0.1)
+Collecting pyparsing (from pip-requirements-parser>=32.0.0->pip-audit)
+  Downloading pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+Collecting charset_normalizer<4,>=2 (from requests>=2.31.0->pip-audit)
+  Downloading charset_normalizer-3.4.7-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Collecting urllib3<3,>=1.26 (from requests>=2.31.0->pip-audit)
+  Downloading urllib3-2.7.0-py3-none-any.whl.metadata (6.9 kB)
+Downloading pytest-9.0.3-py3-none-any.whl (375 kB)
+Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+Downloading ruff-0.15.13-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 795.2 kB/s  0:00:14
+Downloading bandit-1.9.4-py3-none-any.whl (134 kB)
+Downloading pip_audit-2.10.0-py3-none-any.whl (61 kB)
+Downloading cyclonedx_python_lib-11.7.0-py3-none-any.whl (513 kB)
+Downloading license_expression-30.4.4-py3-none-any.whl (120 kB)
+Downloading packageurl_python-0.17.6-py3-none-any.whl (36 kB)
+Downloading py_serializable-2.1.0-py3-none-any.whl (23 kB)
+Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+Downloading sortedcontainers-2.4.0-py2.py3-none-any.whl (29 kB)
+Downloading coverage-7.14.0-cp313-cp313-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (253 kB)
+Downloading pyyaml-6.0.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 801.6/801.6 kB 970.5 kB/s  0:00:00
+Downloading aiohttp-3.13.5-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 965.2 kB/s  0:00:01
+Downloading multidict-6.7.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (254 kB)
+Downloading yarl-1.23.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (101 kB)
+Downloading aiofiles-25.1.0-py3-none-any.whl (14 kB)
+Downloading anthropic-0.102.0-py3-none-any.whl (763 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 763.1/763.1 kB 902.3 kB/s  0:00:00
+Downloading pydantic-2.13.4-py3-none-any.whl (472 kB)
+Downloading pydantic_core-2.46.4-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 974.0 kB/s  0:00:02
+Downloading anyio-4.13.0-py3-none-any.whl (114 kB)
+Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+Downloading docstring_parser-0.18.0-py3-none-any.whl (22 kB)
+Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Downloading jiter-0.14.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (353 kB)
+Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Downloading python_telegram_bot-22.7-py3-none-any.whl (745 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 745.4/745.4 kB 927.9 kB/s  0:00:00
+Downloading asyncpg-0.31.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.5/3.5 MB 779.9 kB/s  0:00:04
+Downloading redis-7.4.0-py3-none-any.whl (409 kB)
+Downloading beautifulsoup4-4.14.3-py3-none-any.whl (107 kB)
+Downloading lxml-6.1.0-cp313-cp313-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 913.2 kB/s  0:00:05
+Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+Downloading pygments-2.20.0-py3-none-any.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 959.3 kB/s  0:00:02
+Downloading croniter-6.2.2-py3-none-any.whl (45 kB)
+Downloading cryptography-48.0.0-cp311-abi3-manylinux_2_34_x86_64.whl (4.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 894.4 kB/s  0:00:05
+Downloading pytest_asyncio-1.3.0-py3-none-any.whl (15 kB)
+Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+Downloading boolean_py-5.0-py3-none-any.whl (26 kB)
+Downloading cachecontrol-0.14.4-py3-none-any.whl (22 kB)
+Downloading msgpack-1.1.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (424 kB)
+Downloading cffi-2.0.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (219 kB)
+Downloading filelock-3.29.0-py3-none-any.whl (39 kB)
+Downloading frozenlist-1.8.0-cp313-cp313-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (234 kB)
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading idna-3.15-py3-none-any.whl (72 kB)
+Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Downloading packaging-26.2-py3-none-any.whl (100 kB)
+Downloading pip_api-0.0.34-py3-none-any.whl (120 kB)
+Downloading pip_requirements_parser-32.0.1-py3-none-any.whl (35 kB)
+Downloading platformdirs-4.9.6-py3-none-any.whl (21 kB)
+Downloading propcache-0.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (61 kB)
+Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+Downloading charset_normalizer-3.4.7-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (215 kB)
+Downloading urllib3-2.7.0-py3-none-any.whl (131 kB)
+Downloading certifi-2026.4.22-py3-none-any.whl (135 kB)
+Downloading soupsieve-2.8.3-py3-none-any.whl (37 kB)
+Downloading stevedore-5.8.0-py3-none-any.whl (54 kB)
+Downloading tomli-2.4.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (251 kB)
+Downloading tomli_w-1.2.0-py3-none-any.whl (6.7 kB)
+Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
+Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+Building wheels for collected packages: langdetect
+  Building wheel for langdetect (pyproject.toml): started
+  Building wheel for langdetect (pyproject.toml): finished with status 'done'
+  Created wheel for langdetect: filename=langdetect-1.0.9-py3-none-any.whl size=993332 sha256=19e61a97dcf04de07452d331d89cf4d6423bcf93d7065aa9a0d8add3bb8d0ffe
+  Stored in directory: /root/.cache/pip/wheels/eb/87/25/2dddf1c94e1786054e25022ec5530bfed52bad86d882999c48
+Successfully built langdetect
+Installing collected packages: sortedcontainers, boolean.py, urllib3, typing-extensions, tomli-w, tomli, stevedore, soupsieve, sniffio, six, ruff, redis, pyyaml, pyparsing, pygments, pycparser, propcache, pluggy, platformdirs, pip-api, packaging, packageurl-python, multidict, msgpack, mdurl, lxml, license-expression, jiter, iniconfig, idna, h11, frozenlist, filelock, docstring-parser, distro, defusedxml, coverage, charset_normalizer, certifi, attrs, asyncpg, annotated-types, aiohappyeyeballs, aiofiles, yarl, typing-inspection, requests, python-dateutil, pytest, pydantic-core, py-serializable, pip-requirements-parser, markdown-it-py, langdetect, httpcore, cffi, beautifulsoup4, anyio, aiosignal, rich, pytest-asyncio, pydantic, httpx, cyclonedx-python-lib, cryptography, croniter, CacheControl, aiohttp, python-telegram-bot, bandit, anthropic, pip-audit
+
+Successfully installed CacheControl-0.14.4 aiofiles-25.1.0 aiohappyeyeballs-2.6.1 aiohttp-3.13.5 aiosignal-1.4.0 annotated-types-0.7.0 anthropic-0.102.0 anyio-4.13.0 asyncpg-0.31.0 attrs-26.1.0 bandit-1.9.4 beautifulsoup4-4.14.3 boolean.py-5.0 certifi-2026.4.22 cffi-2.0.0 charset_normalizer-3.4.7 coverage-7.14.0 croniter-6.2.2 cryptography-48.0.0 cyclonedx-python-lib-11.7.0 defusedxml-0.7.1 distro-1.9.0 docstring-parser-0.18.0 filelock-3.29.0 frozenlist-1.8.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.15 iniconfig-2.3.0 jiter-0.14.0 langdetect-1.0.9 license-expression-30.4.4 lxml-6.1.0 markdown-it-py-4.2.0 mdurl-0.1.2 msgpack-1.1.2 multidict-6.7.1 packageurl-python-0.17.6 packaging-26.2 pip-api-0.0.34 pip-audit-2.10.0 pip-requirements-parser-32.0.1 platformdirs-4.9.6 pluggy-1.6.0 propcache-0.5.2 py-serializable-2.1.0 pycparser-3.0 pydantic-2.13.4 pydantic-core-2.46.4 pygments-2.20.0 pyparsing-3.3.2 pytest-9.0.3 pytest-asyncio-1.3.0 python-dateutil-2.9.0.post0 python-telegram-bot-22.7 pyyaml-6.0.3 redis-7.4.0 requests-2.34.2 rich-15.0.0 ruff-0.15.13 six-1.17.0 sniffio-1.3.1 sortedcontainers-2.4.0 soupsieve-2.8.3 stevedore-5.8.0 tomli-2.4.1 tomli-w-1.2.0 typing-extensions-4.15.0 typing-inspection-0.4.2 urllib3-2.7.0 yarl-1.23.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 26.0.1 -> 26.1.1
+[notice] To update, run: pip install --upgrade pip
+Listing 'agent'...
+Listing 'agent/_legacy'...
+Compiling 'agent/doc_generator.py'...
+Compiling 'agent/model_registry.py'...
+Compiling 'agent/multi_model_client.py'...
+Compiling 'agent/retry_manager.py'...
+Listing 'agent/skills'...
+Compiling 'agent/skills/example_skills.py'...
+Compiling 'agent/skills_manager.py'...
+Compiling 'agent/social.py'...
+Compiling 'agent/template_engine.py'...
+Listing 'agent/tools'...
+Compiling 'agent/tools/__init__.py'...
+Compiling 'main.py'...
+
+tests/test_advanced_modules.py::TestOutputField::test_schema_fragment_string PASSED [  0%]
+tests/test_advanced_modules.py::TestOutputField::test_schema_fragment_enum PASSED [  0%]
+tests/test_advanced_modules.py::TestOutputField::test_schema_fragment_array PASSED [  0%]
+tests/test_advanced_modules.py::TestOutputField::test_schema_fragment_float PASSED [  1%]
+tests/test_advanced_modules.py::TestOutputSchema::test_to_json_schema PASSED [  1%]
+tests/test_advanced_modules.py::TestOutputSchema::test_prompt_description PASSED [  1%]
+tests/test_advanced_modules.py::TestOutputSchema::test_defaults PASSED   [  2%]
+tests/test_advanced_modules.py::TestSchemaValidator::test_valid_data PASSED [  2%]
+tests/test_advanced_modules.py::TestSchemaValidator::test_missing_required_raises PASSED [  2%]
+tests/test_advanced_modules.py::TestSchemaValidator::test_uses_default_for_optional PASSED [  3%]
+tests/test_advanced_modules.py::TestSchemaValidator::test_coerce_bool_from_string PASSED [  3%]
+tests/test_advanced_modules.py::TestSchemaValidator::test_coerce_float PASSED [  3%]
+tests/test_advanced_modules.py::TestSchemaValidator::test_enum_case_insensitive PASSED [  4%]
+tests/test_advanced_modules.py::TestSchemaValidator::test_enum_invalid_raises PASSED [  4%]
+tests/test_advanced_modules.py::TestSchemaValidator::test_array_from_csv_string PASSED [  4%]
+tests/test_advanced_modules.py::TestJSONExtractor::test_bare_json PASSED [  4%]
+tests/test_advanced_modules.py::TestJSONExtractor::test_json_in_prose PASSED [  5%]
+tests/test_advanced_modules.py::TestJSONExtractor::test_json_in_code_fence PASSED [  5%]
+tests/test_advanced_modules.py::TestJSONExtractor::test_trailing_comma_cleaned PASSED [  5%]
+tests/test_advanced_modules.py::TestJSONExtractor::test_no_json_returns_none PASSED [  6%]
+tests/test_advanced_modules.py::TestCommonSchemas::test_sentiment_schema_fields PASSED [  6%]
+tests/test_advanced_modules.py::TestCommonSchemas::test_entity_schema_fields PASSED [  6%]
+tests/test_advanced_modules.py::TestCommonSchemas::test_plan_schema_fields PASSED [  7%]
+tests/test_advanced_modules.py::TestCommonSchemas::test_code_review_schema_fields PASSED [  7%]
+tests/test_advanced_modules.py::TestToolParam::test_to_schema_string PASSED [  7%]
+tests/test_advanced_modules.py::TestToolParam::test_to_schema_enum PASSED [  8%]
+tests/test_advanced_modules.py::TestToolParam::test_to_schema_integer PASSED [  8%]
+tests/test_advanced_modules.py::TestRegisteredTool::test_to_openai_schema PASSED [  8%]
+tests/test_advanced_modules.py::TestRegisteredTool::test_to_anthropic_schema PASSED [  8%]
+tests/test_advanced_modules.py::TestRegisteredTool::test_to_dict PASSED  [  9%]
+tests/test_advanced_modules.py::TestRegisteredTool::test_success_rate_no_calls PASSED [  9%]
+tests/test_advanced_modules.py::TestRegisteredTool::test_success_rate_with_errors PASSED [  9%]
+tests/test_advanced_modules.py::TestToolRegistry::test_register_and_call_async PASSED [ 10%]
+tests/test_advanced_modules.py::TestToolRegistry::test_register_sync_tool PASSED [ 10%]
+tests/test_advanced_modules.py::TestToolRegistry::test_missing_tool_returns_error PASSED [ 10%]
+tests/test_advanced_modules.py::TestToolRegistry::test_disabled_tool_returns_error PASSED [ 11%]
+tests/test_advanced_modules.py::TestToolRegistry::test_param_validation_and_coercion PASSED [ 11%]
+tests/test_advanced_modules.py::TestToolRegistry::test_missing_required_param PASSED [ 11%]
+tests/test_advanced_modules.py::TestToolRegistry::test_timeout_enforced 
+-------------------------------- live log call ---------------------------------
+ERROR    agent.tools_registry:tools_registry.py:491 Tool 'slow' timed out after 0.05s
+PASSED                                                                   [ 12%]
+tests/test_advanced_modules.py::TestToolRegistry::test_tool_exception_captured 
+-------------------------------- live log call ---------------------------------
+ERROR    agent.tools_registry:tools_registry.py:498 Tool 'exploder' error: ValueError: intentional error
+PASSED                                                                   [ 12%]
+tests/test_advanced_modules.py::TestToolRegistry::test_openai_schemas PASSED [ 12%]
+tests/test_advanced_modules.py::TestToolRegistry::test_anthropic_schemas PASSED [ 12%]
+tests/test_advanced_modules.py::TestToolRegistry::test_call_batch_parallel PASSED [ 13%]
+tests/test_advanced_modules.py::TestToolRegistry::test_list_tools_by_category PASSED [ 13%]
+tests/test_advanced_modules.py::TestToolRegistry::test_middleware_can_block PASSED [ 13%]
+tests/test_advanced_modules.py::TestToolRegistry::test_search PASSED     [ 14%]
+tests/test_advanced_modules.py::TestTracer::test_new_trace_returns_id PASSED [ 14%]
+tests/test_advanced_modules.py::TestTracer::test_start_span PASSED       [ 14%]
+tests/test_advanced_modules.py::TestTracer::test_span_duration PASSED    [ 15%]
+tests/test_advanced_modules.py::TestTracer::test_span_context_manager PASSED [ 15%]
+tests/test_advanced_modules.py::TestTracer::test_span_context_manager_on_error PASSED [ 15%]
+tests/test_advanced_modules.py::TestTracer::test_async_span PASSED       [ 16%]
+tests/test_advanced_modules.py::TestTracer::test_add_event PASSED        [ 16%]
+tests/test_advanced_modules.py::TestTracer::test_get_spans_by_kind PASSED [ 16%]
+tests/test_advanced_modules.py::TestTracer::test_get_trace PASSED        [ 16%]
+tests/test_advanced_modules.py::TestTracer::test_summary_empty PASSED    [ 17%]
+tests/test_advanced_modules.py::TestTracer::test_summary_with_spans PASSED [ 17%]
+tests/test_advanced_modules.py::TestTracer::test_recent_errors PASSED    [ 17%]
+tests/test_advanced_modules.py::TestTracer::test_len PASSED              [ 18%]
+tests/test_advanced_modules.py::TestTracer::test_clear PASSED            [ 18%]
+tests/test_advanced_modules.py::TestTracer::test_cost_estimation PASSED  [ 18%]
+tests/test_advanced_modules.py::TestTracer::test_model_leaderboard PASSED [ 19%]
+tests/test_advanced_modules.py::TestWorkflowParser::test_parse_dict_basic PASSED [ 19%]
+tests/test_advanced_modules.py::TestWorkflowParser::test_parse_dict_defaults PASSED [ 19%]
+tests/test_advanced_modules.py::TestWorkflowParser::test_parse_dict_tool_step PASSED [ 20%]
+tests/test_advanced_modules.py::TestTemplateEngine::test_render_template_simple PASSED [ 20%]
+tests/test_advanced_modules.py::TestTemplateEngine::test_render_template_missing_key PASSED [ 20%]
+tests/test_advanced_modules.py::TestTemplateEngine::test_render_template_dict_value PASSED [ 20%]
+tests/test_advanced_modules.py::TestTemplateEngine::test_render_params_recursive PASSED [ 21%]
+tests/test_advanced_modules.py::TestTemplateEngine::test_render_non_string_passthrough PASSED [ 21%]
+tests/test_advanced_modules.py::TestWorkflowBuiltins::test_workflow_manager_registers_builtins PASSED [ 21%]
+tests/test_advanced_modules.py::TestWorkflowBuiltins::test_workflow_spec_structure PASSED [ 22%]
+tests/test_advanced_modules.py::TestWorkflowBuiltins::test_register_custom_workflow PASSED [ 22%]
+tests/test_advanced_modules.py::TestWorkflowBuiltins::test_run_echo_workflow PASSED [ 22%]
+tests/test_advanced_modules.py::TestWorkflowBuiltins::test_run_unknown_raises PASSED [ 23%]
+tests/test_advanced_modules.py::TestEventBus::test_publish_and_receive PASSED [ 23%]
+tests/test_advanced_modules.py::TestEventBus::test_multiple_subscribers_receive PASSED [ 23%]
+tests/test_advanced_modules.py::TestEventBus::test_event_filter PASSED   [ 24%]
+tests/test_advanced_modules.py::TestEventBus::test_unsubscribe PASSED    [ 24%]
+tests/test_advanced_modules.py::TestEventBus::test_history_stored PASSED [ 24%]
+tests/test_advanced_modules.py::TestEventBus::test_history_filter_by_event PASSED [ 24%]
+tests/test_advanced_modules.py::TestEventBus::test_subscriber_count PASSED [ 25%]
+tests/test_advanced_modules.py::TestEventBus::test_listen_yields_messages PASSED [ 25%]
+tests/test_advanced_modules.py::TestEventBus::test_session_id_in_message PASSED [ 25%]
+tests/test_advanced_modules.py::TestEventBus::test_sse_format PASSED     [ 26%]
+tests/test_advanced_modules.py::TestEventBus::test_sse_heartbeat PASSED  [ 26%]
+tests/test_advanced_modules.py::TestEventBus::test_bus_message_to_sse PASSED [ 26%]
+tests/test_core_init_sanity.py::test_omni_agent_init_does_not_assign_duplicate_subsystems PASSED [ 27%]
+tests/test_dashboard.py::test_dashboard_html_contains_dedicated_job_search_button PASSED [ 27%]
+tests/test_dashboard.py::test_dashboard_route_serves_dedicated_job_search_ui PASSED [ 27%]
+tests/test_job_search_tank_adr_improved.py::test_canonicalize_url_normalizes_locale_variants PASSED [ 28%]
+tests/test_job_search_tank_adr_improved.py::test_is_result_allowed_rejects_non_swiss_external_listing PASSED [ 28%]
+tests/test_job_search_tank_adr_improved.py::test_is_result_allowed_rejects_training_page PASSED [ 28%]
+tests/test_job_search_tank_adr_improved.py::test_is_result_allowed_rejects_non_job_career_path PASSED [ 28%]
+tests/test_job_search_tank_adr_improved.py::test_compute_score_prefers_direct_board_over_aggregator PASSED [ 29%]
+tests/test_job_search_tank_adr_improved.py::test_compute_score_penalizes_interstitial_content PASSED [ 29%]
+tests/test_job_search_tank_adr_improved.py::test_compute_score_caps_listing_pages_below_high_relevance PASSED [ 29%]
+tests/test_job_search_tank_adr_improved.py::test_compute_score_caps_informational_pages_without_job_signal PASSED [ 30%]
+tests/test_job_search_tank_adr_improved.py::test_compute_score_caps_broken_detail_page PASSED [ 30%]
+tests/test_models.py::TestModelRegistry::test_all_27_models_registered PASSED [ 30%]
+tests/test_models.py::TestModelRegistry::test_all_expected_ids_present PASSED [ 31%]
+tests/test_models.py::TestModelRegistry::test_no_duplicate_ids PASSED    [ 31%]
+tests/test_models.py::TestModelRegistry::test_all_models_have_required_fields PASSED [ 31%]
+tests/test_models.py::TestModelRegistry::test_vision_models_flagged PASSED [ 32%]
+tests/test_models.py::TestModelRegistry::test_get_model PASSED           [ 32%]
+tests/test_models.py::TestModelRegistry::test_get_models_by_capability_code PASSED [ 32%]
+tests/test_models.py::TestModelRegistry::test_get_models_by_capability_vision PASSED [ 32%]
+tests/test_models.py::TestModelRegistry::test_get_models_by_provider PASSED [ 33%]
+tests/test_models.py::TestModelRegistry::test_get_models_by_tier PASSED  [ 33%]
+tests/test_models.py::TestModelRegistry::test_long_context_models PASSED [ 33%]
+tests/test_models.py::TestModelRegistry::test_summary_table PASSED       [ 34%]
+tests/test_models.py::TestModelRegistry::test_provider_consistency PASSED [ 34%]
+tests/test_models.py::TestModelRegistry::test_model_to_dict PASSED       [ 34%]
+tests/test_models.py::TestModelRegistry::test_providers_count PASSED     [ 35%]
+tests/test_models.py::TestTaskClassification::test_code_classification PASSED [ 35%]
+tests/test_models.py::TestTaskClassification::test_math_classification PASSED [ 35%]
+tests/test_models.py::TestTaskClassification::test_vision_from_flag PASSED [ 36%]
+tests/test_models.py::TestTaskClassification::test_creative_classification PASSED [ 36%]
+tests/test_models.py::TestTaskClassification::test_reasoning_classification PASSED [ 36%]
+tests/test_models.py::TestTaskClassification::test_translation_classification PASSED [ 36%]
+tests/test_models.py::TestTaskClassification::test_agent_classification PASSED [ 37%]
+tests/test_models.py::TestTaskClassification::test_short_message_fast PASSED [ 37%]
+tests/test_models.py::TestTaskClassification::test_general_chat_default PASSED [ 37%]
+tests/test_models.py::TestModelRouter::test_basic_routing_returns_valid_model PASSED [ 38%]
+tests/test_models.py::TestModelRouter::test_code_routes_to_code_specialist PASSED [ 38%]
+tests/test_models.py::TestModelRouter::test_vision_routes_to_vision_model PASSED [ 38%]
+tests/test_models.py::TestModelRouter::test_session_override PASSED      [ 39%]
+tests/test_models.py::TestModelRouter::test_clear_session_override PASSED [ 39%]
+tests/test_models.py::TestModelRouter::test_invalid_model_override_rejected PASSED [ 39%]
+tests/test_models.py::TestModelRouter::test_fallback_chain_populated PASSED [ 40%]
+tests/test_models.py::TestModelRouter::test_fallback_chain_no_cycles PASSED [ 40%]
+tests/test_models.py::TestModelRouter::test_stats_recording_success PASSED [ 40%]
+tests/test_models.py::TestModelRouter::test_stats_recording_failure PASSED [ 40%]
+tests/test_models.py::TestModelRouter::test_unavailable_model_skipped PASSED [ 41%]
+tests/test_models.py::TestModelRouter::test_models_for_task PASSED       [ 41%]
+tests/test_models.py::TestModelRouter::test_list_all_models PASSED       [ 41%]
+tests/test_models.py::TestModelRouter::test_router_summary PASSED        [ 42%]
+tests/test_models.py::TestMultiModelClient::test_client_has_27_models PASSED [ 42%]
+tests/test_models.py::TestMultiModelClient::test_router_accessible PASSED [ 42%]
+tests/test_models.py::TestMultiModelClient::test_extract_user_text PASSED [ 43%]
+tests/test_models.py::TestMultiModelClient::test_extract_from_empty PASSED [ 43%]
+tests/test_models.py::TestMultiModelClient::test_enrich_messages_no_image PASSED [ 43%]
+tests/test_models.py::TestMultiModelClient::test_enrich_messages_with_b64 PASSED [ 44%]
+tests/test_models.py::TestMultiModelClient::test_session_model_set PASSED [ 44%]
+tests/test_models.py::TestMultiModelClient::test_attempt_order_uses_available_fallbacks PASSED [ 44%]
+tests/test_models.py::TestMultiModelClient::test_list_models PASSED      [ 44%]
+tests/test_models.py::TestMultiModelClient::test_chat_explicit_model_uses_general_task_type PASSED [ 45%]
+tests/test_models.py::TestMultiModelClient::test_chat_auto_route_false_uses_general_task_type PASSED [ 45%]
+tests/test_models.py::TestMultiModelClient::test_get_stats_empty PASSED  [ 45%]
+tests/test_models.py::TestMultiModelClient::test_router_summary PASSED   [ 46%]
+tests/test_new_modules.py::TestVectorStore::test_schema_created PASSED   [ 46%]
+tests/test_new_modules.py::TestVectorStore::test_save_and_get_document PASSED [ 46%]
+tests/test_new_modules.py::TestVectorStore::test_list_documents PASSED   [ 47%]
+tests/test_new_modules.py::TestVectorStore::test_delete_document PASSED  [ 47%]
+tests/test_new_modules.py::TestVectorStore::test_save_and_get_chunks PASSED [ 47%]
+tests/test_new_modules.py::TestVectorStore::test_cosine_similarity_identical PASSED [ 48%]
+tests/test_new_modules.py::TestVectorStore::test_cosine_similarity_orthogonal PASSED [ 48%]
+tests/test_new_modules.py::TestVectorStore::test_cosine_empty_vectors PASSED [ 48%]
+tests/test_new_modules.py::TestVectorStore::test_similarity_search PASSED [ 48%]
+tests/test_new_modules.py::TestVectorStore::test_keyword_search PASSED   [ 49%]
+tests/test_new_modules.py::TestVectorStore::test_store_stats PASSED      [ 49%]
+tests/test_new_modules.py::TestTextChunker::test_basic_chunking PASSED   [ 49%]
+tests/test_new_modules.py::TestTextChunker::test_overlap_between_chunks PASSED [ 50%]
+tests/test_new_modules.py::TestTextChunker::test_paragraph_chunking PASSED [ 50%]
+tests/test_new_modules.py::TestTextChunker::test_single_word_doc PASSED  [ 50%]
+tests/test_new_modules.py::TestTextChunker::test_chunk_ids_unique PASSED [ 51%]
+tests/test_new_modules.py::TestDocumentParser::test_parse_txt PASSED     [ 51%]
+tests/test_new_modules.py::TestDocumentParser::test_parse_json PASSED    [ 51%]
+tests/test_new_modules.py::TestDocumentParser::test_parse_csv PASSED     [ 52%]
+tests/test_new_modules.py::TestDocumentParser::test_parse_raw PASSED     [ 52%]
+tests/test_new_modules.py::TestRAGPipeline::test_ingest_text PASSED      [ 52%]
+tests/test_new_modules.py::TestRAGPipeline::test_ingest_file PASSED      [ 52%]
+tests/test_new_modules.py::TestRAGPipeline::test_retrieve_keyword_fallback PASSED [ 53%]
+tests/test_new_modules.py::TestRAGPipeline::test_augment_prompt PASSED   [ 53%]
+tests/test_new_modules.py::TestRAGPipeline::test_generate_context_empty PASSED [ 53%]
+tests/test_new_modules.py::TestRAGPipeline::test_list_documents PASSED   [ 54%]
+tests/test_new_modules.py::TestRAGPipeline::test_stats PASSED            [ 54%]
+tests/test_new_modules.py::TestRAGPipeline::test_delete_document PASSED  [ 54%]
+tests/test_new_modules.py::TestRAGPipeline::test_ingest_directory PASSED [ 55%]
+tests/test_new_modules.py::TestCacheClient::test_set_and_get_string PASSED [ 55%]
+tests/test_new_modules.py::TestCacheClient::test_set_and_get_dict PASSED [ 55%]
+tests/test_new_modules.py::TestCacheClient::test_missing_key_returns_none PASSED [ 56%]
+tests/test_new_modules.py::TestCacheClient::test_delete PASSED           [ 56%]
+tests/test_new_modules.py::TestCacheClient::test_ttl_expiry PASSED       [ 56%]
+tests/test_new_modules.py::TestCacheClient::test_rate_check_allows_under_limit PASSED [ 56%]
+tests/test_new_modules.py::TestCacheClient::test_rate_check_blocks_over_limit PASSED [ 57%]
+tests/test_new_modules.py::TestCacheClient::test_rate_check_separate_users PASSED [ 57%]
+tests/test_new_modules.py::TestCacheClient::test_response_key_deterministic PASSED [ 57%]
+tests/test_new_modules.py::TestCacheClient::test_session_set_and_get PASSED [ 58%]
+tests/test_new_modules.py::TestCacheClient::test_session_update PASSED   [ 58%]
+tests/test_new_modules.py::TestCacheClient::test_flush PASSED            [ 58%]
+tests/test_new_modules.py::TestCacheClient::test_memory_stats PASSED     [ 59%]
+tests/test_new_modules.py::TestMemoryStore::test_set_get PASSED          [ 59%]
+tests/test_new_modules.py::TestMemoryStore::test_missing PASSED          [ 59%]
+tests/test_new_modules.py::TestMemoryStore::test_incr PASSED             [ 60%]
+tests/test_new_modules.py::TestMemoryStore::test_keys_pattern PASSED     [ 60%]
+tests/test_new_modules.py::TestMemoryStore::test_flush PASSED            [ 60%]
+tests/test_new_modules.py::TestPromptTemplate::test_get_variables_no_default PASSED [ 60%]
+tests/test_new_modules.py::TestPromptTemplate::test_get_variables_with_defaults PASSED [ 61%]
+tests/test_new_modules.py::TestPromptTemplate::test_render_fills_variables PASSED [ 61%]
+tests/test_new_modules.py::TestPromptTemplate::test_render_uses_defaults PASSED [ 61%]
+tests/test_new_modules.py::TestPromptTemplate::test_render_missing_required_raises PASSED [ 62%]
+tests/test_new_modules.py::TestPromptTemplate::test_validate_ok PASSED   [ 62%]
+tests/test_new_modules.py::TestPromptTemplate::test_validate_missing PASSED [ 62%]
+tests/test_new_modules.py::TestPromptTemplate::test_build_messages_structure PASSED [ 63%]
+tests/test_new_modules.py::TestPromptTemplate::test_to_dict PASSED       [ 63%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_builtin_templates_loaded PASSED [ 63%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_get_existing PASSED [ 64%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_get_nonexistent PASSED [ 64%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_register_custom PASSED [ 64%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_delete PASSED [ 64%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_delete_nonexistent PASSED [ 65%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_render_summarize PASSED [ 65%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_render_missing_required_raises PASSED [ 65%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_quick_render PASSED [ 66%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_search PASSED [ 66%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_list_by_tag PASSED [ 66%]
+tests/test_new_modules.py::TestPromptTemplateRegistry::test_export_import_json PASSED [ 67%]
+tests/test_new_modules.py::TestPipelineExecutor::test_pipeline_runs_all_steps PASSED [ 67%]
+tests/test_new_modules.py::TestPipelineExecutor::test_context_flows_between_steps PASSED [ 67%]
+tests/test_new_modules.py::TestPipelineExecutor::test_failed_step_halts_pipeline 
+-------------------------------- live log call ---------------------------------
+WARNING  agent.pipeline:pipeline.py:308 Step 'explode' error: Intentional error
+ERROR    agent.pipeline:pipeline.py:326 Step 'explode' FAILED: RuntimeError: Intentional error
+PASSED                                                                   [ 68%]
+tests/test_new_modules.py::TestPipelineExecutor::test_on_error_skip_continues 
+-------------------------------- live log call ---------------------------------
+WARNING  agent.pipeline:pipeline.py:308 Step 'bad' error: Skippable error
+PASSED                                                                   [ 68%]
+tests/test_new_modules.py::TestPipelineExecutor::test_conditional_step_skipped PASSED [ 68%]
+tests/test_new_modules.py::TestPipelineExecutor::test_conditional_step_runs_when_true PASSED [ 68%]
+tests/test_new_modules.py::TestPipelineExecutor::test_sync_handler_works PASSED [ 69%]
+tests/test_new_modules.py::TestPipelineExecutor::test_retry_on_failure 
+-------------------------------- live log call ---------------------------------
+WARNING  agent.pipeline:pipeline.py:308 Step 'flaky' error: Attempt 1 failed
+WARNING  agent.pipeline:pipeline.py:308 Step 'flaky' error: Attempt 2 failed
+PASSED                                                                   [ 69%]
+tests/test_new_modules.py::TestPipelineExecutor::test_timeout_enforced 
+-------------------------------- live log call ---------------------------------
+WARNING  agent.pipeline:pipeline.py:305 Step 'slow' timed out
+PASSED                                                                   [ 69%]
+tests/test_new_modules.py::TestPipelineExecutor::test_register_and_list PASSED [ 70%]
+tests/test_new_modules.py::TestPipelineExecutor::test_run_by_name PASSED [ 70%]
+tests/test_new_modules.py::TestPipelineExecutor::test_run_by_name_not_found 
+-------------------------------- live log call ---------------------------------
+ERROR    agent.pipeline:pipeline.py:230 Pipeline 'ghost_pipeline' not found
+PASSED                                                                   [ 70%]
+tests/test_new_modules.py::TestPipelineExecutor::test_build_job_search_pipeline_returns_summary PASSED [ 71%]
+tests/test_new_modules.py::TestPipelineExecutor::test_list_runs PASSED   [ 71%]
+tests/test_new_modules.py::TestPipelineExecutor::test_run_duration_tracked PASSED [ 71%]
+tests/test_new_modules.py::TestConversationSummarizer::test_no_compression_under_threshold PASSED [ 72%]
+tests/test_new_modules.py::TestConversationSummarizer::test_sliding_window_compresses PASSED [ 72%]
+tests/test_new_modules.py::TestConversationSummarizer::test_sliding_window_keeps_system PASSED [ 72%]
+tests/test_new_modules.py::TestConversationSummarizer::test_extractive_compresses PASSED [ 72%]
+tests/test_new_modules.py::TestConversationSummarizer::test_extractive_injects_summary_block PASSED [ 73%]
+tests/test_new_modules.py::TestConversationSummarizer::test_estimate_tokens PASSED [ 73%]
+tests/test_new_modules.py::TestConversationSummarizer::test_needs_compression_small PASSED [ 73%]
+tests/test_new_modules.py::TestConversationSummarizer::test_needs_compression_large PASSED [ 74%]
+tests/test_new_modules.py::TestConversationSummarizer::test_compression_stats PASSED [ 74%]
+tests/test_new_modules.py::TestConversationSummarizer::test_auto_strategy_no_llm_uses_extractive PASSED [ 74%]
+tests/test_security_auth_tools.py::TestAuthBootstrapAndEnforcement::test_admin_routes_require_admin_credentials PASSED [ 75%]
+tests/test_security_auth_tools.py::TestAuthBootstrapAndEnforcement::test_bootstrap_only_works_once PASSED [ 75%]
+tests/test_security_auth_tools.py::TestAuthBootstrapAndEnforcement::test_public_status_and_protected_chat PASSED [ 75%]
+tests/test_security_auth_tools.py::TestToolConfirmationGuards::test_builtin_execute_python_uses_sandbox_when_explicitly_allowed PASSED [ 76%]
+tests/test_security_auth_tools.py::TestToolConfirmationGuards::test_builtin_job_search_tool_returns_summary PASSED [ 76%]
+tests/test_security_auth_tools.py::TestToolConfirmationGuards::test_confirmation_required_tools_fail_closed PASSED [ 76%]
+tests/test_startup_security.py::TestStartupSecurity::test_import_main_fails_fast_with_missing_secret PASSED [ 76%]
+tests/test_startup_security.py::TestStartupSecurity::test_import_main_rejects_public_bind_without_auth PASSED [ 77%]
+tests/test_startup_security.py::TestStartupSecurity::test_import_main_allows_safe_startup_config PASSED [ 77%]
+tests/test_suite.py::TestMemoryDB::test_add_and_retrieve_message PASSED  [ 77%]
+tests/test_suite.py::TestMemoryDB::test_multiple_messages_ordered PASSED [ 78%]
+tests/test_suite.py::TestMemoryDB::test_save_and_get_memory PASSED       [ 78%]
+tests/test_suite.py::TestMemoryDB::test_memory_upsert PASSED             [ 78%]
+tests/test_suite.py::TestMemoryDB::test_search_memories PASSED           [ 79%]
+tests/test_suite.py::TestMemoryDB::test_agent_state PASSED               [ 79%]
+tests/test_suite.py::TestMemoryDB::test_clear_session PASSED             [ 79%]
+tests/test_suite.py::TestMemoryDB::test_audit_log PASSED                 [ 80%]
+tests/test_suite.py::TestMemoryDB::test_list_sessions PASSED             [ 80%]
+tests/test_suite.py::TestMemoryDB::test_get_nonexistent_memory PASSED    [ 80%]
+tests/test_suite.py::TestMemoryDB::test_get_state_default PASSED         [ 80%]
+tests/test_suite.py::TestHookSystem::test_basic_hook_fires PASSED        [ 81%]
+tests/test_suite.py::TestHookSystem::test_sync_handler PASSED            [ 81%]
+tests/test_suite.py::TestHookSystem::test_priority_ordering PASSED       [ 81%]
+tests/test_suite.py::TestHookSystem::test_one_shot_hook PASSED           [ 82%]
+tests/test_suite.py::TestHookSystem::test_stop_propagation PASSED        [ 82%]
+tests/test_suite.py::TestHookSystem::test_wildcard_hook PASSED           [ 82%]
+tests/test_suite.py::TestHookSystem::test_list_hooks PASSED              [ 83%]
+tests/test_suite.py::TestCodeExecutor::test_basic_execution PASSED       [ 83%]
+tests/test_suite.py::TestCodeExecutor::test_return_value PASSED          [ 83%]
+tests/test_suite.py::TestCodeExecutor::test_syntax_error_caught PASSED   [ 84%]
+tests/test_suite.py::TestCodeExecutor::test_blocked_import PASSED        [ 84%]
+tests/test_suite.py::TestCodeExecutor::test_runtime_error PASSED         [ 84%]
+tests/test_suite.py::TestCodeExecutor::test_execute_shell_runs_single_command PASSED [ 84%]
+tests/test_suite.py::TestCodeExecutor::test_execute_shell_rejects_shell_control_operators PASSED [ 85%]
+tests/test_suite.py::TestSemanticAnalyzer::test_word_count PASSED        [ 85%]
+tests/test_suite.py::TestSemanticAnalyzer::test_keywords_extracted PASSED [ 85%]
+tests/test_suite.py::TestSemanticAnalyzer::test_sentiment_positive PASSED [ 86%]
+tests/test_suite.py::TestSemanticAnalyzer::test_sentiment_negative PASSED [ 86%]
+tests/test_suite.py::TestSemanticAnalyzer::test_url_extraction PASSED    [ 86%]
+tests/test_suite.py::TestSemanticAnalyzer::test_email_extraction PASSED  [ 87%]
+tests/test_suite.py::TestSecurityToolkit::test_injection_detected PASSED [ 87%]
+tests/test_suite.py::TestSecurityToolkit::test_clean_input_passes PASSED [ 87%]
+tests/test_suite.py::TestSecurityToolkit::test_rate_limit_enforced PASSED [ 88%]
+tests/test_suite.py::TestSecurityToolkit::test_rate_limit_separate_users PASSED [ 88%]
+tests/test_suite.py::TestSecurityToolkit::test_hash_deterministic PASSED [ 88%]
+tests/test_suite.py::TestSecurityToolkit::test_sanitize_null_bytes PASSED [ 88%]
+tests/test_suite.py::TestSecurityToolkit::test_url_validation PASSED     [ 89%]
+tests/test_suite.py::TestSkillsManager::test_register_and_execute PASSED [ 89%]
+tests/test_suite.py::TestSkillsManager::test_trigger_matching PASSED     [ 89%]
+tests/test_suite.py::TestSkillsManager::test_skill_not_found PASSED      [ 90%]
+tests/test_suite.py::TestSkillsManager::test_disable_enable PASSED       [ 90%]
+tests/test_suite.py::TestSkillsManager::test_list_skills PASSED          [ 90%]
+tests/test_suite.py::TestSkillsManager::test_load_db_skill_from_import_reference PASSED [ 91%]
+tests/test_suite.py::TestSkillsManager::test_save_skill_to_db_rejects_inline_code PASSED [ 91%]
+tests/test_suite.py::TestRetryManagerSecurity::test_stats_uses_parameterized_policy_filter PASSED [ 91%]
+tests/test_suite.py::TestRetryManagerSecurity::test_retry_sync_decorator_runs_without_precreated_event_loop PASSED [ 92%]
+tests/test_suite.py::TestConversationManager::test_intent_greeting PASSED [ 92%]
+tests/test_suite.py::TestConversationManager::test_intent_farewell PASSED [ 92%]
+tests/test_suite.py::TestConversationManager::test_intent_question PASSED [ 92%]
+tests/test_suite.py::TestConversationManager::test_small_talk_response PASSED [ 93%]
+tests/test_suite.py::TestConversationManager::test_name_extraction PASSED [ 93%]
+tests/test_suite.py::TestConversationManager::test_session_message_count PASSED [ 93%]
+tests/test_suite.py::TestConversationManager::test_persona_switch PASSED [ 94%]
+tests/test_suite.py::TestConversationManager::test_active_sessions_list PASSED [ 94%]
+tests/test_suite.py::TestCollaboration::test_create_workspace PASSED     [ 94%]
+tests/test_suite.py::TestCollaboration::test_list_workspaces PASSED      [ 95%]
+tests/test_suite.py::TestCollaboration::test_add_member PASSED           [ 95%]
+tests/test_suite.py::TestCollaboration::test_create_and_get_task PASSED  [ 95%]
+tests/test_suite.py::TestCollaboration::test_task_status_update PASSED   [ 96%]
+tests/test_suite.py::TestCollaboration::test_invalid_status_raises PASSED [ 96%]
+tests/test_suite.py::TestCollaboration::test_list_tasks_filtered PASSED  [ 96%]
+tests/test_suite.py::TestCollaboration::test_create_and_search_note PASSED [ 96%]
+tests/test_suite.py::TestCollaboration::test_update_note PASSED          [ 97%]
+tests/test_suite.py::TestCollaboration::test_shared_context PASSED       [ 97%]
+tests/test_suite.py::TestCollaboration::test_workspace_summary PASSED    [ 97%]
+tests/test_suite.py::TestDocGenerator::test_extract_module_docs PASSED   [ 98%]
+tests/test_suite.py::TestDocGenerator::test_render_module_md PASSED      [ 98%]
+tests/test_suite.py::TestDocGenerator::test_generate_skills_doc PASSED   [ 98%]
+tests/test_suite.py::TestScheduler::test_add_valid_job PASSED            [ 99%]
+tests/test_suite.py::TestScheduler::test_invalid_cron_raises PASSED      [ 99%]
+tests/test_suite.py::TestScheduler::test_disable_enable_job PASSED       [ 99%]
+tests/test_suite.py::TestScheduler::test_list_jobs PASSED                [100%]
+
+============================= 325 passed in 7.53s ==============================
+All checks passed!
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: None
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[main]	INFO	running on Python 3.13.13
+[warnings]	WARNING	invalid escape sequence '\w'
+
+Working... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:10
+Run started:2026-05-18 16:01:39.640558+00:00
+
+Test results:
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/ab_router.py:357:20
+356	            # Deterministic hash → same user always lands in same bucket
+357	            h = int(hashlib.md5(f"{exp.id}:{sticky_key}".encode()).hexdigest(), 16)
+358	            bucket = (h % 10000) / 10000.0 * total_weight
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/alert_manager.py:332:15
+331	        raw = f"{rule.name}:{rule.source}:{sorted(rule.labels.items())}"
+332	        return hashlib.md5(raw.encode()).hexdigest()[:12]
+333	
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/audit_logger.py:157:18
+156	            rows = c.execute(
+157	                f"SELECT * FROM audit_events WHERE {where} "
+158	                f"ORDER BY ts DESC LIMIT ?", params).fetchall()
+159	        return [dict(r) for r in rows]
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/bloom_filter.py:52:8
+51	def _murmur_lite(item: str, seed: int = 0) -> int:
+52	    h = hashlib.md5(f"{seed}:{item}".encode()).digest()
+53	    return struct.unpack("<Q", h[:8])[0]
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/cost_tracker.py:301:30
+300	        with self._conn() as c:
+301	            row = c.execute(f"SELECT SUM(cost_usd) FROM usage{where}",
+302	                            params).fetchone()
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/crypto_utils.py:51:11
+50	    if isinstance(data, str): data = data.encode()
+51	    return hashlib.md5(data).hexdigest()
+52	
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/data_augmentor.py:204:28
+203	                    if deduplicate:
+204	                        h = hashlib.md5(aug_text.encode()).hexdigest()
+205	                        if h in self._seen_hashes:
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/document_chunker.py:148:17
+147	                continue
+148	            ch = hashlib.md5(content.encode()).hexdigest()
+149	            if self.dedup and ch in self._seen_hashes:
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/document_qa.py:64:18
+63	    for i in range(max(1,len(text)-2)):
+64	        idx = int(hashlib.md5(text[i:i+3].encode()).hexdigest(),16) % dim
+65	        vec[idx] += 1.0
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/document_qa.py:170:33
+169	                ph=",".join("?"*len(doc_ids))
+170	                rows=c.execute(f"SELECT * FROM chunks WHERE doc_id IN ({ph})",doc_ids).fetchall()
+171	            else:
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/embedding_pipeline.py:207:16
+206	        def embed(text: str) -> List[float]:
+207	            h = hashlib.md5(text.encode()).digest()
+208	            # Extend to dim floats by repeating hash bytes
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/embedding_store.py:45:15
+44	    """Deterministic pseudo-embedding from text hash (for testing)."""
+45	    seed = int(hashlib.md5(text.encode()).hexdigest(), 16)
+46	    rng = random.Random(seed)
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/event_bus.py:132:18
+131	            rows = c.execute(
+132	                f"SELECT * FROM dlq {where} ORDER BY ts DESC LIMIT ?",
+133	                (limit,)).fetchall()
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/event_sourcing.py:121:16
+120	            rows = c.execute(
+121	                "SELECT * FROM events WHERE " + " AND ".join(where)
+122	                + " ORDER BY version ASC", params).fetchall()
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/event_store.py:122:18
+121	            rows = c.execute(
+122	                f"SELECT * FROM events WHERE {where} "
+123	                "ORDER BY version ASC LIMIT ?", params).fetchall()
+124	        return [self._row_to_event(r) for r in rows]
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/event_store.py:138:18
+137	            rows = c.execute(
+138	                f"SELECT * FROM events WHERE {where} "
+139	                "ORDER BY global_pos ASC LIMIT ?", params).fetchall()
+140	        return [self._row_to_event(r) for r in rows]
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/experiment_tracker.py:124:29
+123	        with self._conn() as c:
+124	            rows=c.execute(f"SELECT id FROM runs WHERE {' AND '.join(conds)} ORDER BY created_at DESC LIMIT ?",args).fetchall()
+125	        return [r for row in rows if (r:=self.load_run(row["id"]))]
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/feature_flags.py:45:8
+44	    """Deterministic 0-99 bucket for a user+flag combination."""
+45	    h = hashlib.md5(f"{flag}:{user_id}".encode()).hexdigest()
+46	    return int(h[:8], 16) % 100
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: agent/gateway.py:400:38
+399	
+400	    async def start(self, host: str = "0.0.0.0", port: int = 8080):
+401	        from aiohttp import web
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/graph_executor.py:347:15
+346	                          "inputs": input_vals}, sort_keys=True)
+347	        return hashlib.md5(raw.encode()).hexdigest()
+348	
+
+--------------------------------------------------
+>> Issue: [B310:blacklist] Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.
+   Severity: Medium   Confidence: High
+   CWE: CWE-22 (https://cwe.mitre.org/data/definitions/22.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/blacklists/blacklist_calls.html#b310-urllib-urlopen
+   Location: agent/health_monitor.py:175:17
+174	            req = urllib.request.Request(check.url)
+175	            with urllib.request.urlopen(req, timeout=check.timeout_s) as resp:
+176	                body = resp.read().decode("utf-8", errors="replace")
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/hot_reloader.py:31:19
+30	        with open(path, "rb") as f:
+31	            return hashlib.md5(f.read()).hexdigest()
+32	    except OSError:
+
+--------------------------------------------------
+>> Issue: [B102:exec_used] Use of exec detected.
+   Severity: Medium   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b102_exec_used.html
+   Location: agent/hot_reloader.py:98:12
+97	            sys.modules[module_name] = mod
+98	            exec(compile(source, record.file_path, "exec"), mod.__dict__)  # noqa: S102
+99	            record.module_ref = sys.modules.get(module_name)
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/jobs.py:274:24
+273	        with self._conn() as c:
+274	            c.execute(f"UPDATE jobs SET {', '.join(updates)} WHERE id=?", params)
+275	
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/knowledge_base.py:217:16
+216	            facts = (c.execute(
+217	                "SELECT id,'fact' as type, entity||' '||attribute||' '||value as text "
+218	                f"FROM facts WHERE id IN ({','.join('?'*len(fact_ids))}) LIMIT ?",
+219	                list(fact_ids)+[limit]).fetchall()) if fact_ids else []
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/knowledge_base.py:221:16
+220	            concepts = (c.execute(
+221	                "SELECT id,'concept' as type, name||' '||definition as text "
+222	                f"FROM concepts WHERE id IN ({','.join('?'*len(concept_ids))}) LIMIT ?",
+223	                list(concept_ids)+[limit]).fetchall()) if concept_ids else []
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/llm_cache.py:74:22
+73	        for ng in ngrams:
+74	            idx = int(hashlib.md5(ng.encode()).hexdigest(), 16) % self.DIM
+75	            vec[idx] += 1.0
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/log_aggregator.py:152:18
+151	            rows = c.execute(
+152	                f"SELECT * FROM logs {where} ORDER BY ts DESC LIMIT ?",
+153	                params).fetchall()
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/memory_graph.py:89:31
+88	        with self._conn() as c:
+89	            rows = c.execute(f"SELECT * FROM entities WHERE {' AND '.join(conds)} ORDER BY importance DESC LIMIT ?",args).fetchall()
+90	        return [self._re(r) for r in rows]
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/memory_graph.py:123:29
+122	            q = " WHERE namespace=?" if namespace else ""
+123	            ec = c.execute(f"SELECT COUNT(*) FROM entities{q}",(namespace,) if namespace else ()).fetchone()[0]
+124	            rc = c.execute(f"SELECT COUNT(*) FROM relations{q}",(namespace,) if namespace else ()).fetchone()[0]
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/memory_graph.py:124:29
+123	            ec = c.execute(f"SELECT COUNT(*) FROM entities{q}",(namespace,) if namespace else ()).fetchone()[0]
+124	            rc = c.execute(f"SELECT COUNT(*) FROM relations{q}",(namespace,) if namespace else ()).fetchone()[0]
+125	            types = dict(c.execute("SELECT entity_type,COUNT(*) FROM entities GROUP BY entity_type").fetchall())
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/memory_graph.py:143:18
+142	    for i in range(max(1,len(text)-2)):
+143	        idx = int(hashlib.md5(text[i:i+3].encode()).hexdigest(),16) % dim
+144	        vec[idx] += 1.0
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/message_queue.py:134:33
+133	            # Exclude messages currently in receipt (invisible)
+134	            rows = c.execute(f"""
+135	                SELECT m.* FROM messages m
+136	                LEFT JOIN receipts r ON m.id = r.message_id
+137	                    AND r.visible_at > ?
+138	                WHERE m.queue=? AND m.status='pending'
+139	                    AND (m.sent_at + m.delay_s) <= ?
+140	                    AND r.receipt_id IS NULL
+141	                ORDER BY {order} LIMIT ?
+142	            """, (now, queue, now, count)).fetchall()
+143	        return [self._row_to_msg(r) for r in rows]
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/message_queue.py:206:18
+205	            rows = c.execute(
+206	                f"SELECT * FROM dlq {where} ORDER BY ts DESC LIMIT ?",
+207	                (limit,)).fetchall()
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/message_queue.py:281:26
+280	    def _dedup_key(self, queue: str, body: Any) -> str:
+281	        return f"{queue}:{hashlib.md5(json.dumps(body,default=str).encode()).hexdigest()}"
+282	
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/notification_manager.py:148:18
+147	            rows = c.execute(
+148	                f"SELECT * FROM notifications {where} "
+149	                f"ORDER BY created_at DESC LIMIT ?", (limit,)).fetchall()
+150	        return [dict(r) for r in rows]
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/notification_manager.py:210:15
+209	    def _dedup_key(self, channel: Channel, event_type: str, body: str) -> str:
+210	        return hashlib.md5(f"{channel.value}:{event_type}:{body[:100]}".encode()).hexdigest()
+211	
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/object_storage.py:69:24
+68	        if not self.etag:
+69	            self.etag = hashlib.md5(self.content).hexdigest()
+70	        if not self.size:
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html
+   Location: agent/object_storage.py:357:15
+356	        mp.parts[part_num] = data
+357	        return hashlib.md5(data).hexdigest()
+358	
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/prompt_library.py:178:18
+177	            rows = c.execute(
+178	                f"SELECT * FROM templates WHERE {' AND '.join(conds)} ORDER BY updated_at DESC LIMIT ?",
+179	                args).fetchall()
+
+--------------------------------------------------
+>> Issue: [B307:blacklist] Use of possibly insecure function - consider using safer ast.literal_eval.
+   Severity: Medium   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/blacklists/blacklist_calls.html#b307-eval
+   Location: agent/sandbox_executor.py:300:40
+299	                    if lang == Language.EXPR:
+300	                        result_box[0] = eval(code, globs, locs)  # noqa: S307
+301	                    else:
+
+--------------------------------------------------
+>> Issue: [B102:exec_used] Use of exec detected.
+   Severity: Medium   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b102_exec_used.html
+   Location: agent/sandbox_executor.py:302:24
+301	                    else:
+302	                        exec(compile(code, "<sandbox>", "exec"), globs, locs)  # noqa: S102
+303	                        result_box[0] = locs.get("result", None)
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/search.py:400:47
+399	            with self._conn() as c:
+400	                by_corpus = dict(c.execute(f"""
+401	                    SELECT fts.corpus, COUNT(*)
+402	                    FROM search_fts fts
+403	                    WHERE search_fts MATCH ?{corpus_filter}
+404	                    GROUP BY fts.corpus
+405	                """, [query]).fetchall())
+406	            return {"by_corpus": by_corpus}
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/secrets_manager.py:219:18
+218	            rows = c.execute(
+219	                f"SELECT * FROM audit {where} ORDER BY ts DESC LIMIT ?",
+220	                (limit,)).fetchall()
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/session.py:269:32
+268	            q_base = "WHERE archived=0" + (f" AND user_id='{user_id}'" if user_id else "")
+269	            total = c.execute(f"SELECT COUNT(*) FROM sessions {q_base}").fetchone()[0]
+270	            by_model = dict(c.execute(
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/session.py:271:18
+270	            by_model = dict(c.execute(
+271	                f"SELECT model, COUNT(*) FROM sessions {q_base} GROUP BY model"
+272	            ).fetchall())
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/session.py:274:18
+273	            by_persona = dict(c.execute(
+274	                f"SELECT persona, COUNT(*) FROM sessions {q_base} GROUP BY persona"
+275	            ).fetchall())
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/session_manager.py:148:18
+147	            rows = c.execute(
+148	                f"SELECT * FROM sessions {where} "
+149	                f"ORDER BY created_at DESC", params).fetchall()
+150	        return [self._row_to_session(r) for r in rows]
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/telemetry.py:179:18
+178	            rows = c.execute(
+179	                f"SELECT data FROM spans {w} "
+180	                "ORDER BY start_time DESC LIMIT ?", params).fetchall()
+181	        return [json.loads(r["data"]) for r in rows]
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/token_budget_manager.py:133:30
+132	        with self._conn() as c:
+133	            total=c.execute(f"SELECT COALESCE(SUM(input_tokens+output_tokens),0) FROM usage WHERE {wh}",args).fetchone()[0]
+134	            by_actor=dict(c.execute(f"SELECT actor,SUM(input_tokens+output_tokens) FROM usage WHERE {wh} GROUP BY actor",args).fetchall())
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/token_budget_manager.py:134:38
+133	            total=c.execute(f"SELECT COALESCE(SUM(input_tokens+output_tokens),0) FROM usage WHERE {wh}",args).fetchone()[0]
+134	            by_actor=dict(c.execute(f"SELECT actor,SUM(input_tokens+output_tokens) FROM usage WHERE {wh} GROUP BY actor",args).fetchall())
+135	            by_model=dict(c.execute(f"SELECT model,SUM(input_tokens+output_tokens) FROM usage WHERE {wh} GROUP BY model",args).fetchall())
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/token_budget_manager.py:135:38
+134	            by_actor=dict(c.execute(f"SELECT actor,SUM(input_tokens+output_tokens) FROM usage WHERE {wh} GROUP BY actor",args).fetchall())
+135	            by_model=dict(c.execute(f"SELECT model,SUM(input_tokens+output_tokens) FROM usage WHERE {wh} GROUP BY model",args).fetchall())
+136	            cost=c.execute(f"SELECT COALESCE(SUM(cost_usd),0) FROM usage WHERE {wh}",args).fetchone()[0]
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b608_hardcoded_sql_expressions.html
+   Location: agent/token_budget_manager.py:136:29
+135	            by_model=dict(c.execute(f"SELECT model,SUM(input_tokens+output_tokens) FROM usage WHERE {wh} GROUP BY model",args).fetchall())
+136	            cost=c.execute(f"SELECT COALESCE(SUM(cost_usd),0) FROM usage WHERE {wh}",args).fetchone()[0]
+137	        return {"total_tokens":int(total),"by_actor":by_actor,"by_model":by_model,"total_cost_usd":round(float(cost),6)}
+
+--------------------------------------------------
+>> Issue: [B307:blacklist] Use of possibly insecure function - consider using safer ast.literal_eval.
+   Severity: Medium   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/blacklists/blacklist_calls.html#b307-eval
+   Location: agent/workflow.py:333:29
+332	                try:
+333	                    result = eval(expr, {"__builtins__": {}}, dict(ctx))
+334	                    return result
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 65860
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 204
+		Medium: 43
+		High: 18
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 7
+		Medium: 39
+		High: 219
+Files skipped (0):

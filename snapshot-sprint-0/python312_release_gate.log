@@ -1,0 +1,9 @@
+Phase 0 matrix verification halted before Python 3.12 execution.
+
+Reason:
+- Python 3.13 release-gate verification failed on commit e89ecc1de70ee6b80a0b1da47aa32b0273d67ecd.
+- Per the requested stop condition, the matrix verification was marked BLOCKED immediately after a version failure.
+
+Status:
+- Python 3.12 commands were not executed.
+- No raw Python 3.12 command output exists for this verification run.
