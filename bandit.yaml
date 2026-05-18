@@ -1,1 +1,6 @@
+# Sprint 0 policy: keep Bandit strict on active-path modules.
+# No repo-wide skips are permitted for B602/B102/B307/B608.
+exclude_dirs:
+  - agent/_legacy
+  - tests
 skips: []

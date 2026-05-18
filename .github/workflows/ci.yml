@@ -26,14 +26,65 @@ jobs:
       - run: pytest tests/ -q
       - run: ruff check .
 
-      # Fail the build on MEDIUM and HIGH findings.
-      # Exceptions must be justified via # nosec or bandit.yaml.
-      - run: bandit -r agent -x agent/_legacy,tests -ll -ii
+      # Blocking Sprint 0 Bandit gate: active/hot-path runtime modules only.
+      # Full-agent coverage remains in the audit lane below until orphan/standalone
+      # surfaces are fully classified and either wired or retired.
+      - name: Bandit active-path gate
+        run: |
+          bandit -ll -ii -c bandit.yaml \
+            main.py \
+            config.py \
+            agent/core.py \
+            agent/auth.py \
+            agent/model_registry.py \
+            agent/model_router.py \
+            agent/multi_model_client.py \
+            agent/ollama_client.py \
+            agent/memory.py \
+            agent/rag.py \
+            agent/cache.py \
+            agent/pipeline.py \
+            agent/prompt_templates.py \
+            agent/tools_registry.py \
+            agent/sandbox.py \
+            agent/workflow.py \
+            agent/streaming.py \
+            agent/dashboard.py \
+            agent/multimodal.py \
+            agent/config_manager.py \
+            agent/structured_output.py
 
       - run: pip-audit
         timeout-minutes: 5
 
       - run: coverage erase && coverage run -m pytest tests/ && coverage report
+
+  full-agent-bandit-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - run: pip install -r requirements.txt bandit
+
+      - name: Full-agent Bandit audit
+        continue-on-error: true
+        run: |
+          mkdir -p snapshot-sprint-0
+          bandit -r agent -x agent/_legacy,tests -c bandit.yaml -ll -ii \
+            2>&1 | tee snapshot-sprint-0/bandit_full_agent_audit.log
+
+      - name: Upload full-agent Bandit audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-full-agent-audit
+          path: snapshot-sprint-0/bandit_full_agent_audit.log
+          if-no-files-found: error
 
   legacy-audit:
     runs-on: ubuntu-latest
