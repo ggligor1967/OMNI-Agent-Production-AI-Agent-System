@@ -17,6 +17,27 @@ if TYPE_CHECKING:
     from aiohttp import web
 
 
+_DEFAULT_SECRET = "CHANGE_ME_IN_PRODUCTION"
+
+
+def _validate_security_config() -> None:
+    secret = getattr(CONFIG, "SECRET_KEY", "")
+    if not secret or secret == _DEFAULT_SECRET or len(secret) < 32:
+        raise RuntimeError(
+            "[SECURITY] SECRET_KEY is missing, default, or shorter than 32 chars. "
+            "Set a strong SECRET_KEY before starting."
+        )
+
+    if getattr(CONFIG, "API_HOST", "") == "0.0.0.0" and not getattr(CONFIG, "AUTH_ENFORCE", True):
+        raise RuntimeError(
+            "[SECURITY] Cannot bind to 0.0.0.0 with AUTH_ENFORCE=false. "
+            "Use 127.0.0.1 for dev or enable authentication."
+        )
+
+
+_validate_security_config()
+
+
 def setup_logging() -> None:
     Path(CONFIG.LOG_FILE).parent.mkdir(parents=True, exist_ok=True)
     stream_handler = logging.StreamHandler(sys.stdout)

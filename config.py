@@ -1,6 +1,6 @@
 """
 OMNI AGENT - Configuration
-Supports all 24 cloud models with per-task routing configuration.
+Supports all 27 cloud models with per-task routing configuration.
 """
 import os
 from dataclasses import dataclass, field
@@ -101,7 +101,7 @@ class Config:
     # ═══════════════════════════════════════════════════════════════════════
     # API SERVER
     # ═══════════════════════════════════════════════════════════════════════
-    API_HOST: str = os.getenv("API_HOST", "0.0.0.0")
+    API_HOST: str = os.getenv("API_HOST", "127.0.0.1")
     API_PORT: int = int(os.getenv("API_PORT", "8000"))
     API_FALLBACK_PORTS: List[int] = field(default_factory=lambda: [
         int(x.strip()) for x in os.getenv("API_FALLBACK_PORTS", "8010").split(",")
