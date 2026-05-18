@@ -18,6 +18,7 @@ from pathlib import Path
 from agent.model_registry import MODELS, ModelSpec, get_model
 from agent.model_router import ModelRouter, RouteDecision, TaskType, TASK_TO_CAPABILITY
 from agent.ollama_client import OllamaClient
+from agent.tracing import SpanKind, tracer
 from config import CONFIG
 
 logger = logging.getLogger(__name__)
@@ -196,46 +197,64 @@ class MultiModelClient:
         """
         has_image = bool(image_path or image_b64)
 
-        # Build messages with optional image
-        enriched_messages = self._enrich_messages(
-            messages, image_path=image_path, image_b64=image_b64
-        )
+        async with tracer.safe_async_span(
+            "llm.route_request",
+            SpanKind.PIPELINE,
+            auto_route=bool(auto_route),
+            has_image=has_image,
+            message_count=len(messages),
+            tools_present=bool(tools),
+            session_override_present=bool(session_id and self.router.get_session_model(session_id)),
+        ) as route_span:
+            # Build messages with optional image
+            enriched_messages = self._enrich_messages(
+                messages, image_path=image_path, image_b64=image_b64
+            )
+            route_span.set("enriched_message_count", len(enriched_messages))
 
-        # Determine model to use
-        if model and model in MODELS:
-            decision = RouteDecision(
-                model_id=model,
-                model_spec=MODELS[model],
-                task_type=TaskType.GENERAL,
-                confidence=1.0,
-                reason="Manual override",
-                fallback_chain=self.router._get_fallback_chain(model),
-            )
-        elif auto_route:
-            user_text = self._extract_user_text(messages)
-            decision = self.router.route(
-                user_text, session_id=session_id, has_image=has_image
-            )
-        else:
-            default_id = CONFIG.OLLAMA_MODEL
-            spec = get_model(default_id) or list(MODELS.values())[0]
-            decision = RouteDecision(
-                model_id=default_id,
-                model_spec=spec,
-                task_type=TaskType.GENERAL,
-                confidence=0.5,
-                reason="Default model",
-                fallback_chain=[],
-            )
+            # Determine model to use
+            if model and model in MODELS:
+                decision = RouteDecision(
+                    model_id=model,
+                    model_spec=MODELS[model],
+                    task_type=TaskType.GENERAL,
+                    confidence=1.0,
+                    reason="Manual override",
+                    fallback_chain=self.router._get_fallback_chain(model),
+                )
+                route_span.set("decision_source", "manual_override")
+            elif auto_route:
+                user_text = self._extract_user_text(messages)
+                decision = self.router.route(
+                    user_text, session_id=session_id, has_image=has_image
+                )
+                route_span.set("decision_source", "auto_route")
+            else:
+                default_id = CONFIG.OLLAMA_MODEL
+                spec = get_model(default_id) or list(MODELS.values())[0]
+                decision = RouteDecision(
+                    model_id=default_id,
+                    model_spec=spec,
+                    task_type=TaskType.GENERAL,
+                    confidence=0.5,
+                    reason="Default model",
+                    fallback_chain=[],
+                )
+                route_span.set("decision_source", "default_model")
 
-        # Execute with fallback
-        return await self._execute_with_fallback(
-            decision=decision,
-            messages=enriched_messages,
-            temperature=temperature,
-            system=system,
-            tools=tools,
-        )
+            route_span.set("selected_model", decision.model_id)
+            route_span.set("task_type", decision.task_type.value)
+            route_span.set("decision_confidence", decision.confidence)
+            route_span.set("fallback_count", len(decision.fallback_chain))
+
+            # Execute with fallback
+            return await self._execute_with_fallback(
+                decision=decision,
+                messages=enriched_messages,
+                temperature=temperature,
+                system=system,
+                tools=tools,
+            )
 
     async def _execute_with_fallback(
         self,
@@ -246,66 +265,105 @@ class MultiModelClient:
         tools: Optional[List],
     ) -> Dict[str, Any]:
         """Try primary model, then fallback chain."""
-        available_ids = await self.available_registered_models()
-        attempt_order = self._build_attempt_order(decision, available_ids)
+        async with tracer.safe_async_span(
+            "llm.execute_with_fallback",
+            SpanKind.LLM,
+            primary_model=decision.model_id,
+            task_type=decision.task_type.value,
+            fallback_count=len(decision.fallback_chain),
+            message_count=len(messages),
+        ) as fallback_span:
+            available_ids = await self.available_registered_models()
+            attempt_order = self._build_attempt_order(decision, available_ids)
+            fallback_span.set("attempt_count", len(attempt_order))
+            fallback_span.set("available_model_count", len(available_ids))
+            fallback_span.set("fallback_used", False)
 
-        last_error = None
-        for model_id in attempt_order:
-            spec = get_model(model_id)
-            if not spec:
-                continue
-
-            if available_ids and model_id not in available_ids:
-                last_error = RuntimeError(f"Model '{model_id}' is not available in Ollama.")
-                self.router.mark_unavailable(model_id, cooldown_seconds=60)
-                logger.warning("Model %s is not installed in Ollama. Trying fallback...", model_id)
-                continue
-
-            client = self._get_client(spec)
-            start = time.time()
-            try:
-                resp = await client.chat(
-                    messages=messages,
+            last_error = None
+            for index, model_id in enumerate(attempt_order, start=1):
+                async with tracer.safe_async_span(
+                    "llm.model_attempt",
+                    SpanKind.LLM,
                     model=model_id,
-                    temperature=temperature,
-                    system=system,
-                    tools=tools,
-                )
-                latency_ms = (time.time() - start) * 1000
-                self.router.record_call(model_id, success=True, latency_ms=latency_ms)
-                self.router.mark_available(model_id)
+                    attempt_index=index,
+                    primary=(model_id == decision.model_id),
+                    fallback=(index > 1),
+                ) as attempt_span:
+                    spec = get_model(model_id)
+                    if not spec:
+                        attempt_span.set("success", False)
+                        attempt_span.add_event("attempt.skipped", {"reason": "unknown_model"})
+                        continue
 
-                # Annotate response with routing metadata
-                resp["_routed_to"] = model_id
-                resp["_model_display"] = spec.display_name
-                resp["_latency_ms"] = round(latency_ms, 1)
-                resp["_route_reason"] = decision.reason
-                resp["_task_type"] = decision.task_type.value
+                    if available_ids and model_id not in available_ids:
+                        last_error = RuntimeError(f"Model '{model_id}' is not available in Ollama.")
+                        self.router.mark_unavailable(model_id, cooldown_seconds=60)
+                        attempt_span.set("success", False)
+                        attempt_span.add_event("attempt.skipped", {"reason": "model_unavailable"})
+                        logger.warning("Model %s is not installed in Ollama. Trying fallback...", model_id)
+                        continue
 
-                if model_id != decision.model_id:
-                    logger.info(f"Fallback succeeded: {model_id} "
-                               f"(primary was {decision.model_id})")
-                return resp
+                    client = self._get_client(spec)
+                    start = time.time()
+                    try:
+                        resp = await client.chat(
+                            messages=messages,
+                            model=model_id,
+                            temperature=temperature,
+                            system=system,
+                            tools=tools,
+                        )
+                        latency_ms = (time.time() - start) * 1000
+                        self.router.record_call(model_id, success=True, latency_ms=latency_ms)
+                        self.router.mark_available(model_id)
 
-            except Exception as e:
-                latency_ms = (time.time() - start) * 1000
-                self.router.record_call(model_id, success=False, error=str(e))
-                last_error = e
-                logger.warning(f"Model {model_id} failed: {e}. "
-                              f"Trying fallback...")
+                        attempt_span.set("success", True)
+                        attempt_span.set("latency_ms", round(latency_ms, 1))
+                        attempt_span.set("response_chars", len(resp.get("content", "")))
 
-        # All failed — return error response
-        logger.error(f"All models failed. Last error: {last_error}")
-        return {
-            "role": "assistant",
-            "content": (
-                f"⚠️ All models in the fallback chain are unavailable. "
-                f"Last error: {last_error}. "
-                f"Tried: {', '.join(attempt_order)}"
-            ),
-            "_routed_to": "none",
-            "_error": str(last_error),
-        }
+                        # Annotate response with routing metadata
+                        resp["_routed_to"] = model_id
+                        resp["_model_display"] = spec.display_name
+                        resp["_latency_ms"] = round(latency_ms, 1)
+                        resp["_route_reason"] = decision.reason
+                        resp["_task_type"] = decision.task_type.value
+
+                        fallback_span.set("selected_model", model_id)
+                        fallback_span.set("latency_ms", round(latency_ms, 1))
+                        fallback_span.set("success", True)
+                        if index > 1:
+                            fallback_span.set("fallback_used", True)
+                            logger.info(f"Fallback succeeded: {model_id} "
+                                       f"(primary was {decision.model_id})")
+                        return resp
+
+                    except Exception as e:
+                        latency_ms = (time.time() - start) * 1000
+                        self.router.record_call(model_id, success=False, error=str(e))
+                        last_error = e
+                        attempt_span.set("success", False)
+                        attempt_span.set("latency_ms", round(latency_ms, 1))
+                        attempt_span.add_event("attempt.error", {"error": str(e)})
+                        logger.warning(f"Model {model_id} failed: {e}. "
+                                      f"Trying fallback...")
+
+            # All failed — return error response
+            fallback_span.set("success", False)
+            fallback_span.add_event("fallback.exhausted", {
+                "attempt_count": len(attempt_order),
+                "last_error": str(last_error) if last_error else "unknown",
+            })
+            logger.error(f"All models failed. Last error: {last_error}")
+            return {
+                "role": "assistant",
+                "content": (
+                    f"⚠️ All models in the fallback chain are unavailable. "
+                    f"Last error: {last_error}. "
+                    f"Tried: {', '.join(attempt_order)}"
+                ),
+                "_routed_to": "none",
+                "_error": str(last_error),
+            }
 
     # ── Streaming ─────────────────────────────────────────────────────────────
 

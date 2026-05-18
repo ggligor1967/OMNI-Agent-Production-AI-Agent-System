@@ -456,6 +456,51 @@ class Span:
         }
 
 
+class NullSpan:
+    """No-op span used when tracing is unavailable or fails open."""
+
+    def __init__(self, name: str = "noop", kind: SpanKind = SpanKind.INTERNAL):
+        self.span_id = ""
+        self.trace_id = ""
+        self.name = name
+        self.kind = kind
+        self.started_at = time.time()
+        self.parent_id = None
+        self.ended_at = self.started_at
+        self.status = SpanStatus.OK
+        self.attributes: Dict[str, Any] = {}
+        self.events: List[Dict[str, Any]] = []
+        self.error = ""
+
+    @property
+    def duration_ms(self) -> float:
+        return 0.0
+
+    def end(self, status: SpanStatus = SpanStatus.OK, error: str = ""):
+        return None
+
+    def add_event(self, name: str, attrs: Optional[Mapping[str, Any]] = None):
+        return None
+
+    def set(self, key: str, value: Any):
+        return None
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "span_id": self.span_id,
+            "trace_id": self.trace_id,
+            "parent_id": self.parent_id,
+            "name": self.name,
+            "kind": self.kind.value,
+            "status": self.status.value,
+            "duration_ms": 0.0,
+            "started_at": self.started_at,
+            "attributes": self.attributes,
+            "events": self.events,
+            "error": self.error,
+        }
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # TRACER
 # ══════════════════════════════════════════════════════════════════════════════
@@ -542,6 +587,105 @@ class Tracer:
         if len(self._spans) >= self._max_spans:
             self._spans = self._spans[-(self._max_spans // 2):]
         self._spans.append(span)
+
+    @contextmanager
+    def _safe_sync_context(self, factory, label: str, name: str, kind: SpanKind):
+        manager = None
+        span: Any = NullSpan(name=name, kind=kind)
+        active = False
+
+        try:
+            manager = factory()
+            span = manager.__enter__()
+            active = True
+        except Exception as exc:
+            logger.debug("Tracing unavailable for %s: %s", label, exc)
+            manager = None
+            span = NullSpan(name=name, kind=kind)
+
+        try:
+            yield span
+        except Exception as exc:
+            if active and manager is not None:
+                try:
+                    suppress = manager.__exit__(type(exc), exc, exc.__traceback__)
+                except Exception as trace_exc:
+                    logger.debug("Tracing exit failed for %s: %s", label, trace_exc)
+                    suppress = False
+                if suppress:
+                    return
+            raise
+        else:
+            if active and manager is not None:
+                try:
+                    manager.__exit__(None, None, None)
+                except Exception as trace_exc:
+                    logger.debug("Tracing exit failed for %s: %s", label, trace_exc)
+
+    @asynccontextmanager
+    async def _safe_async_context(self, factory, label: str, name: str, kind: SpanKind):
+        manager = None
+        span: Any = NullSpan(name=name, kind=kind)
+        active = False
+
+        try:
+            manager = factory()
+            span = await manager.__aenter__()
+            active = True
+        except Exception as exc:
+            logger.debug("Tracing unavailable for %s: %s", label, exc)
+            manager = None
+            span = NullSpan(name=name, kind=kind)
+
+        try:
+            yield span
+        except Exception as exc:
+            if active and manager is not None:
+                try:
+                    suppress = await manager.__aexit__(type(exc), exc, exc.__traceback__)
+                except Exception as trace_exc:
+                    logger.debug("Tracing exit failed for %s: %s", label, trace_exc)
+                    suppress = False
+                if suppress:
+                    return
+            raise
+        else:
+            if active and manager is not None:
+                try:
+                    await manager.__aexit__(None, None, None)
+                except Exception as trace_exc:
+                    logger.debug("Tracing exit failed for %s: %s", label, trace_exc)
+
+    @contextmanager
+    def safe_span(self, name: str, kind: SpanKind = SpanKind.INTERNAL, **attrs):
+        with self._safe_sync_context(
+            lambda: self.span(name, kind, **attrs),
+            name,
+            name,
+            kind,
+        ) as span:
+            yield span
+
+    @asynccontextmanager
+    async def safe_async_span(self, name: str, kind: SpanKind = SpanKind.INTERNAL, **attrs):
+        async with self._safe_async_context(
+            lambda: self.async_span(name, kind, **attrs),
+            name,
+            name,
+            kind,
+        ) as span:
+            yield span
+
+    @asynccontextmanager
+    async def safe_llm_span(self, model_id: str, session_id: str = "", prompt_text: str = ""):
+        span_name = f"llm.{model_id}"
+        async with self._safe_async_context(
+            lambda: self.llm_span(model_id, session_id=session_id, prompt_text=prompt_text),
+            span_name,
+            span_name,
+            SpanKind.LLM,
+        ) as span:
+            yield span
 
     @contextmanager
     def span(self, name: str, kind: SpanKind = SpanKind.INTERNAL, **attrs):

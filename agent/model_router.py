@@ -32,6 +32,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
+from agent.tracing import SpanKind, tracer
 from config import CONFIG
 
 logger = logging.getLogger(__name__)
@@ -417,54 +418,77 @@ class ModelRouter:
         """
         from agent.model_registry import MODELS, ModelCapability, get_models_by_capability
 
-        # Check for session override first
-        if session_id and session_id in self._session_models:
-            model_id = self._session_models[session_id]
-            model_spec = MODELS.get(model_id)
-            if model_spec:
-                return RouteDecision(
-                    model_id=model_id,
-                    model_spec=model_spec,
-                    task_type=TaskType.GENERAL,
-                    confidence=1.0,
-                    reason=f"Session override for {session_id}",
-                    fallback_chain=self._get_fallback_chain(model_id),
-                )
+        with tracer.safe_span(
+            "router.route",
+            SpanKind.INTERNAL,
+            has_image=bool(has_image),
+            input_chars=len(text or ""),
+            override_requested=bool(session_id),
+        ) as route_span:
+            # Check for session override first
+            if session_id and session_id in self._session_models:
+                model_id = self._session_models[session_id]
+                model_spec = MODELS.get(model_id)
+                if model_spec:
+                    route_span.set("decision_source", "session_override")
+                    route_span.set("task_type", TaskType.GENERAL.value)
+                    route_span.set("selected_model", model_id)
+                    route_span.set("decision_confidence", 1.0)
+                    route_span.set("fallback_count", len(self._get_fallback_chain(model_id)))
+                    return RouteDecision(
+                        model_id=model_id,
+                        model_spec=model_spec,
+                        task_type=TaskType.GENERAL,
+                        confidence=1.0,
+                        reason=f"Session override for {session_id}",
+                        fallback_chain=self._get_fallback_chain(model_id),
+                    )
 
-        # Classify task type
-        task_type, base_confidence = classify_task(text, has_image)
+            # Classify task type
+            task_type, base_confidence = classify_task(text, has_image)
+            route_span.set("task_type", task_type.value)
+            route_span.set("classification_confidence", base_confidence)
 
-        # Get candidate models based on task type
-        candidates = self._get_candidates_for_task(task_type)
+            # Get candidate models based on task type
+            candidates = self._get_candidates_for_task(task_type)
+            route_span.set("candidate_count", len(candidates))
 
-        if not candidates:
-            # Fall back to any available model
-            candidates = list(MODELS.values())
+            if not candidates:
+                # Fall back to any available model
+                candidates = list(MODELS.values())
+                route_span.set("candidate_count", len(candidates))
 
-        # Score and select best model
-        best_model = self._score_model(candidates, task_type)
+            # Score and select best model
+            best_model = self._score_model(candidates, task_type)
 
-        if best_model:
-            model_id = best_model.id
-            model_spec = best_model
-            confidence = min(base_confidence + 0.1, 1.0)
-            # Keep the classified task_type; do NOT override with model capabilities.
-            # _infer_task_type was overwriting a correct classification (e.g. creative→vision)
-            # when the selected model happened to have a higher-priority capability.
-        else:
-            model_id = CONFIG.OLLAMA_MODEL
-            model_spec = MODELS.get(model_id) or list(MODELS.values())[0]
-            confidence = 0.5
-            task_type = TaskType.GENERAL
+            if best_model:
+                model_id = best_model.id
+                model_spec = best_model
+                confidence = min(base_confidence + 0.1, 1.0)
+                route_span.set("decision_source", "classified_best_match")
+                # Keep the classified task_type; do NOT override with model capabilities.
+                # _infer_task_type was overwriting a correct classification (e.g. creative→vision)
+                # when the selected model happened to have a higher-priority capability.
+            else:
+                model_id = CONFIG.OLLAMA_MODEL
+                model_spec = MODELS.get(model_id) or list(MODELS.values())[0]
+                confidence = 0.5
+                task_type = TaskType.GENERAL
+                route_span.set("decision_source", "default_model")
 
-        return RouteDecision(
-            model_id=model_id,
-            model_spec=model_spec,
-            task_type=task_type,
-            confidence=confidence,
-            reason=f"Task type: {task_type.value}, best match",
-            fallback_chain=self._get_fallback_chain(model_id),
-        )
+            fallback_chain = self._get_fallback_chain(model_id)
+            route_span.set("selected_model", model_id)
+            route_span.set("decision_confidence", confidence)
+            route_span.set("fallback_count", len(fallback_chain))
+
+            return RouteDecision(
+                model_id=model_id,
+                model_spec=model_spec,
+                task_type=task_type,
+                confidence=confidence,
+                reason=f"Task type: {task_type.value}, best match",
+                fallback_chain=fallback_chain,
+            )
 
     def _get_candidates_for_task(self, task_type: TaskType) -> List[Any]:
         """Get candidate models for a task type."""
