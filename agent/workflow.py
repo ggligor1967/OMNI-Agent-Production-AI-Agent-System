@@ -4,40 +4,41 @@ Define multi-step agentic workflows in YAML or Python dicts.
 Auto-compiles to Pipeline objects for execution.
 
 Workflow YAML format:
-    name: research_and_summarize
-    description: Search, scrape, summarize, store
-    model_hint: qwen3-next:80b-cloud
-    steps:
-      - name: search
-        action: tool
-        tool: web_search
-        params:
-          query: "{{query}}"
-        output: search_results
-        on_error: skip
+        name: research_and_summarize
+        description: Search, scrape, summarize, store
+        model_hint: qwen3-next:80b-cloud
+        steps:
+            - name: search
+                action: tool
+                tool: web_search
+                params:
+                    query: "{{query}}"
+                output: search_results
+                on_error: skip
 
-      - name: summarize
-        action: llm
-        prompt: |
-          Summarize these results about {{query}}:
-          {{search_results}}
-        model: gpt-oss:120b-cloud
-        output: summary
-        condition: "search_results"
+            - name: summarize
+                action: llm
+                prompt: |
+                    Summarize these results about {{query}}:
+                    {{search_results}}
+                model: gpt-oss:120b-cloud
+                output: summary
+                condition: "search_results"
 
-      - name: store
-        action: memory
-        key: "research:{{query}}"
-        value: "{{summary}}"
+            - name: store
+                action: memory
+                key: "research:{{query}}"
+                value: "{{summary}}"
 
-      - name: structured
-        action: structured
-        schema: sentiment
-        input: "{{summary}}"
-        output: sentiment_result
+            - name: structured
+                action: structured
+                schema: sentiment
+                input: "{{summary}}"
+                output: sentiment_result
 
 Supported actions: tool | llm | memory | structured | pipeline | echo | transform
 """
+import ast
 import re
 import time
 import json
@@ -102,6 +103,237 @@ def _render_params(params: Any, context: Dict) -> Any:
     elif isinstance(params, list):
         return [_render_params(v, context) for v in params]
     return params
+
+
+SAFE_TRANSFORM_FUNCTIONS: Dict[str, Callable[..., Any]] = {
+    "abs": abs,
+    "all": all,
+    "any": any,
+    "bool": bool,
+    "dict": dict,
+    "float": float,
+    "int": int,
+    "len": len,
+    "list": list,
+    "max": max,
+    "min": min,
+    "round": round,
+    "set": set,
+    "sorted": sorted,
+    "str": str,
+    "sum": sum,
+    "tuple": tuple,
+}
+
+SAFE_TRANSFORM_METHODS: Dict[type, set[str]] = {
+    dict: {"get", "items", "keys", "values"},
+    list: {"count", "index"},
+    set: {"difference", "intersection", "issubset", "issuperset", "union"},
+    str: {
+        "endswith",
+        "lower",
+        "lstrip",
+        "replace",
+        "rstrip",
+        "split",
+        "startswith",
+        "strip",
+        "upper",
+    },
+    tuple: {"count", "index"},
+}
+
+
+class _SafeTransformEvaluator(ast.NodeVisitor):
+    """Evaluate a tightly-scoped expression language for workflow transforms."""
+
+    def __init__(self, context: Dict[str, Any]):
+        self.context = dict(context)
+
+    def evaluate(self, expr: str) -> Any:
+        tree = ast.parse(expr, mode="eval")
+        return self.visit(tree.body)
+
+    def visit_Constant(self, node: ast.Constant) -> Any:
+        return node.value
+
+    def visit_Name(self, node: ast.Name) -> Any:
+        if node.id in SAFE_TRANSFORM_FUNCTIONS:
+            return SAFE_TRANSFORM_FUNCTIONS[node.id]
+        if node.id in self.context:
+            return self.context[node.id]
+        raise ValueError(f"Unknown name '{node.id}'")
+
+    def visit_List(self, node: ast.List) -> List[Any]:
+        return [self.visit(item) for item in node.elts]
+
+    def visit_Tuple(self, node: ast.Tuple) -> tuple[Any, ...]:
+        return tuple(self.visit(item) for item in node.elts)
+
+    def visit_Set(self, node: ast.Set) -> set[Any]:
+        return {self.visit(item) for item in node.elts}
+
+    def visit_Dict(self, node: ast.Dict) -> Dict[Any, Any]:
+        return {
+            self.visit(key): self.visit(value)
+            for key, value in zip(node.keys, node.values)
+        }
+
+    def visit_Subscript(self, node: ast.Subscript) -> Any:
+        value = self.visit(node.value)
+        index = self._resolve_slice(node.slice)
+        return value[index]
+
+    def visit_Attribute(self, node: ast.Attribute) -> Any:
+        value = self.visit(node.value)
+        attr = self._resolve_attribute(value, node.attr)
+        if callable(attr):
+            raise ValueError(f"Method '{node.attr}' must be called explicitly")
+        return attr
+
+    def visit_Call(self, node: ast.Call) -> Any:
+        args = [self.visit(arg) for arg in node.args]
+        kwargs = {
+            kw.arg: self.visit(kw.value)
+            for kw in node.keywords
+            if kw.arg is not None
+        }
+
+        if isinstance(node.func, ast.Name):
+            func = SAFE_TRANSFORM_FUNCTIONS.get(node.func.id)
+            if func is None:
+                raise ValueError(f"Function '{node.func.id}' is not allowed")
+            return func(*args, **kwargs)
+
+        if isinstance(node.func, ast.Attribute):
+            target = self.visit(node.func.value)
+            method = self._resolve_method(target, node.func.attr)
+            return method(*args, **kwargs)
+
+        raise ValueError("Unsupported function call")
+
+    def visit_BinOp(self, node: ast.BinOp) -> Any:
+        left = self.visit(node.left)
+        right = self.visit(node.right)
+
+        if isinstance(node.op, ast.Add):
+            return left + right
+        if isinstance(node.op, ast.Sub):
+            return left - right
+        if isinstance(node.op, ast.Mult):
+            return left * right
+        if isinstance(node.op, ast.Div):
+            return left / right
+        if isinstance(node.op, ast.FloorDiv):
+            return left // right
+        if isinstance(node.op, ast.Mod):
+            return left % right
+
+        raise ValueError(f"Operator '{type(node.op).__name__}' is not allowed")
+
+    def visit_UnaryOp(self, node: ast.UnaryOp) -> Any:
+        operand = self.visit(node.operand)
+
+        if isinstance(node.op, ast.UAdd):
+            return +operand
+        if isinstance(node.op, ast.USub):
+            return -operand
+        if isinstance(node.op, ast.Not):
+            return not operand
+
+        raise ValueError(f"Unary operator '{type(node.op).__name__}' is not allowed")
+
+    def visit_BoolOp(self, node: ast.BoolOp) -> Any:
+        values = [self.visit(value) for value in node.values]
+        if isinstance(node.op, ast.And):
+            return all(values)
+        if isinstance(node.op, ast.Or):
+            return any(values)
+        raise ValueError(f"Boolean operator '{type(node.op).__name__}' is not allowed")
+
+    def visit_Compare(self, node: ast.Compare) -> bool:
+        left = self.visit(node.left)
+        for op, comparator in zip(node.ops, node.comparators):
+            right = self.visit(comparator)
+            if isinstance(op, ast.Eq):
+                ok = left == right
+            elif isinstance(op, ast.NotEq):
+                ok = left != right
+            elif isinstance(op, ast.Gt):
+                ok = left > right
+            elif isinstance(op, ast.GtE):
+                ok = left >= right
+            elif isinstance(op, ast.Lt):
+                ok = left < right
+            elif isinstance(op, ast.LtE):
+                ok = left <= right
+            elif isinstance(op, ast.In):
+                ok = left in right
+            elif isinstance(op, ast.NotIn):
+                ok = left not in right
+            elif isinstance(op, ast.Is):
+                ok = left is right
+            elif isinstance(op, ast.IsNot):
+                ok = left is not right
+            else:
+                raise ValueError(f"Comparison '{type(op).__name__}' is not allowed")
+
+            if not ok:
+                return False
+            left = right
+
+        return True
+
+    def visit_IfExp(self, node: ast.IfExp) -> Any:
+        return self.visit(node.body) if self.visit(node.test) else self.visit(node.orelse)
+
+    def _resolve_slice(self, node: ast.AST) -> Any:
+        if isinstance(node, ast.Slice):
+            return slice(
+                self.visit(node.lower) if node.lower else None,
+                self.visit(node.upper) if node.upper else None,
+                self.visit(node.step) if node.step else None,
+            )
+        return self.visit(node)
+
+    def _resolve_attribute(self, value: Any, attr: str) -> Any:
+        if attr.startswith("_"):
+            raise ValueError(f"Private attribute access is not allowed: '{attr}'")
+
+        if isinstance(value, dict) and attr in value:
+            return value[attr]
+
+        if not hasattr(value, attr):
+            raise ValueError(f"Attribute '{attr}' is not available")
+
+        return getattr(value, attr)
+
+    def _resolve_method(self, value: Any, name: str) -> Callable[..., Any]:
+        if name.startswith("_"):
+            raise ValueError(f"Private method access is not allowed: '{name}'")
+
+        allowed_names: set[str] = set()
+        for value_type, names in SAFE_TRANSFORM_METHODS.items():
+            if isinstance(value, value_type):
+                allowed_names.update(names)
+
+        if name not in allowed_names:
+            raise ValueError(f"Method '{name}' is not allowed")
+
+        method = getattr(value, name)
+        if not callable(method):
+            raise ValueError(f"Attribute '{name}' is not callable")
+        return method
+
+    def generic_visit(self, node: ast.AST) -> Any:
+        raise ValueError(f"Unsupported expression node '{type(node).__name__}'")
+
+
+def _safe_eval_transform(expr: str, context: Dict[str, Any]) -> Any:
+    try:
+        return _SafeTransformEvaluator(context).evaluate(expr)
+    except SyntaxError as exc:
+        raise ValueError(f"Invalid transform expression '{expr}': {exc.msg}") from exc
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -327,11 +559,9 @@ class WorkflowCompiler:
 
         elif spec.action == "transform":
             async def transform_handler(ctx: Dict) -> Any:
-                # Safe eval of simple Python expressions
                 expr = _render_template(spec.transform_expr, ctx)
                 try:
-                    result = eval(expr, {"__builtins__": {}}, dict(ctx))
-                    return result
+                    return _safe_eval_transform(expr, ctx)
                 except Exception as e:
                     raise ValueError(f"Transform '{expr}' failed: {e}")
             return transform_handler

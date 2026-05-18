@@ -760,6 +760,8 @@ class TestWorkflowBuiltins:
     @pytest.fixture
     def mock_agent(self):
         """Minimal mock agent for workflow registration."""
+        from agent.pipeline import PipelineExecutor
+
         class MockMemory:
             def save_memory(self, *a, **kw): pass
             def get_history(self, *a, **kw): return []
@@ -773,19 +775,6 @@ class TestWorkflowBuiltins:
                 from agent.rag import Document
                 return Document(id="d1", title="t", source="", doc_type="raw", total_chunks=1)
 
-        class MockPipelineExecutor:
-            def register(self, p): pass
-            async def run(self, p, ctx=None):
-                from agent.pipeline import PipelineRun, StepStatus
-                run = PipelineRun(run_id="test", pipeline_name=p.name)
-                run.status = StepStatus.SUCCESS
-                run.context = dict(ctx or {})
-                run.finished_at = time.time()
-                return run
-            async def run_by_name(self, name, ctx=None):
-                return None
-            def list_pipelines(self): return []
-
         class MockStructuredParser:
             async def parse(self, text, schema, **kw):
                 from agent.structured_output import ParseResult
@@ -796,7 +785,7 @@ class TestWorkflowBuiltins:
             memory = MockMemory()
             llm = MockLLM()
             rag = MockRAG()
-            pipeline_executor = MockPipelineExecutor()
+            pipeline_executor = PipelineExecutor()
             structured_parser = MockStructuredParser()
 
         return Agent()
@@ -846,6 +835,55 @@ class TestWorkflowBuiltins:
         })
         run = await wm.run("echo_test", {"name": "World"})
         assert run is not None
+
+    @pytest.mark.asyncio
+    async def test_run_transform_workflow_allows_safe_expressions(self, mock_agent):
+        from agent.pipeline import StepStatus
+        from agent.workflow import WorkflowManager
+
+        wm = WorkflowManager(mock_agent)
+        wm.register({
+            "name": "transform_safe",
+            "steps": [
+                {"name": "double", "action": "transform", "transform": "value * 2", "output": "doubled"},
+                {"name": "shout", "action": "transform", "transform": "text.upper()", "output": "shout"},
+                {"name": "lookup", "action": "transform", "transform": "payload.get('city', 'unknown')", "output": "city"},
+            ]
+        })
+
+        run = await wm.run("transform_safe", {
+            "value": 21,
+            "text": "hello",
+            "payload": {"city": "Cluj"},
+        })
+
+        assert run.status == StepStatus.SUCCESS
+        assert run.context["doubled"] == 42
+        assert run.context["shout"] == "HELLO"
+        assert run.context["city"] == "Cluj"
+
+    @pytest.mark.asyncio
+    async def test_run_transform_workflow_blocks_unsafe_calls(self, mock_agent):
+        from agent.pipeline import StepStatus
+        from agent.workflow import WorkflowManager
+
+        wm = WorkflowManager(mock_agent)
+        wm.register({
+            "name": "transform_blocked",
+            "steps": [
+                {
+                    "name": "hack",
+                    "action": "transform",
+                    "transform": "__import__('os').system('echo nope')",
+                    "output": "hack_result",
+                },
+            ]
+        })
+
+        run = await wm.run("transform_blocked", {})
+
+        assert run.status == StepStatus.FAILED
+        assert "__import__" in run.error or "not allowed" in run.error.lower()
 
     def test_run_unknown_raises(self, mock_agent):
         from agent.workflow import WorkflowManager

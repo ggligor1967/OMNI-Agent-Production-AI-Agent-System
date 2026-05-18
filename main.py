@@ -28,7 +28,8 @@ def _validate_security_config() -> None:
             "Set a strong SECRET_KEY before starting."
         )
 
-    if getattr(CONFIG, "API_HOST", "") == "0.0.0.0" and not getattr(CONFIG, "AUTH_ENFORCE", True):
+    # B104 false positive: this branch explicitly rejects insecure public binds without auth.
+    if getattr(CONFIG, "API_HOST", "") == "0.0.0.0" and not getattr(CONFIG, "AUTH_ENFORCE", True):  # nosec B104
         raise RuntimeError(
             "[SECURITY] Cannot bind to 0.0.0.0 with AUTH_ENFORCE=false. "
             "Use 127.0.0.1 for dev or enable authentication."
@@ -62,7 +63,8 @@ async def run_cli(agent: 'OmniAgent') -> None:
 
 
 def _display_host(host: str) -> str:
-    return "localhost" if host in {"0.0.0.0", "::"} else host
+    # B104 false positive: display-only normalization of the host label; no socket binding occurs here.
+    return "localhost" if host in {"0.0.0.0", "::"} else host  # nosec B104
 
 
 def _api_bind_ports() -> list[int]:
