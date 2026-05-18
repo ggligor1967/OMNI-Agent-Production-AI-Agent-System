@@ -1,0 +1,6 @@
+
+tests/test_export_api_contracts.py::test_memorydb_get_all_memories_returns_deserialized_export_rows PASSED [ 33%]
+tests/test_export_api_contracts.py::test_knowledge_graph_export_matches_exporter_contract PASSED [ 66%]
+tests/test_export_api_contracts.py::test_exporter_uses_real_memory_and_kg_contracts PASSED [100%]
+
+============================== 3 passed in 0.37s ==============================

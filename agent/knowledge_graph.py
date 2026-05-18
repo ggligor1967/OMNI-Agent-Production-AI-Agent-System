@@ -400,6 +400,48 @@ class KnowledgeGraph:
                 / len(self._nodes), 2)
         return s
 
+    def export(self) -> Dict[str, List[Dict[str, Any]]]:
+        entities = []
+        for node_id in sorted(self._nodes):
+            node = self._nodes[node_id]
+            description = ""
+            if isinstance(node.properties, dict):
+                description = str(node.properties.get("description", ""))
+            entities.append({
+                "id": node.id,
+                "name": node.label,
+                "type": node.node_type,
+                "description": description,
+                "properties": dict(node.properties),
+                "tags": list(node.tags),
+                "created_at": node.created_at,
+            })
+
+        relationships = []
+        for edge in sorted(
+            self._edges.values(),
+            key=lambda item: (item.from_id, item.to_id, item.relation, item.id),
+        ):
+            description = ""
+            if isinstance(edge.properties, dict):
+                description = str(edge.properties.get("description", ""))
+            relationships.append({
+                "id": edge.id,
+                "source": edge.from_id,
+                "target": edge.to_id,
+                "label": edge.relation,
+                "description": description,
+                "weight": edge.weight,
+                "properties": dict(edge.properties),
+                "created_at": edge.created_at,
+            })
+
+        return {
+            "entities": entities,
+            "relationships": relationships,
+            "stats": self.stats(),
+        }
+
     def register_routes(self, app, prefix=""):
         from aiohttp import web
         async def add_node_ep(req):

@@ -178,6 +178,36 @@ class MemoryDB:
             ).fetchall()
         return [dict(r) for r in rows]
 
+    def _deserialize_memory_value(self, raw_value: str) -> Any:
+        try:
+            return json.loads(raw_value)
+        except (TypeError, json.JSONDecodeError):
+            return raw_value
+
+    def get_all_memories(self, category: Optional[str] = None) -> List[Dict]:
+        sql = (
+            "SELECT id, key, value, category, importance, source, created_at, updated_at "
+            "FROM memories"
+        )
+        params: List[Any] = []
+        if category:
+            sql += " WHERE category=?"
+            params.append(category)
+        sql += " ORDER BY importance DESC, updated_at DESC, key ASC"
+
+        with self._conn() as conn:
+            rows = conn.execute(sql, params).fetchall()
+
+        memories = []
+        for row in rows:
+            item = dict(row)
+            item["value"] = self._deserialize_memory_value(item.get("value"))
+            memories.append(item)
+        return memories
+
+    def export(self, category: Optional[str] = None) -> List[Dict]:
+        return self.get_all_memories(category=category)
+
     # ── Agent State ────────────────────────────────────────────────────────────
 
     def set_state(self, key: str, value: Any):
