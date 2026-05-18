@@ -1,0 +1,176 @@
+﻿README.md:4:Routes intelligently across **27 cloud models**, supports RAG, pipelines, caching, prompt templates, and a rich interactive CLI.
+README.md:13:cp .env.example .env          # Edit TELEGRAM_TOKEN, OLLAMA_BASE_URL
+README.md:14:ollama serve &
+README.md:21:Dashboard: **http://localhost:8000/dashboard**
+README.md:23:### One-click local dashboard start (Windows)
+README.md:28:.\start_dashboard.bat
+README.md:34:.\stop_dashboard.bat
+README.md:47:- disables auth for local dashboard use by setting `AUTH_ENFORCE=false`
+README.md:48:- opens the dashboard automatically in your browser
+README.md:49:- reuses the existing local dashboard if it is already running
+README.md:53:- `start_dashboard.bat` starts or reuses OMNI API mode and opens the dashboard
+README.md:54:- `stop_dashboard.bat` stops OMNI processes running in `api` or `all` mode because they own the dashboard server
+README.md:59:- `start_all.bat` starts OMNI in `all` mode and opens the dashboard when the API is ready
+README.md:70:│   ├── multi_model_client.py # Unified async LLM interface (27 models)
+README.md:73:│   ├── ollama_client.py      # Raw Ollama API client
+README.md:74:│   ├── rag.py                # RAG pipeline: ingest → chunk → embed → retrieve
+README.md:75:│   ├── cache.py              # Redis cache (memory fallback)
+README.md:80:│   ├── memory.py             # SQLite persistent memory (8 tables)
+README.md:81:│   ├── database.py           # DB abstraction (SQLite / PostgreSQL)
+README.md:88:│   ├── dashboard.py          # Real-time web dashboard
+README.md:91:│       └── __init__.py       # WebScraper, CodeExecutor, SemanticAnalyzer, SecurityToolkit
+README.md:97:│   └── test_new_modules.py   # RAG, cache, templates, pipeline, summarizer (80+)
+README.md:151:GET  /models                  All 27 models
+README.md:157:### RAG
+README.md:159:POST /rag/ingest              Ingest text into vector store
+README.md:160:POST /rag/query               Retrieve relevant chunks
+README.md:161:GET  /rag/docs                List ingested documents
+README.md:162:DELETE /rag/docs/{id}         Delete a document
+README.md:189:/models                       Browse all 27 models
+README.md:194:/load <file>                  Ingest document into RAG
+README.md:196:/docs                         List RAG documents
+README.md:197:/rag <question>               RAG-augmented answer
+README.md:220:## RAG Pipeline
+README.md:224:doc = await agent.rag.ingest_file("research_paper.pdf")
+README.md:225:doc = await agent.rag.ingest_text("...", title="My Note")
+README.md:226:docs = await agent.rag.ingest_directory("./docs", extensions=["md","txt"])
+README.md:229:results = await agent.rag.retrieve("transformer architecture", top_k=5)
+README.md:231:# RAG-augmented chat
+README.md:232:augmented, results = await agent.rag.augment_prompt("How does attention work?")
+README.md:239:# Built-in templates: summarize, code_review, translate, rag_answer,
+README.md:268:# Automatic response caching (1h TTL, Redis or in-memory)
+README.md:286:OLLAMA_BASE_URL=http://localhost:11434
+README.md:287:OLLAMA_MODEL=qwen3-next:80b-cloud
+README.md:302:REDIS_URL=redis://localhost:6379/0
+README.md:311:# Services: omni-agent (:8000), ollama (:11434), searxng (:8080), redis (:6379)
+README.md:319:pytest tests/ -v                         # All tests
+README.md:320:pytest tests/test_models.py -v           # Model registry + router (45+ tests)
+README.md:321:pytest tests/test_new_modules.py -v      # RAG, cache, templates, pipeline (80+ tests)
+README.md:322:pytest tests/test_suite.py -v            # Core modules (50+ tests)
+AGENTS.md:7:OMNI Agent is a modular, async Python AI agent system that routes requests across 27 cloud LLM models. It supports four run modes: CLI, REST API (aiohttp on :8000), Telegram bot, and all-at-once. The system uses Ollama as its LLM backend with auto-routing to select the best model per task type (code, math, vision, multilingual, etc.).
+AGENTS.md:19:pytest tests/ -v                   # All tests
+AGENTS.md:20:pytest tests/test_models.py -v     # Model registry + router (canonical)
+AGENTS.md:21:pytest tests/test_new_modules.py -v # RAG, cache, templates, pipeline
+AGENTS.md:22:pytest tests/test_suite.py -v      # Core modules
+AGENTS.md:23:pytest -k "test_name" -v           # Single test by name
+AGENTS.md:26:docker-compose up -d               # omni-agent(:8000), ollama(:11434), searxng(:8080)
+AGENTS.md:36:1. `OmniAgent.chat()` — main entry: security check → intent detection → skill triggers → history/summarization → optional RAG augmentation → cache check → LLM call → tool execution → memory extraction
+AGENTS.md:46:- **`agent/ollama_client.py`** — Raw Ollama HTTP client
+AGENTS.md:63:**Category coverage:**
+AGENTS.md:89:| `agent/memory.py` | SQLite persistent memory (MemoryDB, 8 tables) |
+AGENTS.md:90:| `agent/rag.py` | RAG pipeline: ingest → chunk → embed → retrieve |
+AGENTS.md:91:| `agent/cache.py` | Redis cache with in-memory fallback |
+AGENTS.md:100:| `agent/auth.py` | JWT auth with role-based access |
+AGENTS.md:104:| `agent/dashboard.py` | Real-time web dashboard at /dashboard |
+AGENTS.md:116:- Database: `DB_PATH` (SQLite default), `DB_BACKEND`, `POSTGRES_DSN`, `REDIS_URL`
+AGENTS.md:118:- Security: `SECRET_KEY`, `AUTH_ENFORCE`, `RATE_LIMIT_PER_MINUTE`, `ENABLE_SANDBOX`
+AGENTS.md:122:- All async uses `asyncio`. pytest uses `asyncio_mode = auto` (see `pytest.ini`).
+CLAUDE.md:7:OMNI Agent is a modular, async Python AI agent system that routes requests across 27 cloud LLM models. It supports four run modes: CLI, REST API (aiohttp on :8000), Telegram bot, and all-at-once. The system uses Ollama as its LLM backend with auto-routing to select the best model per task type (code, math, vision, multilingual, etc.).
+CLAUDE.md:19:pytest tests/ -v                   # All tests
+CLAUDE.md:20:pytest tests/test_models.py -v     # Model registry + router (canonical)
+CLAUDE.md:21:pytest tests/test_new_modules.py -v # RAG, cache, templates, pipeline
+CLAUDE.md:22:pytest tests/test_suite.py -v      # Core modules
+CLAUDE.md:23:pytest -k "test_name" -v           # Single test by name
+CLAUDE.md:26:docker-compose up -d               # omni-agent(:8000), ollama(:11434), searxng(:8080)
+CLAUDE.md:36:1. `OmniAgent.chat()` — main entry: security check → intent detection → skill triggers → history/summarization → optional RAG augmentation → cache check → LLM call → tool execution → memory extraction
+CLAUDE.md:46:- **`agent/ollama_client.py`** — Raw Ollama HTTP client
+CLAUDE.md:63:**Category coverage:**
+CLAUDE.md:89:| `agent/memory.py` | SQLite persistent memory (MemoryDB, 8 tables) |
+CLAUDE.md:90:| `agent/rag.py` | RAG pipeline: ingest → chunk → embed → retrieve |
+CLAUDE.md:91:| `agent/cache.py` | Redis cache with in-memory fallback |
+CLAUDE.md:100:| `agent/auth.py` | JWT auth with role-based access |
+CLAUDE.md:104:| `agent/dashboard.py` | Real-time web dashboard at /dashboard |
+CLAUDE.md:116:- Database: `DB_PATH` (SQLite default), `DB_BACKEND`, `POSTGRES_DSN`, `REDIS_URL`
+CLAUDE.md:118:- Security: `SECRET_KEY`, `AUTH_ENFORCE`, `RATE_LIMIT_PER_MINUTE`, `ENABLE_SANDBOX`
+CLAUDE.md:122:- All async uses `asyncio`. pytest uses `asyncio_mode = auto` (see `pytest.ini`).
+.env.example:5:# ── Ollama Endpoint ───────────────────────────────────────────────────────────
+.env.example:6:OLLAMA_BASE_URL=http://localhost:11434
+.env.example:7:OLLAMA_EMBEDDING_MODEL=nomic-embed-text
+.env.example:10:OLLAMA_MODEL=qwen3-next:80b-cloud
+.env.example:97:DB_BACKEND=sqlite
+.env.example:98:# POSTGRES_DSN=postgresql://omni:omni@localhost:5432/omni_agent
+.env.example:103:# ── Security ──────────────────────────────────────────────────────────────────
+.env.example:107:AUTH_ENFORCE=true
+.env.example:108:# One-time bootstrap secret used only for POST /auth/bootstrap when no API keys exist yet.
+.env.example:110:AUTH_BOOTSTRAP_TOKEN=
+tests\SUPPORT_MATRIX.md:17:| `test_security_auth_tools.py` | 6 | 0 | Security gates | KEEP |
+tests\SUPPORT_MATRIX.md:18:| `test_startup_security.py` | 3 | 0 | Startup security | KEEP |
+tests\SUPPORT_MATRIX.md:20:| `test_dashboard.py` | 2 | 0 | Dashboard UI | KEEP |
+tests\SUPPORT_MATRIX.md:39:- The runtime model registry source of truth is **27 models**.
+tests\SUPPORT_MATRIX.md:43:- Python 3.13-sensitive sync tests now use `asyncio.run(...)`.
+tests\SUPPORT_MATRIX.md:52:pytest tests/ -q
+tests\SUPPORT_MATRIX.md:67:3. Treat Bandit HIGH findings and security-critical MEDIUM findings as follow-on Sprint 0 blockers until remediated.
+.github\workflows\ci.yml:13:      AUTH_ENFORCE: "true"
+.github\workflows\ci.yml:23:      - run: pip install -r requirements.txt pytest ruff bandit pip-audit coverage pyyaml
+.github\workflows\ci.yml:26:      - run: pytest tests/ -q
+.github\workflows\ci.yml:27:      - run: ruff check .
+.github\workflows\ci.yml:29:      # Blocking Sprint 0 Bandit gate: active/hot-path runtime modules only.
+.github\workflows\ci.yml:30:      # Full-agent coverage remains in the audit lane below until orphan/standalone
+.github\workflows\ci.yml:32:      - name: Bandit active-path gate
+.github\workflows\ci.yml:34:          bandit -ll -ii -c bandit.yaml \
+.github\workflows\ci.yml:38:            agent/auth.py \
+.github\workflows\ci.yml:42:            agent/ollama_client.py \
+.github\workflows\ci.yml:44:            agent/rag.py \
+.github\workflows\ci.yml:52:            agent/dashboard.py \
+.github\workflows\ci.yml:60:      - run: coverage erase && coverage run -m pytest tests/ && coverage report
+.github\workflows\ci.yml:62:  full-agent-bandit-audit:
+.github\workflows\ci.yml:72:      - run: pip install -r requirements.txt bandit
+.github\workflows\ci.yml:74:      - name: Full-agent Bandit audit
+.github\workflows\ci.yml:78:          bandit -r agent -x agent/_legacy,tests -c bandit.yaml -ll -ii \
+.github\workflows\ci.yml:79:            2>&1 | tee snapshot-sprint-0/bandit_full_agent_audit.log
+.github\workflows\ci.yml:81:      - name: Upload full-agent Bandit audit
+.github\workflows\ci.yml:85:          name: bandit-full-agent-audit
+.github\workflows\ci.yml:86:          path: snapshot-sprint-0/bandit_full_agent_audit.log
+.github\workflows\ci.yml:100:      - run: pip install -r requirements.txt pytest
+.github\workflows\ci.yml:101:      - run: pytest tests/_archive/ -q || true
+bandit.yaml:1:# Sprint 0 policy: keep Bandit strict on active-path modules.
+pytest.ini:1:[pytest]
+docs\adr\ADR-001-model-registry.md:8:The runtime `MODELS` registry contains 27 entries, while several tests and documentation sections still described the catalog as 24 models. Repository audit artifacts in `scripts/_model_audit.py` also identify three additional registry entries beyond the original 24:
+docs\adr\ADR-001-model-registry.md:34:- Tests and docs must assert 27 models, not 24.
+docs\adr\ADR-002-enterprise-module-deduplication.md:8:Phase 2 Gate 2.1 established that the repository contains several duplicate or overlapping enterprise-style module families, but only a subset of them is actually used by the current runtime path.
+docs\adr\ADR-002-enterprise-module-deduplication.md:18:Fresh Phase 2 evidence also showed that several sibling modules are either:
+docs\adr\ADR-002-enterprise-module-deduplication.md:37:- `snapshot-phase-2/import_graph_phase2.log`
+docs\adr\ADR-002-enterprise-module-deduplication.md:38:- `snapshot-phase-2/ORPHAN_MODULE_CLASSIFICATION.md`
+docs\adr\ADR-002-enterprise-module-deduplication.md:43:Choose the following canonical modules for Phase 2 and stop adding new imports to their non-canonical siblings.
+docs\adr\ADR-002-enterprise-module-deduplication.md:48:| tool registry | `agent/tools_registry.py` | It is the active runtime implementation used by `main.py`, `agent/core.py`, and `agent/workflow.py`, and it carries the confirmation-policy and typed-tool contract required by Phase 1 security hardening. |
+docs\adr\ADR-002-enterprise-module-deduplication.md:58:- `agent/secrets_manager.py` is explicitly non-canonical pending any future secret-storage adoption work.
+docs\adr\ADR-003-db-strategy.md:8:SQLite is supported for local development, test runs, and single-node evaluation.
+docs\adr\ADR-003-db-strategy.md:10:Postgres is the production target for shared-state, multi-instance, or operationally durable deployments.
+docs\adr\ADR-003-db-strategy.md:12:This decision is directional and architectural, not a claim that the live runtime is already fully migrated to Postgres.
+docs\adr\ADR-003-db-strategy.md:16:The active runtime is still SQLite-first.
+docs\adr\ADR-003-db-strategy.md:20:- `agent.memory.MemoryDB` uses `sqlite3.connect` directly and is wired from `CONFIG.DB_PATH`.
+docs\adr\ADR-003-db-strategy.md:21:- `agent.rag.VectorStore` uses SQLite directly and is instantiated with `data/rag.db`.
+docs\adr\ADR-003-db-strategy.md:22:- `agent.knowledge_graph.KnowledgeGraph` uses SQLite directly and is instantiated with `data/knowledge_graph.db`.
+docs\adr\ADR-003-db-strategy.md:23:- `agent.auth.AuthStore` uses SQLite directly and is instantiated with `data/auth.db` from both `agent/core.py` and `main.py`.
+docs\adr\ADR-003-db-strategy.md:24:- `agent.evaluation.Evaluator` persists to SQLite (`data/eval_results.db`).
+docs\adr\ADR-003-db-strategy.md:25:- `agent.config_manager.ConfigManager` persists to SQLite (`data/config.db`).
+docs\adr\ADR-003-db-strategy.md:26:- `agent.notifications.Notifier` persists to SQLite (`data/notifications.db`).
+docs\adr\ADR-003-db-strategy.md:32:- `POSTGRES_DSN`
+docs\adr\ADR-003-db-strategy.md:33:- `REDIS_URL`
+docs\adr\ADR-003-db-strategy.md:37:`agent/database.py` contains a real `asyncpg`-backed `PostgresBackend` and `create_backend()` factory, but that abstraction is not wired into the active orchestrator path. In practice, this means the repository has Postgres groundwork without end-to-end Postgres adoption.
+docs\adr\ADR-003-db-strategy.md:41:- Local development and tests may continue to use SQLite as the supported default.
+docs\adr\ADR-003-db-strategy.md:42:- Production architecture should target Postgres as the system-of-record database once active subsystems are migrated.
+docs\adr\ADR-003-db-strategy.md:43:- Setting `DB_BACKEND=postgres` is **not** sufficient today to move the live runtime off SQLite.
+docs\adr\ADR-003-db-strategy.md:44:- Until runtime services stop opening SQLite files directly, Postgres support must be treated as partial and not yet authoritative for production storage.
+docs\adr\ADR-003-db-strategy.md:45:- Public deployment guidance must not claim that auth, memory, RAG, knowledge graph, evaluation, config persistence, or notifications already run on Postgres.
+docs\adr\ADR-003-db-strategy.md:50:   - Make `MemoryDB` backend-aware or introduce a shared storage adapter.
+docs\adr\ADR-003-db-strategy.md:51:   - Route conversation history, memories, state, and audit storage through the active backend decision.
+docs\adr\ADR-003-db-strategy.md:53:2. **Auth**
+docs\adr\ADR-003-db-strategy.md:54:   - Replace direct SQLite use in `AuthStore` with a backend abstraction that respects `DB_BACKEND` and `POSTGRES_DSN`.
+docs\adr\ADR-003-db-strategy.md:55:   - Keep bootstrap and ownership-binding behavior unchanged during storage migration.
+docs\adr\ADR-003-db-strategy.md:57:3. **RAG / Knowledge Graph**
+docs\adr\ADR-003-db-strategy.md:58:   - Decouple `VectorStore` and `KnowledgeGraph` from direct SQLite connections.
+docs\adr\ADR-003-db-strategy.md:59:   - Define the production persistence model for chunk storage, metadata, and graph state before declaring Postgres support complete.
+docs\adr\ADR-003-db-strategy.md:62:   - Remove hardcoded per-subsystem SQLite database paths.
+docs\adr\ADR-003-db-strategy.md:66:   - Keep `agent.export` above storage details.
+docs\adr\ADR-003-db-strategy.md:67:   - Let export consume migrated memory/KG APIs rather than assuming SQLite-backed implementations.
+docs\adr\ADR-003-db-strategy.md:70:   - Keep SQLite as the default test backend initially.
+docs\adr\ADR-003-db-strategy.md:71:   - Add backend-specific tests only after one subsystem at a time is truly Postgres-ready.
+docs\adr\ADR-003-db-strategy.md:72:   - Avoid a repo-wide "flip everything to postgres" change in one gate.
+docs\adr\ADR-003-db-strategy.md:76:- Do not complete full Postgres migration in this gate.
+docs\adr\ADR-003-db-strategy.md:77:- Do not claim that `DB_BACKEND=postgres` is already authoritative across the active runtime.
+docs\adr\ADR-003-db-strategy.md:78:- Do not rewrite all storage modules in a single refactor.
+docs\adr\ADR-003-db-strategy.md:79:- Do not remove SQLite support for local development or tests.
+docs\adr\ADR-003-db-strategy.md:85:- **today's implementation reality:** SQLite-first runtime
+docs\adr\ADR-003-db-strategy.md:86:- **production direction:** Postgres target
+docs\adr\ADR-003-db-strategy.md:87:- **remaining work:** migrate active subsystems until the runtime backend decision is actually authoritative

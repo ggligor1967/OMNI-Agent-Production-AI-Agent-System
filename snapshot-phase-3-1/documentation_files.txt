@@ -1,0 +1,14 @@
+﻿.tmp_job_search_improved_fixed.txt
+.tmp_job_search_output.txt
+.tmp_job_search_output_filtered.txt
+.tmp_job_search_output_filtered_v2.txt
+AGENTS.md
+CLAUDE.md
+coverage_baseline_sprint0.txt
+docs\adr\ADR-001-model-registry.md
+docs\adr\ADR-002-enterprise-module-deduplication.md
+docs\adr\ADR-003-db-strategy.md
+OMNI Agent Sprint 0–3 Execution Plan.md
+README.md
+requirements.txt
+tests\SUPPORT_MATRIX.md
