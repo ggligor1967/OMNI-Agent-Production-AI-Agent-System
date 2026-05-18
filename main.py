@@ -135,7 +135,6 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
         from agent.model_registry import MODELS, summary_table
         # All models actually present in Ollama right now
         all_ollama: set = await agent.llm._list_ollama_models(cache_seconds=0)
-        registered_available = {mid for mid in MODELS if mid in all_ollama}
         models = []
         for row in summary_table():
             model_row = dict(row)
@@ -489,7 +488,6 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
 
     async def kg_search_endpoint(request: web.Request) -> web.Response:
         name = request.rel_url.query.get("name", "")
-        hops = int(request.rel_url.query.get("hops", "1"))
         if not name:
             return web.json_response({"error": "name required"}, status=400)
         nodes = agent.knowledge_graph.neighbours(name, direction="both")

@@ -4,7 +4,24 @@ Drop any .py file here. The SkillsManager will auto-load it.
 Each skill must call skills_manager.register(...) via decorator.
 """
 
+from typing import TYPE_CHECKING
+
 # skills_manager is injected by SkillsManager.load_from_directory()
+
+if TYPE_CHECKING:
+    from agent.skills_manager import SkillsManager
+
+try:
+    skills_manager
+except NameError:
+    class _FallbackSkillsManager:
+        def register(self, *args, **kwargs):
+            def decorator(fn):
+                return fn
+
+            return decorator
+
+    skills_manager = _FallbackSkillsManager()
 
 @skills_manager.register(
     name="summarize",

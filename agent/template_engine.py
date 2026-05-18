@@ -87,15 +87,7 @@ class _SafeStr(str):
     """Marks a string as already escaped (skip auto-escape)."""
     pass
 
-_BUILTIN_FILTERS: Dict[str, Callable] = {
-    "upper":upper,"lower":lower,"title":title,"trim":trim,
-    "length":length,"default":default,"join":join,"split":split,
-    "first":first,"last":last,"int":int_,"float":float_,
-    "bool":bool_,"json":json_,"escape":escape,"safe":safe,
-    "truncate":truncate,"replace":replace,"repeat":repeat,
-    "reverse":reverse,"abs":abs_,"round":round_,
-    "list":list_,"unique":unique,"sort":sort,
-} if False else {}  # populated below
+_BUILTIN_FILTERS: Dict[str, Callable] = {}
 
 for _name, _fn in [
     ("upper",_f_upper),("lower",_f_lower),("title",_f_title),
