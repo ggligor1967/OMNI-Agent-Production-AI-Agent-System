@@ -1,0 +1,367 @@
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\config_validator.py:238: SyntaxWarning: invalid escape sequence '\w'
+  "host": FieldSchema("str", required=True, pattern=r'^[\w.-]+$'),
+# Phase 2 Import Inventory
+
+Analyzed modules: 234
+
+## Active agent modules by inbound runtime imports
+
+module | runtime_in | test_in | outgoing | imported_by | imports
+--- | ---: | ---: | ---: | --- | ---
+agent.ab_router | 0 | 0 | 0 | - | -
+agent.ab_testing | 0 | 0 | 0 | - | -
+agent.access_control | 0 | 0 | 0 | - | -
+agent.adaptive_sampler | 0 | 0 | 0 | - | -
+agent.adaptive_throttler | 0 | 0 | 0 | - | -
+agent.admission_control | 0 | 0 | 0 | - | -
+agent.agent_builder | 0 | 0 | 9 | - | agent.datastore, agent.federation, agent.governance, agent.jobs, agent.llm_cache, agent.observability, agent.optimizer, agent.search, agent.session
+agent.agent_coordinator | 0 | 0 | 0 | - | -
+agent.agent_memory | 0 | 0 | 0 | - | -
+agent.agent_monitor | 0 | 0 | 0 | - | -
+agent.agent_scheduler | 0 | 0 | 0 | - | -
+agent.agent_supervisor | 0 | 0 | 0 | - | -
+agent.agent_swarm | 0 | 0 | 0 | - | -
+agent.alert_manager | 0 | 0 | 0 | - | -
+agent.api_gateway | 0 | 0 | 0 | - | -
+agent.audit_logger | 0 | 0 | 0 | - | -
+agent.bloom_filter | 0 | 0 | 0 | - | -
+agent.cache_manager | 0 | 0 | 0 | - | -
+agent.cache_warmer | 0 | 0 | 0 | - | -
+agent.cache_warmup_manager | 0 | 0 | 0 | - | -
+agent.chain_executor | 0 | 0 | 0 | - | -
+agent.chain_of_thought | 0 | 0 | 0 | - | -
+agent.chaos_engine | 0 | 0 | 0 | - | -
+agent.circuit_breaker | 0 | 0 | 0 | - | -
+agent.config_store | 0 | 0 | 0 | - | -
+agent.config_validator | 0 | 0 | 0 | - | -
+agent.connection_pool | 0 | 0 | 0 | - | -
+agent.consensus | 0 | 0 | 0 | - | -
+agent.content_moderator | 0 | 0 | 0 | - | -
+agent.context_composer | 0 | 0 | 0 | - | -
+agent.context_manager | 0 | 0 | 0 | - | -
+agent.context_window | 0 | 0 | 0 | - | -
+agent.context_window_manager | 0 | 0 | 0 | - | -
+agent.contextual_bandit | 0 | 0 | 0 | - | -
+agent.conversation_manager | 0 | 0 | 0 | - | -
+agent.conversation_router | 0 | 0 | 0 | - | -
+agent.conversation_state | 0 | 0 | 0 | - | -
+agent.conversation_summariser | 0 | 0 | 0 | - | -
+agent.cost_tracker | 0 | 0 | 0 | - | -
+agent.data_augmentor | 0 | 0 | 0 | - | -
+agent.data_lineage | 0 | 0 | 0 | - | -
+agent.data_pipeline | 0 | 0 | 0 | - | -
+agent.data_validator | 0 | 0 | 0 | - | -
+agent.database | 0 | 0 | 0 | - | -
+agent.distributed_counter | 0 | 0 | 0 | - | -
+agent.distributed_lock | 0 | 0 | 0 | - | -
+agent.document_chunker | 0 | 0 | 0 | - | -
+agent.document_indexer | 0 | 0 | 0 | - | -
+agent.document_parser | 0 | 0 | 0 | - | -
+agent.document_processor | 0 | 0 | 0 | - | -
+agent.document_qa | 0 | 0 | 0 | - | -
+agent.document_store | 0 | 0 | 0 | - | -
+agent.embedding_pipeline | 0 | 0 | 0 | - | -
+agent.embedding_store | 0 | 0 | 0 | - | -
+agent.evaluation_suite | 0 | 0 | 0 | - | -
+agent.event_bus | 0 | 0 | 0 | - | -
+agent.event_sourcing | 0 | 0 | 0 | - | -
+agent.event_store | 0 | 0 | 0 | - | -
+agent.experiment_tracker | 0 | 0 | 0 | - | -
+agent.feature_flags | 0 | 0 | 0 | - | -
+agent.feature_store | 0 | 0 | 0 | - | -
+agent.feedback_analyzer | 0 | 0 | 0 | - | -
+agent.feedback_collector | 0 | 0 | 0 | - | -
+agent.feedback_loop | 0 | 0 | 0 | - | -
+agent.gateway | 0 | 0 | 0 | - | -
+agent.governance_engine | 0 | 0 | 0 | - | -
+agent.graph_engine | 0 | 0 | 0 | - | -
+agent.graph_executor | 0 | 0 | 0 | - | -
+agent.health_dashboard | 0 | 0 | 0 | - | -
+agent.health_monitor | 0 | 0 | 0 | - | -
+agent.hot_reloader | 0 | 0 | 0 | - | -
+agent.intent_classifier | 0 | 0 | 0 | - | -
+agent.job_scheduler | 0 | 0 | 0 | - | -
+agent.knowledge_base | 0 | 0 | 0 | - | -
+agent.knowledge_distiller | 0 | 0 | 0 | - | -
+agent.llm_judge | 0 | 0 | 0 | - | -
+agent.llm_router | 0 | 0 | 0 | - | -
+agent.log_aggregator | 0 | 0 | 0 | - | -
+agent.memory_compressor | 0 | 0 | 0 | - | -
+agent.memory_graph | 0 | 0 | 0 | - | -
+agent.memory_store | 0 | 0 | 0 | - | -
+agent.message_queue | 0 | 0 | 0 | - | -
+agent.metrics_aggregator | 0 | 0 | 0 | - | -
+agent.metrics_collector | 0 | 0 | 0 | - | -
+agent.model_ensemble | 0 | 0 | 0 | - | -
+agent.model_evaluator | 0 | 0 | 0 | - | -
+agent.model_fine_tuner | 0 | 0 | 0 | - | -
+agent.multi_agent_debate | 0 | 0 | 0 | - | -
+agent.multi_tenancy | 0 | 0 | 0 | - | -
+agent.notification_manager | 0 | 0 | 0 | - | -
+agent.object_storage | 0 | 0 | 0 | - | -
+agent.observability_hub | 0 | 0 | 0 | - | -
+agent.output_formatter | 0 | 0 | 0 | - | -
+agent.output_parser | 0 | 0 | 0 | - | -
+agent.output_validator | 0 | 0 | 0 | - | -
+agent.persona_engine | 0 | 0 | 0 | - | -
+agent.pipeline_orchestrator | 0 | 0 | 0 | - | -
+agent.plugin_loader | 0 | 0 | 0 | - | -
+agent.plugin_manager | 0 | 0 | 0 | - | -
+agent.policy_engine | 0 | 0 | 0 | - | -
+agent.process_manager | 0 | 0 | 0 | - | -
+agent.prompt_guard | 0 | 0 | 0 | - | -
+agent.prompt_library | 0 | 0 | 0 | - | -
+agent.prompt_optimizer | 0 | 0 | 0 | - | -
+agent.prompt_registry | 0 | 0 | 0 | - | -
+agent.prompt_versioning | 0 | 0 | 0 | - | -
+agent.query_planner | 0 | 0 | 0 | - | -
+agent.rate_limiter | 0 | 0 | 0 | - | -
+agent.rate_limiter_advanced | 0 | 0 | 0 | - | -
+agent.replay | 0 | 0 | 0 | - | -
+agent.replay_buffer | 0 | 0 | 0 | - | -
+agent.resource_monitor | 0 | 0 | 0 | - | -
+agent.resource_pool | 0 | 0 | 0 | - | -
+agent.response_cache | 0 | 0 | 0 | - | -
+agent.response_ranker | 0 | 0 | 0 | - | -
+agent.response_streamer | 0 | 0 | 0 | - | -
+agent.role_manager | 0 | 0 | 0 | - | -
+agent.rule_engine | 0 | 0 | 0 | - | -
+agent.sandbox_executor | 0 | 0 | 0 | - | -
+agent.schema_registry | 0 | 0 | 0 | - | -
+agent.schema_validator | 0 | 0 | 0 | - | -
+agent.search_engine | 0 | 0 | 0 | - | -
+agent.secret_manager | 0 | 0 | 0 | - | -
+agent.secrets_manager | 0 | 0 | 0 | - | -
+agent.security_scanner | 0 | 0 | 0 | - | -
+agent.semantic_cache | 0 | 0 | 0 | - | -
+agent.semantic_router | 0 | 0 | 0 | - | -
+agent.service_mesh | 0 | 0 | 0 | - | -
+agent.session_manager | 0 | 0 | 0 | - | -
+agent.signal_bus | 0 | 0 | 0 | - | -
+agent.skill_router | 0 | 0 | 0 | - | -
+agent.skills.example_skills | 0 | 0 | 1 | - | agent.skills_manager
+agent.state_machine | 0 | 0 | 0 | - | -
+agent.state_store | 0 | 0 | 0 | - | -
+agent.stream_processor | 0 | 0 | 0 | - | -
+agent.streaming_aggregator | 0 | 0 | 0 | - | -
+agent.task_dependency_graph | 0 | 0 | 0 | - | -
+agent.task_planner | 0 | 0 | 0 | - | -
+agent.task_queue | 0 | 0 | 0 | - | -
+agent.task_scheduler | 0 | 0 | 0 | - | -
+agent.telemetry | 0 | 0 | 0 | - | -
+agent.template_engine | 0 | 0 | 0 | - | -
+agent.time_series | 0 | 0 | 0 | - | -
+agent.token_budget_manager | 0 | 0 | 0 | - | -
+agent.tool_composer | 0 | 0 | 0 | - | -
+agent.tool_executor | 0 | 0 | 0 | - | -
+agent.tool_registry | 0 | 0 | 0 | - | -
+agent.vector_store | 0 | 0 | 0 | - | -
+agent.vector_store_advanced | 0 | 0 | 0 | - | -
+agent.webhooks | 0 | 0 | 0 | - | -
+agent.workflow_dsl | 0 | 0 | 0 | - | -
+agent.workflow_engine | 0 | 0 | 0 | - | -
+agent.crypto_utils | 0 | 1 | 0 | tests.test_md5_sweep | -
+agent.retry_manager | 0 | 1 | 0 | tests.test_suite | -
+agent.cli | 1 | 0 | 6 | main | agent.core, agent.model_registry, agent.model_router, agent.pipeline, agent.summarizer, config
+agent.config_manager | 1 | 0 | 0 | agent.core | -
+agent.datastore | 1 | 0 | 0 | agent.agent_builder | -
+agent.evaluation | 1 | 0 | 0 | agent.core | -
+agent.federation | 1 | 0 | 0 | agent.agent_builder | -
+agent.governance | 1 | 0 | 0 | agent.agent_builder | -
+agent.jobs | 1 | 0 | 0 | agent.agent_builder | -
+agent.knowledge_graph | 1 | 0 | 0 | agent.core | -
+agent.llm_cache | 1 | 0 | 0 | agent.agent_builder | -
+agent.observability | 1 | 0 | 0 | agent.agent_builder | -
+agent.optimizer | 1 | 0 | 0 | agent.agent_builder | -
+agent.persona | 1 | 0 | 0 | agent.core | -
+agent.search | 1 | 0 | 0 | agent.agent_builder | -
+agent.session | 1 | 0 | 0 | agent.agent_builder | -
+agent.telegram_bot | 1 | 0 | 5 | main | agent.hooks, agent.memory, agent.model_registry, agent.model_router, config
+agent.cache | 1 | 1 | 0 | agent.core, tests.test_new_modules | -
+agent.collaboration | 1 | 1 | 2 | agent.core, tests.test_suite | agent.hooks, agent.memory
+agent.dashboard | 1 | 1 | 1 | main, tests.test_dashboard | agent.core
+agent.doc_generator | 1 | 1 | 0 | agent.core, tests.test_suite | -
+agent.export | 1 | 1 | 1 | agent.core, tests.test_auth_ownership_binding | agent.auth
+agent.multi_model_client | 1 | 1 | 4 | agent.core, tests.test_models | agent.model_registry, agent.model_router, agent.ollama_client, config
+agent.ollama_client | 1 | 1 | 1 | agent.multi_model_client, tests.test_silent_exception_sweep | config
+agent.prompt_templates | 1 | 1 | 1 | agent.core, tests.test_new_modules | agent.memory
+agent.scheduler | 1 | 1 | 2 | agent.core, tests.test_suite | agent.hooks, config
+agent.social | 1 | 1 | 0 | agent.core, tests.test_suite | -
+agent.workflow | 1 | 2 | 3 | agent.core, tests.test_advanced_modules, tests.test_tool_registry_enforcement | agent.pipeline, agent.structured_output, agent.tools_registry
+agent.rag | 1 | 3 | 0 | agent.core, tests.test_advanced_modules, tests.test_new_modules, tests.test_sql_injection_sweep | -
+agent.notifications | 2 | 0 | 0 | agent.core, main | -
+agent.multimodal | 2 | 1 | 1 | agent.core, scripts._coverage_runtime_probe, tests.test_ssrf_validator | agent.ssrf
+agent.sandbox | 2 | 1 | 1 | agent.core, main, tests.test_security_event_audit | agent.security_audit
+agent.skills_manager | 2 | 1 | 2 | agent.core, agent.skills.example_skills, tests.test_suite | agent.hooks, agent.memory
+agent.ssrf | 2 | 1 | 0 | agent.multimodal, agent.tools, tests.test_ssrf_validator | -
+agent.summarizer | 2 | 1 | 0 | agent.cli, agent.core, tests.test_new_modules | -
+agent.tracing | 2 | 1 | 0 | agent.core, agent.streaming, tests.test_advanced_modules | -
+agent.core | 3 | 1 | 30 | agent.cli, agent.dashboard, main, tests.test_tool_registry_enforcement | agent.auth, agent.cache, agent.collaboration, agent.config_manager, agent.doc_generator, agent.evaluation, agent.export, agent.hooks, agent.knowledge_graph, agent.memory, agent.multi_model_client, agent.multimodal, agent.notifications, agent.persona, agent.pipeline, agent.prompt_templates, agent.rag, agent.sandbox, agent.scheduler, agent.security_audit, agent.skills_manager, agent.social, agent.streaming, agent.structured_output, agent.summarizer, agent.tools, agent.tools_registry, agent.tracing, agent.workflow, config
+agent.model_router | 3 | 1 | 2 | agent.cli, agent.multi_model_client, agent.telegram_bot, tests.test_models | agent.model_registry, config
+agent.streaming | 3 | 1 | 2 | agent.core, main, scripts._coverage_runtime_probe, tests.test_advanced_modules | agent.auth, agent.tracing
+agent.structured_output | 3 | 1 | 0 | agent.core, agent.workflow, main, tests.test_advanced_modules | -
+agent.pipeline | 3 | 2 | 1 | agent.cli, agent.core, agent.workflow, tests.test_advanced_modules, tests.test_new_modules | agent.hooks
+agent.tools_registry | 3 | 4 | 1 | agent.core, agent.workflow, main, tests.test_advanced_modules, tests.test_security_auth_tools, tests.test_security_event_audit, tests.test_tool_registry_enforcement | agent.security_audit
+agent.security_audit | 4 | 1 | 0 | agent.core, agent.sandbox, agent.tools_registry, main, tests.test_security_event_audit | -
+agent.tools | 4 | 2 | 2 | agent.core, scripts.job_search.job_search_tank_adr, scripts.job_search.job_search_tank_adr_nl, scripts.job_search.search_adr_jobs, tests.test_ssrf_validator, tests.test_suite | agent.ssrf, config
+agent.memory | 5 | 4 | 0 | agent.collaboration, agent.core, agent.prompt_templates, agent.skills_manager, agent.telegram_bot, tests.test_auth_ownership_binding, tests.test_security_event_audit, tests.test_sql_injection_sweep, tests.test_suite | -
+agent.auth | 5 | 6 | 0 | agent.core, agent.export, agent.streaming, main, scripts._coverage_runtime_probe, tests.test_auth_bootstrap_cli, tests.test_auth_ownership_binding, tests.test_security_auth_tools, tests.test_security_event_audit, tests.test_silent_exception_sweep, tests.test_sql_injection_sweep | -
+agent.hooks | 6 | 1 | 0 | agent.collaboration, agent.core, agent.pipeline, agent.scheduler, agent.skills_manager, agent.telegram_bot, tests.test_suite | -
+agent.model_registry | 6 | 1 | 0 | agent.cli, agent.model_router, agent.multi_model_client, agent.telegram_bot, main, scripts._model_audit, tests.test_models | -
+
+## Potential orphan candidates (0 runtime inbound imports)
+
+- agent.ab_router (tests=0, outgoing=0)
+- agent.ab_testing (tests=0, outgoing=0)
+- agent.access_control (tests=0, outgoing=0)
+- agent.adaptive_sampler (tests=0, outgoing=0)
+- agent.adaptive_throttler (tests=0, outgoing=0)
+- agent.admission_control (tests=0, outgoing=0)
+- agent.agent_builder (tests=0, outgoing=9)
+- agent.agent_coordinator (tests=0, outgoing=0)
+- agent.agent_memory (tests=0, outgoing=0)
+- agent.agent_monitor (tests=0, outgoing=0)
+- agent.agent_scheduler (tests=0, outgoing=0)
+- agent.agent_supervisor (tests=0, outgoing=0)
+- agent.agent_swarm (tests=0, outgoing=0)
+- agent.alert_manager (tests=0, outgoing=0)
+- agent.api_gateway (tests=0, outgoing=0)
+- agent.audit_logger (tests=0, outgoing=0)
+- agent.bloom_filter (tests=0, outgoing=0)
+- agent.cache_manager (tests=0, outgoing=0)
+- agent.cache_warmer (tests=0, outgoing=0)
+- agent.cache_warmup_manager (tests=0, outgoing=0)
+- agent.chain_executor (tests=0, outgoing=0)
+- agent.chain_of_thought (tests=0, outgoing=0)
+- agent.chaos_engine (tests=0, outgoing=0)
+- agent.circuit_breaker (tests=0, outgoing=0)
+- agent.config_store (tests=0, outgoing=0)
+- agent.config_validator (tests=0, outgoing=0)
+- agent.connection_pool (tests=0, outgoing=0)
+- agent.consensus (tests=0, outgoing=0)
+- agent.content_moderator (tests=0, outgoing=0)
+- agent.context_composer (tests=0, outgoing=0)
+- agent.context_manager (tests=0, outgoing=0)
+- agent.context_window (tests=0, outgoing=0)
+- agent.context_window_manager (tests=0, outgoing=0)
+- agent.contextual_bandit (tests=0, outgoing=0)
+- agent.conversation_manager (tests=0, outgoing=0)
+- agent.conversation_router (tests=0, outgoing=0)
+- agent.conversation_state (tests=0, outgoing=0)
+- agent.conversation_summariser (tests=0, outgoing=0)
+- agent.cost_tracker (tests=0, outgoing=0)
+- agent.data_augmentor (tests=0, outgoing=0)
+- agent.data_lineage (tests=0, outgoing=0)
+- agent.data_pipeline (tests=0, outgoing=0)
+- agent.data_validator (tests=0, outgoing=0)
+- agent.database (tests=0, outgoing=0)
+- agent.distributed_counter (tests=0, outgoing=0)
+- agent.distributed_lock (tests=0, outgoing=0)
+- agent.document_chunker (tests=0, outgoing=0)
+- agent.document_indexer (tests=0, outgoing=0)
+- agent.document_parser (tests=0, outgoing=0)
+- agent.document_processor (tests=0, outgoing=0)
+- agent.document_qa (tests=0, outgoing=0)
+- agent.document_store (tests=0, outgoing=0)
+- agent.embedding_pipeline (tests=0, outgoing=0)
+- agent.embedding_store (tests=0, outgoing=0)
+- agent.evaluation_suite (tests=0, outgoing=0)
+- agent.event_bus (tests=0, outgoing=0)
+- agent.event_sourcing (tests=0, outgoing=0)
+- agent.event_store (tests=0, outgoing=0)
+- agent.experiment_tracker (tests=0, outgoing=0)
+- agent.feature_flags (tests=0, outgoing=0)
+- agent.feature_store (tests=0, outgoing=0)
+- agent.feedback_analyzer (tests=0, outgoing=0)
+- agent.feedback_collector (tests=0, outgoing=0)
+- agent.feedback_loop (tests=0, outgoing=0)
+- agent.gateway (tests=0, outgoing=0)
+- agent.governance_engine (tests=0, outgoing=0)
+- agent.graph_engine (tests=0, outgoing=0)
+- agent.graph_executor (tests=0, outgoing=0)
+- agent.health_dashboard (tests=0, outgoing=0)
+- agent.health_monitor (tests=0, outgoing=0)
+- agent.hot_reloader (tests=0, outgoing=0)
+- agent.intent_classifier (tests=0, outgoing=0)
+- agent.job_scheduler (tests=0, outgoing=0)
+- agent.knowledge_base (tests=0, outgoing=0)
+- agent.knowledge_distiller (tests=0, outgoing=0)
+- agent.llm_judge (tests=0, outgoing=0)
+- agent.llm_router (tests=0, outgoing=0)
+- agent.log_aggregator (tests=0, outgoing=0)
+- agent.memory_compressor (tests=0, outgoing=0)
+- agent.memory_graph (tests=0, outgoing=0)
+- agent.memory_store (tests=0, outgoing=0)
+- agent.message_queue (tests=0, outgoing=0)
+- agent.metrics_aggregator (tests=0, outgoing=0)
+- agent.metrics_collector (tests=0, outgoing=0)
+- agent.model_ensemble (tests=0, outgoing=0)
+- agent.model_evaluator (tests=0, outgoing=0)
+- agent.model_fine_tuner (tests=0, outgoing=0)
+- agent.multi_agent_debate (tests=0, outgoing=0)
+- agent.multi_tenancy (tests=0, outgoing=0)
+- agent.notification_manager (tests=0, outgoing=0)
+- agent.object_storage (tests=0, outgoing=0)
+- agent.observability_hub (tests=0, outgoing=0)
+- agent.output_formatter (tests=0, outgoing=0)
+- agent.output_parser (tests=0, outgoing=0)
+- agent.output_validator (tests=0, outgoing=0)
+- agent.persona_engine (tests=0, outgoing=0)
+- agent.pipeline_orchestrator (tests=0, outgoing=0)
+- agent.plugin_loader (tests=0, outgoing=0)
+- agent.plugin_manager (tests=0, outgoing=0)
+- agent.policy_engine (tests=0, outgoing=0)
+- agent.process_manager (tests=0, outgoing=0)
+- agent.prompt_guard (tests=0, outgoing=0)
+- agent.prompt_library (tests=0, outgoing=0)
+- agent.prompt_optimizer (tests=0, outgoing=0)
+- agent.prompt_registry (tests=0, outgoing=0)
+- agent.prompt_versioning (tests=0, outgoing=0)
+- agent.query_planner (tests=0, outgoing=0)
+- agent.rate_limiter (tests=0, outgoing=0)
+- agent.rate_limiter_advanced (tests=0, outgoing=0)
+- agent.replay (tests=0, outgoing=0)
+- agent.replay_buffer (tests=0, outgoing=0)
+- agent.resource_monitor (tests=0, outgoing=0)
+- agent.resource_pool (tests=0, outgoing=0)
+- agent.response_cache (tests=0, outgoing=0)
+- agent.response_ranker (tests=0, outgoing=0)
+- agent.response_streamer (tests=0, outgoing=0)
+- agent.role_manager (tests=0, outgoing=0)
+- agent.rule_engine (tests=0, outgoing=0)
+- agent.sandbox_executor (tests=0, outgoing=0)
+- agent.schema_registry (tests=0, outgoing=0)
+- agent.schema_validator (tests=0, outgoing=0)
+- agent.search_engine (tests=0, outgoing=0)
+- agent.secret_manager (tests=0, outgoing=0)
+- agent.secrets_manager (tests=0, outgoing=0)
+- agent.security_scanner (tests=0, outgoing=0)
+- agent.semantic_cache (tests=0, outgoing=0)
+- agent.semantic_router (tests=0, outgoing=0)
+- agent.service_mesh (tests=0, outgoing=0)
+- agent.session_manager (tests=0, outgoing=0)
+- agent.signal_bus (tests=0, outgoing=0)
+- agent.skill_router (tests=0, outgoing=0)
+- agent.skills.example_skills (tests=0, outgoing=1)
+- agent.state_machine (tests=0, outgoing=0)
+- agent.state_store (tests=0, outgoing=0)
+- agent.stream_processor (tests=0, outgoing=0)
+- agent.streaming_aggregator (tests=0, outgoing=0)
+- agent.task_dependency_graph (tests=0, outgoing=0)
+- agent.task_planner (tests=0, outgoing=0)
+- agent.task_queue (tests=0, outgoing=0)
+- agent.task_scheduler (tests=0, outgoing=0)
+- agent.telemetry (tests=0, outgoing=0)
+- agent.template_engine (tests=0, outgoing=0)
+- agent.time_series (tests=0, outgoing=0)
+- agent.token_budget_manager (tests=0, outgoing=0)
+- agent.tool_composer (tests=0, outgoing=0)
+- agent.tool_executor (tests=0, outgoing=0)
+- agent.tool_registry (tests=0, outgoing=0)
+- agent.vector_store (tests=0, outgoing=0)
+- agent.vector_store_advanced (tests=0, outgoing=0)
+- agent.webhooks (tests=0, outgoing=0)
+- agent.workflow_dsl (tests=0, outgoing=0)
+- agent.workflow_engine (tests=0, outgoing=0)
+- agent.crypto_utils (tests=1, outgoing=0)
+- agent.retry_manager (tests=1, outgoing=0)
