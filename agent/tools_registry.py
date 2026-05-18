@@ -24,6 +24,7 @@ import functools
 from typing import Any, Callable, Dict, List, Optional, Union, get_type_hints
 from dataclasses import dataclass, field
 from enum import Enum
+from agent.security_audit import AuditCallback, build_memory_audit_callback
 
 logger = logging.getLogger(__name__)
 
@@ -348,10 +349,19 @@ class ToolRegistry:
         schemas = tools.anthropic_schemas()
     """
 
-    def __init__(self):
+    def __init__(self, audit_callback: Optional[AuditCallback] = None):
         self._tools: Dict[str, RegisteredTool] = {}
         self._middleware: List[MiddlewareFn] = [logging_middleware]
         self._validator = ToolParamValidator()
+        self._audit_callback = audit_callback
+
+    def _audit(self, action: str, actor: str, details: Dict[str, Any]) -> None:
+        if not self._audit_callback:
+            return
+        try:
+            self._audit_callback(action, actor or "system", details)
+        except Exception as exc:
+            logger.warning("Security audit callback failed for %s: %s", action, exc)
 
     # ── Registration ──────────────────────────────────────────────────────────
 
@@ -432,7 +442,17 @@ class ToolRegistry:
                    allow_confirmed_tools: bool = False) -> ToolResult:
         """Execute a tool call with validation, middleware, and timeout."""
         tool = self._tools.get(tool_call.tool_name)
+        actor = tool_call.session_id or "system"
+        audit_details = {
+            "tool": tool_call.tool_name,
+            "session_id": tool_call.session_id,
+            "arg_keys": sorted(tool_call.arguments.keys()),
+        }
         if not tool:
+            self._audit("security.tool_execution_rejected", actor, {
+                **audit_details,
+                "reason": "tool_not_found",
+            })
             return ToolResult(
                 tool_name=tool_call.tool_name, success=False,
                 output=None,
@@ -442,6 +462,10 @@ class ToolRegistry:
             )
 
         if not tool.enabled:
+            self._audit("security.tool_execution_rejected", actor, {
+                **audit_details,
+                "reason": "tool_disabled",
+            })
             return ToolResult(
                 tool_name=tool_call.tool_name, success=False,
                 output=None, error="Tool is disabled",
@@ -449,6 +473,10 @@ class ToolRegistry:
             )
 
         if tool.requires_confirmation and not allow_confirmed_tools:
+            self._audit("security.tool_execution_rejected", actor, {
+                **audit_details,
+                "reason": "confirmation_required",
+            })
             return ToolResult(
                 tool_name=tool_call.tool_name,
                 success=False,
@@ -476,6 +504,11 @@ class ToolRegistry:
         # Validate arguments
         coerced_args, errors = self._validator.validate(tool_call.arguments, tool.params)
         if errors:
+            self._audit("security.tool_execution_rejected", actor, {
+                **audit_details,
+                "reason": "validation_failed",
+                "errors": errors,
+            })
             return ToolResult(
                 tool_name=tool_call.tool_name, success=False,
                 output=None, error=f"Validation: {'; '.join(errors)}",
@@ -485,6 +518,11 @@ class ToolRegistry:
         # Execute
         start = time.time()
         tool.call_count += 1
+        self._audit("security.tool_execution", actor, {
+            **audit_details,
+            "requires_confirmation": tool.requires_confirmation,
+            "confirmed_execution": bool(tool.requires_confirmation and allow_confirmed_tools),
+        })
 
         try:
             fn = tool.fn
@@ -501,6 +539,11 @@ class ToolRegistry:
             latency_ms = (time.time() - start) * 1000
             tool.total_latency_ms += latency_ms
             logger.debug(f"Tool '{tool_call.tool_name}' OK ({latency_ms:.0f}ms)")
+            self._audit("security.tool_execution_result", actor, {
+                **audit_details,
+                "success": True,
+                "latency_ms": round(latency_ms, 1),
+            })
 
             return ToolResult(
                 tool_name=tool_call.tool_name, success=True,
@@ -512,6 +555,11 @@ class ToolRegistry:
             tool.error_count += 1
             err = f"Tool '{tool_call.tool_name}' timed out after {tool.timeout}s"
             logger.error(err)
+            self._audit("security.tool_execution_result", actor, {
+                **audit_details,
+                "success": False,
+                "error": err,
+            })
             return ToolResult(tool_name=tool_call.tool_name, success=False,
                             output=None, error=err, call_id=tool_call.call_id)
 
@@ -519,6 +567,11 @@ class ToolRegistry:
             tool.error_count += 1
             err = f"{type(e).__name__}: {e}"
             logger.error(f"Tool '{tool_call.tool_name}' error: {err}")
+            self._audit("security.tool_execution_result", actor, {
+                **audit_details,
+                "success": False,
+                "error": err,
+            })
             return ToolResult(tool_name=tool_call.tool_name, success=False,
                             output=None, error=err, call_id=tool_call.call_id)
 
@@ -620,7 +673,8 @@ class ToolRegistry:
 
 def build_default_tools(agent) -> ToolRegistry:
     """Build and return a ToolRegistry pre-loaded with all standard agent tools."""
-    tools = ToolRegistry()
+    audit_callback = build_memory_audit_callback(agent.memory) if hasattr(agent, "memory") else None
+    tools = ToolRegistry(audit_callback=audit_callback)
 
     @tools.register(
         description="Search the web using SearXNG or DuckDuckGo",

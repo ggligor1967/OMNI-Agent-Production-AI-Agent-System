@@ -596,13 +596,22 @@ class AuthManager:
     # ── aiohttp Middleware ────────────────────────────────────────────────────
 
     def middleware(self, public_paths: List[str] = None,
-                   anonymous_role: Role = Role.READONLY):
+                   anonymous_role: Role = Role.READONLY,
+                   audit_callback: Optional[Callable[[str, str, Dict[str, Any]], None]] = None):
         """
         aiohttp middleware factory.
         Injects auth context into request and enforces auth if enabled.
         """
         from aiohttp import web
         _public = set(public_paths or ["/status", "/health"])
+
+        def _audit(action: str, actor: str, details: Dict[str, Any]) -> None:
+            if not audit_callback:
+                return
+            try:
+                audit_callback(action, actor or "anonymous", details)
+            except Exception as exc:
+                logger.warning("Auth security audit callback failed for %s: %s", action, exc)
 
         @web.middleware
         async def _middleware(request, handler):
@@ -630,6 +639,11 @@ class AuthManager:
             if ctx.authenticated:
                 rate = self.check_rate_limit(ctx.user_id, ctx.role)
                 if not rate["allowed"]:
+                    _audit("security.auth_rate_limit", ctx.user_id, {
+                        "path": path,
+                        "role": ctx.role.value,
+                        "retry_after": round(rate["retry_after"], 3),
+                    })
                     return web.json_response(
                         {"error": "rate_limit_exceeded",
                          "retry_after": rate["retry_after"]},
@@ -638,6 +652,13 @@ class AuthManager:
 
             # Enforce auth if enabled
             if self.enforce_auth and not ctx.authenticated:
+                auth_method = "api_key" if api_key else "jwt" if bearer else "anonymous"
+                _audit("security.auth_failure", "anonymous", {
+                    "path": path,
+                    "auth_method": auth_method,
+                    "reason": ctx.error,
+                    "remote": request.remote or "",
+                })
                 return web.json_response(
                     {"error": "unauthorized", "detail": ctx.error},
                     status=401,
@@ -645,6 +666,11 @@ class AuthManager:
 
             # Permission check
             if ctx.authenticated and not ctx.can_access(path):
+                _audit("security.authz_failure", ctx.user_id, {
+                    "path": path,
+                    "role": ctx.role.value,
+                    "reason": f"Role '{ctx.role.value}' cannot access '{path}'",
+                })
                 return web.json_response(
                     {"error": "forbidden",
                      "detail": f"Role '{ctx.role.value}' cannot access '{path}'"},

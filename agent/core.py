@@ -43,6 +43,7 @@ from agent.notifications import Notifier
 from agent.multimodal import VisionPipeline
 from agent.auth import AuthManager
 from agent.export import Exporter
+from agent.security_audit import build_memory_audit_callback
 from config import CONFIG
 
 logger = logging.getLogger(__name__)
@@ -123,7 +124,11 @@ class OmniAgent:
         # Config manager (hot-reload wrapper)
         self.config_mgr = ConfigManager()
         # Secure code sandbox
-        self.sandbox = Sandbox(max_seconds=15, allow_shell=False)
+        self.sandbox = Sandbox(
+            max_seconds=15,
+            allow_shell=False,
+            audit_callback=build_memory_audit_callback(self.memory),
+        )
         # Notifications
         self.notifier = Notifier(db_path="data/notifications.db")
         # Vision pipeline

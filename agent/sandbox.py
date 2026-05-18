@@ -31,6 +31,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
+from agent.security_audit import AuditCallback, code_fingerprint
 
 logger = logging.getLogger(__name__)
 
@@ -286,6 +287,7 @@ class Sandbox:
         extra_blocked_imports: Set[str] = None,
         allowed_imports: Set[str] = None,
         history_limit: int = 100,
+        audit_callback: Optional[AuditCallback] = None,
     ):
         self.max_seconds = max_seconds
         self.max_output_chars = max_output_chars
@@ -294,6 +296,15 @@ class Sandbox:
         self.allowed_imports = allowed_imports  # None = no extra restriction
         self._history: List[ExecResult] = []
         self._history_limit = history_limit
+        self._audit_callback = audit_callback
+
+    def _audit(self, action: str, actor: str, details: Dict[str, Any]) -> None:
+        if not self._audit_callback:
+            return
+        try:
+            self._audit_callback(action, actor or "sandbox", details)
+        except Exception as exc:
+            logger.warning("Sandbox security audit callback failed for %s: %s", action, exc)
 
     # ── Public API ────────────────────────────────────────────────────────────
 
@@ -301,6 +312,10 @@ class Sandbox:
         """Execute Python code in a sandboxed subprocess."""
         exec_id = str(uuid.uuid4())[:8]
         start = time.time()
+        self._audit("security.sandbox_trigger", exec_id, {
+            "language": ExecLanguage.PYTHON.value,
+            **code_fingerprint(code),
+        })
 
         # Safety scan
         violations = scan_code(code,
@@ -337,6 +352,10 @@ _sys.__stdout__.write(_json_mod.dumps({
     async def run_bash(self, code: str) -> ExecResult:
         """Execute shell code (only if allow_shell=True)."""
         exec_id = str(uuid.uuid4())[:8]
+        self._audit("security.sandbox_trigger", exec_id, {
+            "language": ExecLanguage.BASH.value,
+            **code_fingerprint(code),
+        })
         if not self.allow_shell:
             result = ExecResult(
                 exec_id=exec_id, language=ExecLanguage.BASH,
@@ -435,6 +454,15 @@ _sys.__stdout__.write(_json_mod.dumps({
         self._history.append(result)
         if len(self._history) > self._history_limit:
             self._history = self._history[-(self._history_limit // 2):]
+        self._audit("security.sandbox_result", result.exec_id, {
+            "language": result.language.value,
+            "success": result.success,
+            "timed_out": result.timed_out,
+            "blocked": bool(result.security_violations),
+            "exit_code": result.exit_code,
+            "duration_ms": round(result.duration_ms, 1),
+            "violations": result.security_violations[:10],
+        })
 
     # ── History ───────────────────────────────────────────────────────────────
 

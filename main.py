@@ -190,6 +190,7 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
     """Minimal aiohttp REST API server."""
     from aiohttp import web
     from agent.auth import auth_context_from_request, effective_user_id, scoped_session_id
+    from agent.security_audit import build_memory_audit_callback
 
     async def chat_endpoint(request: web.Request) -> web.Response:
         data = await request.json()
@@ -551,8 +552,13 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
     async def favicon_endpoint(request: web.Request) -> web.Response:
         return web.Response(status=204)
 
+    security_audit = build_memory_audit_callback(agent.memory)
+
     app = web.Application(middlewares=[
-        agent.auth.middleware(public_paths=["/status", "/health", "/auth/bootstrap", "/dashboard", "/favicon.ico", "/cache/stats", "/audit"])
+        agent.auth.middleware(
+            public_paths=["/status", "/health", "/auth/bootstrap", "/dashboard", "/favicon.ico", "/cache/stats", "/audit"],
+            audit_callback=security_audit,
+        )
     ])
     # Core
     app.router.add_post("/chat", chat_endpoint)
