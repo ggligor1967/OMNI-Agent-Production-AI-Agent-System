@@ -1,0 +1,20 @@
+62f6262 security: sweep active md5 usage
+5ef3078 security: surface hot-path silent exceptions
+e02d1f3 security: parameterize hot-path rag queries
+8049866 security: audit auth tool and sandbox events
+57afcca security: harden dashboard rendering and csp
+7a20174 security: add central anti-ssrf validator
+085fcf2 security: require confirmation for mutating tools
+c4c0996 security: enforce tool registry execution path
+a7d2fa5 security: bind session ownership to auth context
+cc9e446 security: add first-admin auth bootstrap CLI
+2afa3b7 chore: add phase 1 baseline evidence
+6db2201 docs: add phase 0 matrix rerun evidence
+32afc7c ci: align bandit release gate with active path policy
+fedbfda security: resolve active-path bandit findings
+d668629 docs: add phase 0 matrix verification evidence
+e89ecc1 chore: align phase-0 lint gate with correctness checks
+2bbd55d chore: add orphan module inventory baseline
+77bd94a security: triage bandit high and critical medium findings
+239cbf5 chore: add coverage baseline for sprint 0
+10e2616 fix: eliminate duplicate subsystem initializations in OmniAgent
