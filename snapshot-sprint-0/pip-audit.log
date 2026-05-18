@@ -1,0 +1,34 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_audit\__main__.py", line 6, in <module>
+    from pip_audit._cli import audit
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_audit\_cli.py", line 18, in <module>
+    from pip_audit._audit import AuditOptions, Auditor
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_audit\_audit.py", line 11, in <module>
+    from pip_audit._dependency_source import DependencySource
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_audit\_dependency_source\__init__.py", line 5, in <module>
+    from .interface import (
+    ...<5 lines>...
+    )
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_audit\_dependency_source\interface.py", line 11, in <module>
+    from pip_audit._fix import ResolvedFixVersion
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_audit\_fix.py", line 14, in <module>
+    from pip_audit._service import (
+    ...<4 lines>...
+    )
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_audit\_service\__init__.py", line 5, in <module>
+    from .esms import EcosystemsService
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_audit\_service\esms.py", line 17, in <module>
+    from pip_audit._cache import caching_session
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_audit\_cache.py", line 16, in <module>
+    import pip_api
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_api\__init__.py", line 9, in <module>
+    PIP_VERSION: Version = packaging_version.parse(version())  # type: ignore
+                                                   ~~~~~~~^^
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_api\_version.py", line 5, in version
+    result = call("--version")
+  File "C:\Users\gligo\My Projects\OMNI Agent � Production AI Agent System\.venv-1\Lib\site-packages\pip_api\_call.py", line 12, in call
+    return result.decode()
+           ~~~~~~~~~~~~~^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0x97 in position 54: invalid start byte
