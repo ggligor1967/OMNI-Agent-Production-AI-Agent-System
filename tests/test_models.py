@@ -41,11 +41,14 @@ class TestModelRegistry:
         "kimi-k2.5:cloud",
         "minimax-m2.5:cloud",
         "gemma3:12b-cloud",
+        "deepseek-v3.2:cloud",
+        "minimax-m2.7:cloud",
+        "nemotron-3-super:cloud",
     ]
 
-    def test_all_24_models_registered(self):
+    def test_all_27_models_registered(self):
         from agent.model_registry import MODELS
-        assert len(MODELS) == 24, f"Expected 24 models, got {len(MODELS)}"
+        assert len(MODELS) == 27, f"Expected 27 models, got {len(MODELS)}"
 
     def test_all_expected_ids_present(self):
         from agent.model_registry import MODELS
@@ -121,12 +124,19 @@ class TestModelRegistry:
     def test_summary_table(self):
         from agent.model_registry import summary_table
         table = summary_table()
-        assert len(table) == 24
+        assert len(table) == 27
         for row in table:
             assert "id" in row
             assert "provider" in row
             assert "context_k" in row
             assert isinstance(row["context_k"], int)
+
+    def test_provider_consistency(self):
+        from agent.model_registry import get_model
+
+        assert get_model("ministral-3:8b-cloud").provider == "Mistral AI"
+        assert get_model("devstral-2:123b-cloud").provider == "Mistral AI"
+        assert get_model("devstral-small-2:24b-cloud").provider == "Mistral AI"
 
     def test_model_to_dict(self):
         from agent.model_registry import get_model
@@ -283,11 +293,11 @@ class TestModelRouter:
 
     def test_list_all_models(self, router):
         models = router.list_all_models()
-        assert len(models) == 24
+        assert len(models) == 27
 
     def test_router_summary(self, router):
         summary = router.router_summary()
-        assert summary["total_models"] == 24
+        assert summary["total_models"] == 27
         assert "providers" in summary
         assert len(summary["providers"]) > 0
 
@@ -307,8 +317,8 @@ class TestMultiModelClient:
         from agent.multi_model_client import MultiModelClient
         return MultiModelClient()
 
-    def test_client_has_24_models(self, client):
-        assert len(client.router.list_all_models()) == 24
+    def test_client_has_27_models(self, client):
+        assert len(client.router.list_all_models()) == 27
 
     def test_router_accessible(self, client):
         from agent.model_router import ModelRouter
@@ -370,8 +380,50 @@ class TestMultiModelClient:
     @pytest.mark.asyncio
     async def test_list_models(self, client):
         models = await client.list_models()
-        assert len(models) == 24
+        assert len(models) == 27
         assert "qwen3-coder-next:cloud" in models
+
+    @pytest.mark.asyncio
+    async def test_chat_explicit_model_uses_general_task_type(self, client, monkeypatch):
+        from agent.model_router import TaskType
+
+        captured = {}
+
+        async def fake_execute_with_fallback(decision, messages, temperature, system, tools):
+            captured["decision"] = decision
+            return {"content": "ok"}
+
+        monkeypatch.setattr(client, "_execute_with_fallback", fake_execute_with_fallback)
+
+        await client.chat(
+            [{"role": "user", "content": "hello"}],
+            model="gemma3:4b-cloud",
+        )
+
+        assert captured["decision"].model_id == "gemma3:4b-cloud"
+        assert captured["decision"].task_type == TaskType.GENERAL
+        assert captured["decision"].reason == "Manual override"
+
+    @pytest.mark.asyncio
+    async def test_chat_auto_route_false_uses_general_task_type(self, client, monkeypatch):
+        from config import CONFIG
+        from agent.model_router import TaskType
+
+        captured = {}
+
+        async def fake_execute_with_fallback(decision, messages, temperature, system, tools):
+            captured["decision"] = decision
+            return {"content": "ok"}
+
+        monkeypatch.setattr(client, "_execute_with_fallback", fake_execute_with_fallback)
+
+        await client.chat(
+            [{"role": "user", "content": "hello"}],
+            auto_route=False,
+        )
+
+        assert captured["decision"].model_id == CONFIG.OLLAMA_MODEL
+        assert captured["decision"].task_type == TaskType.GENERAL
 
     def test_get_stats_empty(self, client):
         # No calls made yet
@@ -380,4 +432,4 @@ class TestMultiModelClient:
 
     def test_router_summary(self, client):
         summary = client.get_router_summary()
-        assert summary["total_models"] == 24
+        assert summary["total_models"] == 27

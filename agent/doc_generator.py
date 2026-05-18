@@ -173,7 +173,7 @@ class DocGenerator:
                 triggers = ", ".join(f"`{t}`" for t in skill["triggers"])
                 lines.append(f"**Triggers:** {triggers}\n")
             lines.append(f"**Status:** {'✅ Enabled' if skill.get('enabled') else '❌ Disabled'} | "
-                        f"**Calls:** {skill.get('call_count', 0)}\n")
+                        f"Calls: {skill.get('call_count', 0)}\n")
             lines.append("---\n")
 
         content = "\n".join(lines)

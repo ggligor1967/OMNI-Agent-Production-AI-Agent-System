@@ -20,7 +20,7 @@ Exports:
 - ModelCapability enum
 - ModelTier enum
 - ModelSpec dataclass
-- MODELS dict (24 models)
+- MODELS dict (27 models)
 - get_model(model_id)
 - get_models_by_capability(cap)
 - get_models_by_provider(provider)
@@ -93,7 +93,7 @@ class ModelSpec:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 24 MODELS - Actual cloud models used by OMNI AGENT
+# 27 MODELS - Actual cloud models used by OMNI AGENT
 # ══════════════════════════════════════════════════════════════════════════════
 
 MODELS: Dict[str, ModelSpec] = {
@@ -232,7 +232,7 @@ MODELS: Dict[str, ModelSpec] = {
     "devstral-2:123b-cloud": ModelSpec(
         id="devstral-2:123b-cloud",
         display_name="Devstral-2 123B",
-        provider="NVIDIA",
+        provider="Mistral AI",
         tier=ModelTier.BALANCED,
         capabilities=[ModelCapability.CODE, ModelCapability.FAST],
         context_window=65536,
@@ -242,7 +242,7 @@ MODELS: Dict[str, ModelSpec] = {
     "devstral-small-2:24b-cloud": ModelSpec(
         id="devstral-small-2:24b-cloud",
         display_name="Devstral-Small-2 24B",
-        provider="NVIDIA",
+        provider="Mistral AI",
         tier=ModelTier.FAST,
         capabilities=[ModelCapability.CODE, ModelCapability.FAST],
         context_window=65536,
@@ -282,7 +282,7 @@ MODELS: Dict[str, ModelSpec] = {
     "ministral-3:8b-cloud": ModelSpec(
         id="ministral-3:8b-cloud",
         display_name="Ministral-3 8B",
-        provider="MiniMax",
+        provider="Mistral AI",
         tier=ModelTier.FAST,
         capabilities=[ModelCapability.FAST, ModelCapability.STREAMING],
         context_window=131072,

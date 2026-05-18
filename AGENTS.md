@@ -4,7 +4,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Project Overview
 
-OMNI Agent is a modular, async Python AI agent system that routes requests across 24 cloud LLM models. It supports four run modes: CLI, REST API (aiohttp on :8000), Telegram bot, and all-at-once. The system uses Ollama as its LLM backend with auto-routing to select the best model per task type (code, math, vision, multilingual, etc.).
+OMNI Agent is a modular, async Python AI agent system that routes requests across 27 cloud LLM models. It supports four run modes: CLI, REST API (aiohttp on :8000), Telegram bot, and all-at-once. The system uses Ollama as its LLM backend with auto-routing to select the best model per task type (code, math, vision, multilingual, etc.).
 
 ## Commands
 
@@ -40,7 +40,7 @@ docker-compose up -d               # omni-agent(:8000), ollama(:11434), searxng(
 
 ### LLM subsystem (the "nucleus")
 These four modules form the critical model contract — changes must stay consistent across all of them:
-- **`agent/model_registry.py`** — Static catalog of 24 cloud models. Exports: `MODELS`, `get_model()`, `ModelCapability`, `summary_table()`
+- **`agent/model_registry.py`** — Static catalog of 27 cloud models. Exports: `MODELS`, `get_model()`, `ModelCapability`, `summary_table()`
 - **`agent/model_router.py`** — Task classifier + routing engine. Exports: `ModelRouter`, `TaskType`, `classify_task()`, `RouteDecision`, `TASK_TO_CAPABILITY`
 - **`agent/multi_model_client.py`** — Unified async LLM interface. Uses router for auto-routing, supports `chat()`, `chat_parallel()`, `embed()`
 - **`agent/ollama_client.py`** — Raw Ollama HTTP client

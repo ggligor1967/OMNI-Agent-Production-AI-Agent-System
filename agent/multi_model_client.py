@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 class MultiModelClient:
     """
-    Drop-in replacement for OllamaClient that routes across all 24 cloud models.
+    Drop-in replacement for OllamaClient that routes across all 27 cloud models.
     Fully backward-compatible: existing code calling .chat() keeps working.
     """
 
@@ -206,7 +206,7 @@ class MultiModelClient:
             decision = RouteDecision(
                 model_id=model,
                 model_spec=MODELS[model],
-                task_type=TaskType.CHAT,
+                task_type=TaskType.GENERAL,
                 confidence=1.0,
                 reason="Manual override",
                 fallback_chain=self.router._get_fallback_chain(model),
@@ -222,7 +222,7 @@ class MultiModelClient:
             decision = RouteDecision(
                 model_id=default_id,
                 model_spec=spec,
-                task_type=TaskType.CHAT,
+                task_type=TaskType.GENERAL,
                 confidence=0.5,
                 reason="Default model",
                 fallback_chain=[],

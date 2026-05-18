@@ -1,7 +1,7 @@
 # OMNI Agent — Production AI Agent System
 
 A fully modular, production-ready AI agent built in Python.  
-Routes intelligently across **24 cloud models**, supports RAG, pipelines, caching, prompt templates, and a rich interactive CLI.
+Routes intelligently across **27 cloud models**, supports RAG, pipelines, caching, prompt templates, and a rich interactive CLI.
 
 ---
 
@@ -67,8 +67,8 @@ Launcher notes:
 omni_agent/
 ├── agent/
 │   ├── core.py               # Main orchestrator — wires all subsystems
-│   ├── multi_model_client.py # Unified async LLM interface (24 models)
-│   ├── model_registry.py     # Complete 24-model catalog with metadata
+│   ├── multi_model_client.py # Unified async LLM interface (27 models)
+│   ├── model_registry.py     # Complete 27-model catalog with metadata
 │   ├── model_router.py       # Task classifier + smart routing engine
 │   ├── ollama_client.py      # Raw Ollama API client
 │   ├── rag.py                # RAG pipeline: ingest → chunk → embed → retrieve
@@ -105,18 +105,18 @@ omni_agent/
 
 ---
 
-## The 24 Cloud Models
+## The 27 Cloud Models
 
 | Provider | Models | Best For |
 |---|---|---|
 | **Alibaba** | qwen3-vl:235b-instruct-cloud, qwen3-coder-next:cloud, qwen3-coder:480b-cloud, qwen3-next:80b-cloud, qwen3.5:cloud, qwen3-vl:235b-cloud | Vision, coding, general |
 | **Zhipu AI** | glm-5:cloud, glm-4.7:cloud | Chinese/bilingual, reasoning |
-| **DeepSeek** | deepseek-v3.1:671b-cloud | Math, reasoning, code |
+| **DeepSeek** | deepseek-v3.1:671b-cloud, deepseek-v3.2:cloud | Math, reasoning, code |
 | **OpenAI OSS** | gpt-oss:120b-cloud, gpt-oss:20b-cloud | General, creative, fast |
 | **Google** | gemini-3-flash-preview:cloud (1M ctx), gemma3:12b-cloud, gemma3:4b-cloud | Long context, vision, speed |
 | **Mistral AI** | mistral-large-3:675b-cloud, ministral-3:8b-cloud, devstral-2:123b-cloud, devstral-small-2:24b-cloud | Multilingual, code, agents |
-| **NVIDIA** | nemotron-3-nano:30b-cloud | Enterprise, structured output |
-| **MiniMax** | minimax-m2:cloud, minimax-m2.5:cloud | 1M context, creative, long docs |
+| **NVIDIA** | nemotron-3-nano:30b-cloud, nemotron-3-super:cloud | Enterprise, structured output |
+| **MiniMax** | minimax-m2:cloud, minimax-m2.5:cloud, minimax-m2.7:cloud | 1M context, creative, long docs |
 | **Cogito** | cogito-2.1:671b-cloud | Formal reasoning, math proofs |
 | **Moonshot AI** | kimi-k2.5:cloud | Long context, Chinese/English |
 | **RNJ Labs** | rnj-1:8b-cloud | Fast inference, edge |
@@ -148,7 +148,7 @@ GET  /audit?limit=50          Audit log
 
 ### Models
 ```
-GET  /models                  All 24 models
+GET  /models                  All 27 models
 GET  /models/{id}             Single model details
 POST /route                   Preview routing decision for a prompt
 POST /compare                 Run same prompt on multiple models in parallel
@@ -186,7 +186,7 @@ POST /cache/flush             Clear all cached responses
 ## CLI Commands
 
 ```
-/models                       Browse all 24 models
+/models                       Browse all 27 models
 /model <id>                   Pin session to a model
 /model auto                   Restore auto-routing
 /route <text>                 Preview routing decision

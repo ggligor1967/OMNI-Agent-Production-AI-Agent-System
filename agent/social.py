@@ -50,6 +50,16 @@ INTENT_PATTERNS: Dict[Intent, List[str]] = {
 def detect_intent(text: str) -> Tuple[Intent, float]:
     """Rule-based intent detection. Returns (intent, confidence)."""
     text_lower = text.lower().strip()
+
+    explicit_small_talk = [
+        r"^how\s+are\s+you(?:\s+(?:doing|today))?\??$",
+        r"^what'?s\s+up[!?., ]*$",
+        r"^tell\s+me\s+about\s+yourself[.!? ]*$",
+        r"^who\s+are\s+you\??$",
+    ]
+    if any(re.search(pattern, text_lower, re.IGNORECASE) for pattern in explicit_small_talk):
+        return Intent.SMALL_TALK, 1.0
+
     scores: Dict[Intent, int] = {}
 
     for intent, patterns in INTENT_PATTERNS.items():

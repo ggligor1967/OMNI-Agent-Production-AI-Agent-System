@@ -501,9 +501,7 @@ class TestToolRegistry:
             raise PermissionError("blocked by middleware")
 
         registry.use(block_all)
-        result = asyncio.get_event_loop().run_until_complete(
-            registry.call(ToolCall("blocked_tool", {}))
-        )
+        result = asyncio.run(registry.call(ToolCall("blocked_tool", {})))
         assert not result.success
         assert "Middleware" in result.error
 
@@ -853,9 +851,7 @@ class TestWorkflowBuiltins:
         from agent.workflow import WorkflowManager
         wm = WorkflowManager(mock_agent)
         with pytest.raises(KeyError, match="ghost_workflow"):
-            asyncio.get_event_loop().run_until_complete(
-                wm.run("ghost_workflow", {})
-            )
+            asyncio.run(wm.run("ghost_workflow", {}))
 
 
 # ══════════════════════════════════════════════════════════════════════════════

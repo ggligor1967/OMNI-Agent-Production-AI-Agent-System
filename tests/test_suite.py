@@ -9,6 +9,7 @@ import json
 import time
 import asyncio
 import tempfile
+from pathlib import Path
 import pytest
 
 # Ensure project root is on path
@@ -352,9 +353,7 @@ class TestSkillsManager:
 
     def test_skill_not_found(self, skills_mgr):
         with pytest.raises(KeyError):
-            asyncio.get_event_loop().run_until_complete(
-                skills_mgr.execute("nonexistent_skill")
-            )
+            asyncio.run(skills_mgr.execute("nonexistent_skill"))
 
     def test_disable_enable(self, skills_mgr):
         @skills_mgr.register("toggle", "Toggleable skill")
