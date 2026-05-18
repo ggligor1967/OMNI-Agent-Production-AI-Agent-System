@@ -20,6 +20,7 @@ Model Catalog Contract: **27 cloud models**
 python -m compileall agent main.py
 pytest tests/ -q
 ruff check .
+python tools/check_documentation_consistency.py --root .
 coverage erase && coverage run -m pytest tests/ && coverage report
 ```
 

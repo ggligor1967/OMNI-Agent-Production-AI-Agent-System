@@ -26,6 +26,10 @@ jobs:
       - run: pytest tests/ -q
       - run: ruff check .
 
+      - name: Documentation consistency gate
+        if: matrix.python-version == '3.13'
+        run: python tools/check_documentation_consistency.py --root .
+
       # Blocking Sprint 0 Bandit gate: active/hot-path runtime modules only.
       # Full-agent coverage remains in the audit lane below until orphan/standalone
       # surfaces are fully classified and either wired or retired.

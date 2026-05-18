@@ -13,7 +13,7 @@ Documentation baseline: phase-2-complete
 - Model catalog source of truth: `agent/model_registry.py` (**27 cloud models**)
 - Support matrix path: `tests/SUPPORT_MATRIX.md`
 - ADR index: `docs/adr/README.md`
-- CI release gate: Python 3.12 and 3.13 with `pytest tests/ -q` and `ruff check .`
+- CI release gate: Python 3.12 and 3.13 with `pytest tests/ -q`, `ruff check .`, and `python tools/check_documentation_consistency.py --root .`
 - Storage strategy: SQLite for local development and tests; Postgres is the production target (see `docs/adr/ADR-003-db-strategy.md`)
 
 ## Commands

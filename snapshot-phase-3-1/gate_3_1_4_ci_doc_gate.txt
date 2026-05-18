@@ -1,0 +1,35 @@
+﻿
+  .github\workflows\ci.yml:8:    strategy:
+  .github\workflows\ci.yml:9:      matrix:
+> .github\workflows\ci.yml:10:        python-version: ["3.12", "3.13"]
+  .github\workflows\ci.yml:11:    env:
+  .github\workflows\ci.yml:12:      SECRET_KEY: 
+"test-secret-key-with-minimum-32-characters"
+  .github\workflows\ci.yml:18:      - uses: actions/setup-python@v5
+  .github\workflows\ci.yml:19:        with:
+> .github\workflows\ci.yml:20:          python-version: ${{ 
+matrix.python-version }}
+  .github\workflows\ci.yml:21:          cache: "pip"
+  .github\workflows\ci.yml:22:
+  .github\workflows\ci.yml:27:      - run: ruff check .
+  .github\workflows\ci.yml:28:
+> .github\workflows\ci.yml:29:      - name: Documentation consistency gate
+  .github\workflows\ci.yml:30:        if: matrix.python-version == '3.13'
+> .github\workflows\ci.yml:31:        run: python 
+tools/check_documentation_consistency.py --root .
+  .github\workflows\ci.yml:32:
+  .github\workflows\ci.yml:33:      # Blocking Sprint 0 Bandit gate: 
+active/hot-path runtime modules only.
+  .github\workflows\ci.yml:71:      - uses: actions/setup-python@v5
+  .github\workflows\ci.yml:72:        with:
+> .github\workflows\ci.yml:73:          python-version: "3.13"
+  .github\workflows\ci.yml:74:          cache: "pip"
+  .github\workflows\ci.yml:75:
+  .github\workflows\ci.yml:99:      - uses: actions/setup-python@v5
+  .github\workflows\ci.yml:100:        with:
+> .github\workflows\ci.yml:101:          python-version: "3.13"
+  .github\workflows\ci.yml:102:          cache: "pip"
+  .github\workflows\ci.yml:103:
+
+
+
