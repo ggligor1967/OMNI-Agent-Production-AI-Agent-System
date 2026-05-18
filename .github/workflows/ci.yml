@@ -1,0 +1,50 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+    env:
+      SECRET_KEY: "test-secret-key-with-minimum-32-characters"
+      AUTH_ENFORCE: "true"
+      API_HOST: "127.0.0.1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - run: pip install -r requirements.txt pytest ruff bandit pip-audit coverage pyyaml
+
+      - run: python -m compileall agent main.py
+      - run: pytest tests/ -q
+      - run: ruff check .
+
+      # Fail the build on MEDIUM and HIGH findings.
+      # Exceptions must be justified via # nosec or bandit.yaml.
+      - run: bandit -r agent -x agent/_legacy,tests -ll -ii
+
+      - run: pip-audit
+        timeout-minutes: 5
+
+      - run: coverage erase && coverage run -m pytest tests/ && coverage report
+
+  legacy-audit:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - run: pip install -r requirements.txt pytest
+      - run: pytest tests/_archive/ -q || true
