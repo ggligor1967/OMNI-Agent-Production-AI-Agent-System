@@ -97,10 +97,11 @@ class CacheClient:
         self._backend = "memory"
 
     async def connect(self) -> str:
-        """Try Redis; fall back to memory silently."""
+        """Try redis.asyncio; fall back to memory with an explicit log."""
         try:
-            import aioredis  # type: ignore
-            self._redis = await aioredis.from_url(
+            import redis.asyncio as redis_asyncio
+
+            self._redis = redis_asyncio.from_url(
                 self.redis_url,
                 encoding="utf-8",
                 decode_responses=True,
@@ -108,15 +109,20 @@ class CacheClient:
             )
             await self._redis.ping()
             self._backend = "redis"
-            logger.info(f"Cache: Redis connected ({self.redis_url})")
+            logger.info("Cache: Redis connected (%s) via redis.asyncio", self.redis_url)
         except Exception as e:
-            logger.info(f"Cache: Redis unavailable ({e}), using in-memory store")
+            self._redis = None
             self._backend = "memory"
+            logger.warning(
+                "Cache: Redis unavailable (%s); falling back to in-memory store",
+                e,
+            )
         return self._backend
 
     async def close(self):
         if self._redis:
-            await self._redis.close()
+            await self._redis.aclose()
+            self._redis = None
 
     @property
     def backend(self) -> str:
@@ -273,20 +279,23 @@ class CacheClient:
         if self._backend != "redis":
             return
         pubsub = self._redis.pubsub()
-        await pubsub.subscribe(channel)
-        async for msg in pubsub.listen():
-            if msg["type"] == "message":
-                try:
-                    data = json.loads(msg["data"])
-                except Exception:
-                    data = msg["data"]
-                if asyncio.iscoroutinefunction(handler):
-                    await handler(data)
-                else:
-                    handler(data)
-                if run_once:
-                    break
-        await pubsub.unsubscribe(channel)
+        try:
+            await pubsub.subscribe(channel)
+            async for msg in pubsub.listen():
+                if msg["type"] == "message":
+                    try:
+                        data = json.loads(msg["data"])
+                    except Exception:
+                        data = msg["data"]
+                    if asyncio.iscoroutinefunction(handler):
+                        await handler(data)
+                    else:
+                        handler(data)
+                    if run_once:
+                        break
+        finally:
+            await pubsub.unsubscribe(channel)
+            await pubsub.aclose()
 
     # ── Stats ─────────────────────────────────────────────────────────────────
 

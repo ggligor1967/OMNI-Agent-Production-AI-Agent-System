@@ -1,0 +1,13 @@
+
+tests/test_redis_asyncio_cache.py::test_memory_fallback_works_when_redis_connect_fails 
+-------------------------------- live log call --------------------------------
+WARNING  agent.cache:cache.py:116 Cache: Redis unavailable (redis unavailable); falling back to in-memory store
+PASSED                                                                   [ 25%]
+tests/test_redis_asyncio_cache.py::test_redis_backend_initializes_with_redis_asyncio PASSED [ 50%]
+tests/test_redis_asyncio_cache.py::test_redis_connection_failure_logs_explicit_fallback 
+-------------------------------- live log call --------------------------------
+WARNING  agent.cache:cache.py:116 Cache: Redis unavailable (redis unavailable); falling back to in-memory store
+PASSED                                                                   [ 75%]
+tests/test_redis_asyncio_cache.py::test_no_legacy_redis_import_remains_in_active_cache_path PASSED [100%]
+
+============================== 4 passed in 0.31s ==============================
