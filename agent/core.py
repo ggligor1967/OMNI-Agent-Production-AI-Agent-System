@@ -9,6 +9,8 @@ import asyncio
 import time
 import ast
 import csv
+import hashlib
+from contextlib import asynccontextmanager
 from typing import Any, Dict, List, Optional
 from agent.memory import MemoryDB
 from agent.multi_model_client import MultiModelClient
@@ -31,7 +33,7 @@ from agent.pipeline import (
 from agent.summarizer import ConversationSummarizer
 from agent.structured_output import StructuredOutputParser
 from agent.tools_registry import build_default_tools
-from agent.tracing import tracer
+from agent.tracing import SpanKind, tracer
 from agent.workflow import WorkflowManager
 from agent.streaming import bus, BusMessage, EventBusEvent
 from agent.evaluation import Evaluator
@@ -68,6 +70,18 @@ INSTRUCTIONS:
 - Cite sources when using web results
 - If you invoke a tool, format it as: [TOOL: tool_name(args)]
 """
+
+
+class _NullTraceSpan:
+    def __init__(self):
+        self.attributes: Dict[str, Any] = {}
+        self.events: List[Dict[str, Any]] = []
+
+    def set(self, key: str, value: Any):
+        return None
+
+    def add_event(self, name: str, attrs: Optional[Dict[str, Any]] = None):
+        return None
 
 
 class OmniAgent:
@@ -189,6 +203,69 @@ class OmniAgent:
             logger.warning(f"Embedding failed for text[:{min(len(text), 50)}]: {e}")
             return []
 
+    def _active_tracer(self):
+        return getattr(self, "tracer", tracer)
+
+    @staticmethod
+    def _trace_hash(value: Any) -> str:
+        text = str(value or "")
+        if not text:
+            return ""
+        digest = hashlib.sha256(text.encode("utf-8", errors="replace")).hexdigest()
+        return f"sha256:{digest[:16]}"
+
+    @asynccontextmanager
+    async def _safe_trace_context(self, factory, label: str):
+        manager = None
+        span: Any = _NullTraceSpan()
+        active = False
+
+        try:
+            manager = factory()
+            span = await manager.__aenter__()
+            active = True
+        except Exception as exc:
+            logger.debug("Tracing unavailable for %s: %s", label, exc)
+            manager = None
+            span = _NullTraceSpan()
+
+        try:
+            yield span
+        except Exception as exc:
+            if active and manager is not None:
+                try:
+                    suppress = await manager.__aexit__(type(exc), exc, exc.__traceback__)
+                except Exception as trace_exc:
+                    logger.debug("Tracing exit failed for %s: %s", label, trace_exc)
+                    suppress = False
+                if suppress:
+                    return
+            raise
+        else:
+            if active and manager is not None:
+                try:
+                    await manager.__aexit__(None, None, None)
+                except Exception as trace_exc:
+                    logger.debug("Tracing exit failed for %s: %s", label, trace_exc)
+
+    @asynccontextmanager
+    async def _trace_span(self, name: str, kind: SpanKind, **attrs):
+        trace = self._active_tracer()
+        async with self._safe_trace_context(
+            lambda: trace.async_span(name, kind, **attrs),
+            name,
+        ) as span:
+            yield span
+
+    @asynccontextmanager
+    async def _trace_llm_span(self, model_id: str, session_id: str, prompt_text: str):
+        trace = self._active_tracer()
+        async with self._safe_trace_context(
+            lambda: trace.llm_span(model_id, session_id=session_id, prompt_text=prompt_text),
+            f"llm.{model_id}",
+        ) as span:
+            yield span
+
     # ── Core Chat Interface ───────────────────────────────────────────────────
 
     async def chat(self, user_id: Any, session_id: str, user_text: str,
@@ -196,49 +273,75 @@ class OmniAgent:
         """Main entry point: process a user message and return a response."""
         safe_text = self.security.sanitize_input(user_text)
 
-        blocked_response = await self._maybe_block_prompt_injection(user_id, safe_text)
-        if blocked_response:
-            return blocked_response
+        async with self._trace_span(
+            "chat.request",
+            SpanKind.PIPELINE,
+            session_id_hash=self._trace_hash(session_id),
+            user_id_hash=self._trace_hash(user_id),
+            use_rag=bool(use_rag),
+            rag_doc_id_present=bool(rag_doc_id),
+            input_chars=len(safe_text),
+        ) as chat_span:
+            chat_span.add_event("chat.received", {"input_chars": len(safe_text)})
 
-        blocked_response = await self._maybe_block_rate_limit(user_id)
-        if blocked_response:
-            return blocked_response
+            blocked_response = await self._maybe_block_prompt_injection(user_id, safe_text)
+            if blocked_response:
+                chat_span.set("result_path", "security_block")
+                chat_span.set("response_chars", len(blocked_response))
+                return blocked_response
 
-        self.memory.add_message(session_id, "user", safe_text)
+            blocked_response = await self._maybe_block_rate_limit(user_id)
+            if blocked_response:
+                chat_span.set("result_path", "rate_limited")
+                chat_span.set("response_chars", len(blocked_response))
+                return blocked_response
 
-        quick_response = self._maybe_return_quick_response(session_id, user_id, safe_text)
-        if quick_response:
-            return quick_response
+            self.memory.add_message(session_id, "user", safe_text)
 
-        skill_response = await self._maybe_execute_triggered_skill(safe_text, session_id)
-        if skill_response:
-            return skill_response
+            quick_response = self._maybe_return_quick_response(session_id, user_id, safe_text)
+            if quick_response:
+                chat_span.set("result_path", "quick_response")
+                chat_span.set("response_chars", len(quick_response))
+                return quick_response
 
-        messages = self._history_messages(session_id)
-        messages = await self._maybe_compress_messages(messages)
-        await self._maybe_apply_rag(messages, safe_text, use_rag, rag_doc_id)
+            skill_response = await self._maybe_execute_triggered_skill(safe_text, session_id)
+            if skill_response:
+                chat_span.set("result_path", "skill_response")
+                chat_span.set("response_chars", len(skill_response))
+                return skill_response
 
-        cache_key = self._chat_cache_key(session_id, messages)
-        cached_response = await self._maybe_return_cached_response(session_id, cache_key)
-        if cached_response:
-            return cached_response
+            messages = self._history_messages(session_id)
+            messages = await self._maybe_compress_messages(messages)
+            await self._maybe_apply_rag(session_id, messages, safe_text, use_rag, rag_doc_id)
 
-        try:
-            raw_response = await self._generate_raw_response(
-                user_id=user_id,
-                session_id=session_id,
-                safe_text=safe_text,
-                messages=messages,
-                cache_key=cache_key,
-            )
-            final_response = await self._process_tool_calls(raw_response, session_id)
-            self._store_chat_response(session_id, safe_text, final_response)
-            return final_response
+            cache_key = self._chat_cache_key(session_id, messages)
+            cached_response = await self._maybe_return_cached_response(session_id, cache_key)
+            if cached_response:
+                chat_span.set("result_path", "cache_hit")
+                chat_span.set("response_chars", len(cached_response))
+                return cached_response
 
-        except Exception as e:
-            logger.error(f"Chat error: {e}")
-            await hooks.emit(Event(EventType.AGENT_ERROR, {"error": str(e)}))
-            return f"⚠️ I encountered an error: {str(e)[:200]}"
+            try:
+                raw_response = await self._generate_raw_response(
+                    user_id=user_id,
+                    session_id=session_id,
+                    safe_text=safe_text,
+                    messages=messages,
+                    cache_key=cache_key,
+                )
+                chat_span.set("tool_directive_present", "[TOOL:" in raw_response)
+                final_response = await self._process_tool_calls(raw_response, session_id)
+                self._store_chat_response(session_id, safe_text, final_response)
+                chat_span.set("result_path", "generated")
+                chat_span.set("response_chars", len(final_response))
+                return final_response
+
+            except Exception as e:
+                chat_span.set("result_path", "error")
+                chat_span.add_event("chat.error", {"error": str(e)})
+                logger.error(f"Chat error: {e}")
+                await hooks.emit(Event(EventType.AGENT_ERROR, {"error": str(e)}))
+                return f"⚠️ I encountered an error: {str(e)[:200]}"
 
     async def _maybe_block_prompt_injection(self, user_id: Any,
                                             safe_text: str) -> Optional[str]:
@@ -309,25 +412,36 @@ class OmniAgent:
                        f"({summary_meta.strategy})")
         return messages
 
-    async def _maybe_apply_rag(self, messages: List[Dict[str, str]],
+    async def _maybe_apply_rag(self, session_id: str,
+                               messages: List[Dict[str, str]],
                                safe_text: str,
                                use_rag: bool,
                                rag_doc_id: Optional[str]) -> None:
         if not (use_rag or rag_doc_id):
             return
-        try:
-            effective_text, rag_results = await self.rag.augment_prompt(
-                safe_text,
-                top_k=4,
-                doc_id=rag_doc_id,
-            )
-            if rag_results:
-                logger.debug(f"RAG: {len(rag_results)} chunks retrieved "
-                            f"(top score={rag_results[0].score:.2f})")
-                if messages and messages[-1]["role"] == "user":
-                    messages[-1]["content"] = effective_text
-        except Exception as e:
-            logger.warning(f"RAG augmentation failed: {e}")
+        async with self._trace_span(
+            "chat.rag_augment",
+            SpanKind.RAG,
+            session_id_hash=self._trace_hash(session_id),
+            requested=True,
+            doc_filter_present=bool(rag_doc_id),
+        ) as rag_span:
+            try:
+                effective_text, rag_results = await self.rag.augment_prompt(
+                    safe_text,
+                    top_k=4,
+                    doc_id=rag_doc_id,
+                )
+                rag_span.set("chunk_count", len(rag_results))
+                rag_span.set("applied", bool(rag_results))
+                if rag_results:
+                    logger.debug(f"RAG: {len(rag_results)} chunks retrieved "
+                                f"(top score={rag_results[0].score:.2f})")
+                    if messages and messages[-1]["role"] == "user":
+                        messages[-1]["content"] = effective_text
+            except Exception as e:
+                rag_span.add_event("rag.error", {"error": str(e)})
+                logger.warning(f"RAG augmentation failed: {e}")
 
     def _chat_cache_key(self, session_id: str,
                         messages: List[Dict[str, str]]) -> str:
@@ -338,18 +452,27 @@ class OmniAgent:
 
     async def _maybe_return_cached_response(self, session_id: str,
                                             cache_key: str) -> Optional[str]:
-        cached_resp = await self.cache.get(cache_key)
-        if not cached_resp or not isinstance(cached_resp, dict):
-            return None
+        async with self._trace_span(
+            "chat.cache_lookup",
+            SpanKind.CACHE,
+            session_id_hash=self._trace_hash(session_id),
+        ) as cache_span:
+            cached_resp = await self.cache.get(cache_key)
+            if not cached_resp or not isinstance(cached_resp, dict):
+                cache_span.set("hit", False)
+                return None
 
-        cached_content = cached_resp.get("response", {}).get("content", "")
-        if not cached_content:
-            return None
+            cached_content = cached_resp.get("response", {}).get("content", "")
+            if not cached_content:
+                cache_span.set("hit", False)
+                return None
 
-        logger.debug(f"Cache HIT for session {session_id}")
-        self.memory.add_message(session_id, "assistant", cached_content,
-                               {"cached": True})
-        return cached_content
+            cache_span.set("hit", True)
+            cache_span.set("response_chars", len(cached_content))
+            logger.debug(f"Cache HIT for session {session_id}")
+            self.memory.add_message(session_id, "assistant", cached_content,
+                                   {"cached": True})
+            return cached_content
 
     async def _generate_raw_response(self, user_id: Any,
                                      session_id: str,
@@ -368,24 +491,35 @@ class OmniAgent:
         if self.config_mgr.flag("persona_auto"):
             self.persona_manager.auto_detect_and_set(session_id, safe_text)
 
-        response_data = await self.llm.chat(
-            messages=messages,
-            system=effective_system,
-            temperature=0.7,
-            session_id=session_id,
-            auto_route=CONFIG.MODEL_AUTO_ROUTE,
-        )
-        raw_response = response_data["content"]
-        routed_to = response_data.get("_routed_to", "?")
-        task_type = response_data.get("_task_type", "?")
-        latency = response_data.get("_latency_ms", 0)
-        logger.debug(f"[{task_type}] → {routed_to} ({latency}ms)")
+        model_hint = self.router.get_session_model(session_id) or "auto"
+        async with self._trace_llm_span(model_hint, session_id, safe_text) as llm_span:
+            llm_span.set("auto_route", CONFIG.MODEL_AUTO_ROUTE)
+            response_data = await self.llm.chat(
+                messages=messages,
+                system=effective_system,
+                temperature=0.7,
+                session_id=session_id,
+                auto_route=CONFIG.MODEL_AUTO_ROUTE,
+            )
+            raw_response = response_data["content"]
+            routed_to = response_data.get("_routed_to", "?")
+            task_type = response_data.get("_task_type", "?")
+            latency = response_data.get("_latency_ms", 0)
+            llm_span.set("model", routed_to)
+            llm_span.set("task_type", task_type)
+            llm_span.set("latency_ms", latency)
+            llm_span.set("response_chars", len(raw_response))
+            output_tokens = response_data.get("eval_count") or response_data.get("output_tokens") or 0
+            if output_tokens:
+                llm_span.set("output_tokens", int(output_tokens))
+            logger.debug(f"[{task_type}] → {routed_to} ({latency}ms)")
 
-        await self.cache.set(cache_key, {
-            "response": response_data,
-            "cached_at": time.time(),
-        }, ttl=3600)
-        return raw_response
+            await self.cache.set(cache_key, {
+                "response": response_data,
+                "cached_at": time.time(),
+            }, ttl=3600)
+            llm_span.set("cache_write", True)
+            return raw_response
 
     def _store_chat_response(self, session_id: str,
                              safe_text: str,
@@ -398,20 +532,28 @@ class OmniAgent:
     async def _process_tool_calls(self, response: str, session_id: str) -> str:
         """Parse and execute [TOOL: ...] directives in LLM output."""
         import re
-        pattern = r'\[TOOL:\s*(\w+)\(([^)]*)\)\]'
-        matches = re.findall(pattern, response)
+        async with self._trace_span(
+            "chat.tool_processing",
+            SpanKind.TOOL,
+            session_id_hash=self._trace_hash(session_id),
+            response_chars=len(response),
+        ) as tool_span:
+            pattern = r'\[TOOL:\s*(\w+)\(([^)]*)\)\]'
+            matches = re.findall(pattern, response)
+            tool_span.set("tool_directive_count", len(matches))
 
-        if not matches:
-            return response
+            if not matches:
+                return response
 
-        augmented = response
-        for tool_name, args_str in matches:
-            tool_result = await self._execute_tool(tool_name, args_str, session_id)
-            placeholder = f"[TOOL: {tool_name}({args_str})]"
-            augmented = augmented.replace(placeholder,
-                                         f"\n📎 *{tool_name} result:* {str(tool_result)[:500]}\n")
+            augmented = response
+            for tool_name, args_str in matches:
+                tool_result = await self._execute_tool(tool_name, args_str, session_id)
+                placeholder = f"[TOOL: {tool_name}({args_str})]"
+                augmented = augmented.replace(placeholder,
+                                             f"\n📎 *{tool_name} result:* {str(tool_result)[:500]}\n")
 
-        return augmented
+            tool_span.set("executed_tool_count", len(matches))
+            return augmented
 
     @staticmethod
     def _coerce_tool_value(raw_value: str) -> Any:
@@ -472,28 +614,39 @@ class OmniAgent:
 
     async def _execute_tool(self, name: str, args_str: str, session_id: str) -> Any:
         """Execute a named tool exclusively through the canonical tool registry."""
-        if not hasattr(self, "tool_registry"):
-            error = "Tool registry unavailable"
+        async with self._trace_span(
+            f"tool.{name}",
+            SpanKind.TOOL,
+            session_id_hash=self._trace_hash(session_id),
+            tool_name=name,
+        ) as tool_span:
+            if not hasattr(self, "tool_registry"):
+                error = "Tool registry unavailable"
+                tool_span.set("success", False)
+                await hooks.emit(Event(EventType.TOOL_ERROR, {
+                    "tool": name, "error": error
+                }))
+                return f"Error in {name}: {error}"
+
+            call = self._build_tool_call(name, args_str, session_id)
+            tool_span.set("arg_count", len(call.arguments))
+            preview = json.dumps(call.arguments, default=str)[:100]
+            await hooks.emit(Event(EventType.TOOL_CALLED, {"tool": name, "args": preview}))
+
+            result = await self.tool_registry.call(call)
+            tool_span.set("success", result.success)
+            if result.success:
+                tool_span.set("result_type", type(result.output).__name__)
+                await hooks.emit(Event(EventType.TOOL_RESULT, {
+                    "tool": name, "success": True
+                }))
+                return result.output
+
+            tool_span.add_event("tool.error", {"error": result.error})
             await hooks.emit(Event(EventType.TOOL_ERROR, {
-                "tool": name, "error": error
+                "tool": name, "error": result.error
             }))
-            return f"Error in {name}: {error}"
-
-        call = self._build_tool_call(name, args_str, session_id)
-        preview = json.dumps(call.arguments, default=str)[:100]
-        await hooks.emit(Event(EventType.TOOL_CALLED, {"tool": name, "args": preview}))
-
-        result = await self.tool_registry.call(call)
-        if result.success:
-            await hooks.emit(Event(EventType.TOOL_RESULT, {
-                "tool": name, "success": True
-            }))
-            return result.output
-
-        await hooks.emit(Event(EventType.TOOL_ERROR, {
-            "tool": name, "error": result.error
-        }))
-        return f"Error in {name}: {result.error}"
+            return f"Error in {name}: {result.error}"
 
     # ── Memory Utilities ──────────────────────────────────────────────────────
 
