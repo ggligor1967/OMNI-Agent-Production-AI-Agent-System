@@ -7,8 +7,10 @@ import logging
 import signal
 import sys
 import argparse
+import getpass
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Any, Optional, TYPE_CHECKING
+from typing import Callable, Dict, Any, Optional, TYPE_CHECKING
 from urllib.parse import urlparse
 from config import CONFIG
 
@@ -18,6 +20,15 @@ if TYPE_CHECKING:
 
 
 _DEFAULT_SECRET = "CHANGE_ME_IN_PRODUCTION"
+
+
+@dataclass
+class AdminBootstrapResult:
+    user_id: str
+    key_id: str
+    role: str
+    api_key: str
+    jwt: str
 
 
 def _validate_security_config() -> None:
@@ -60,6 +71,93 @@ async def run_cli(agent: 'OmniAgent') -> None:
     from agent.cli import EnhancedCLI
     cli = EnhancedCLI(agent)
     await cli.run()
+
+
+def build_arg_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="OMNI Agent")
+    parser.add_argument("--mode", choices=["cli", "telegram", "api", "all"],
+                       default="cli", help="Run mode")
+    parser.add_argument(
+        "--create-admin",
+        action="store_true",
+        help="Bootstrap the first admin API identity locally using the existing auth model",
+    )
+    return parser
+
+
+def _prompt_with_default(prompt: str, default: str,
+                         input_fn: Callable[[str], str] = input) -> str:
+    value = input_fn(f"{prompt} [{default}]: ").strip()
+    return value or default
+
+
+def _prompt_confirmed_secret(label: str,
+                             secret_reader: Callable[[str], str] = getpass.getpass) -> str:
+    from agent.auth import validate_secret_value
+
+    secret = secret_reader(f"{label}: ")
+    confirm = secret_reader(f"Confirm {label.lower()}: ")
+    if secret != confirm:
+        raise ValueError(f"{label} entries did not match")
+    return validate_secret_value(secret, label=label)
+
+
+def _resolve_cli_bootstrap_token(auth_manager: Any,
+                                 admin_api_key: str) -> str:
+    from agent.auth import validate_secret_value
+
+    configured_token = ""
+    if auth_manager is not None:
+        configured_token = getattr(auth_manager, "bootstrap_token", "") or ""
+    if not configured_token:
+        configured_token = getattr(CONFIG, "AUTH_BOOTSTRAP_TOKEN", "") or ""
+    if configured_token:
+        return validate_secret_value(configured_token, label="bootstrap token")
+    return admin_api_key
+
+
+def run_create_admin_bootstrap(auth_manager: Any = None,
+                               input_fn: Callable[[str], str] = input,
+                               secret_reader: Callable[[str], str] = getpass.getpass,
+                               output_stream: Any = None) -> AdminBootstrapResult:
+    from agent.auth import AuthManager
+
+    output_stream = output_stream or sys.stdout
+    user_id = _prompt_with_default("Admin user id", "admin", input_fn)
+    name = _prompt_with_default("Admin display name", "Bootstrap Admin", input_fn)
+    admin_api_key = _prompt_confirmed_secret("Initial admin API key", secret_reader)
+    bootstrap_token = _resolve_cli_bootstrap_token(auth_manager, admin_api_key)
+
+    auth = auth_manager or AuthManager(
+        secret=CONFIG.SECRET_KEY,
+        db_path="data/auth.db",
+        enforce_auth=CONFIG.AUTH_ENFORCE,
+        bootstrap_token=bootstrap_token,
+    )
+
+    raw_key, key, token = auth.bootstrap_admin_identity(
+        bootstrap_token,
+        user_id=user_id,
+        name=name,
+        admin_api_key=admin_api_key,
+    )
+
+    print(
+        f"Initial admin created: user_id={key.user_id} key_id={key.key_id} role={key.role.value}",
+        file=output_stream,
+    )
+    print(
+        "Use the admin API key you entered to authenticate; obtain JWTs through the existing auth token flow.",
+        file=output_stream,
+    )
+
+    return AdminBootstrapResult(
+        user_id=key.user_id,
+        key_id=key.key_id,
+        role=key.role.value,
+        api_key=raw_key,
+        jwt=token,
+    )
 
 
 def _display_host(host: str) -> str:
@@ -646,10 +744,16 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
 
 
 async def main() -> None:
-    parser = argparse.ArgumentParser(description="OMNI Agent")
-    parser.add_argument("--mode", choices=["cli", "telegram", "api", "all"],
-                       default="cli", help="Run mode")
+    parser = build_arg_parser()
     args = parser.parse_args()
+
+    if args.create_admin:
+        try:
+            run_create_admin_bootstrap()
+        except (PermissionError, RuntimeError, ValueError) as exc:
+            print(f"[SECURITY] Admin bootstrap failed: {exc}", file=sys.stderr)
+            raise SystemExit(1)
+        return
 
     setup_logging()
     logger = logging.getLogger("main")

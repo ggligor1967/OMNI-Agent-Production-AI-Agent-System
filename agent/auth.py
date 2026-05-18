@@ -30,6 +30,8 @@ from collections import deque
 
 logger = logging.getLogger(__name__)
 
+MIN_SECRET_LENGTH = 32
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # ROLES & PERMISSIONS
@@ -90,6 +92,16 @@ def _b64url_encode(data: bytes) -> str:
 def _b64url_decode(s: str) -> bytes:
     padding = 4 - len(s) % 4
     return base64.urlsafe_b64decode(s + "=" * (padding % 4))
+
+
+def validate_secret_value(value: str, label: str = "secret",
+                          min_length: int = MIN_SECRET_LENGTH) -> str:
+    candidate = value or ""
+    if len(candidate) < min_length:
+        raise ValueError(f"{label} must be at least {min_length} characters long")
+    if candidate == "CHANGE_ME_IN_PRODUCTION":
+        raise ValueError(f"{label} must not use the default placeholder value")
+    return candidate
 
 
 def create_jwt(payload: Dict, secret: str, expires_in: int = 3600) -> str:
@@ -371,12 +383,15 @@ class AuthManager:
 
     def create_api_key(self, user_id: str, role: Role = Role.USER,
                         name: str = "", description: str = "",
-                        expires_in: int = None) -> tuple:
+                        expires_in: int = None,
+                        raw_key: str = "") -> tuple:
         """
         Generate a new API key. Returns (raw_key, APIKey).
         The raw_key is only returned once and never stored in plaintext.
         """
-        raw = "omni_" + secrets.token_urlsafe(32)
+        raw = validate_secret_value(raw_key, label="API key") if raw_key else (
+            "omni_" + secrets.token_urlsafe(32)
+        )
         key_hash = _hash_key(raw)
         key_id = str(uuid.uuid4())[:12]
         expires_at = time.time() + expires_in if expires_in else None
@@ -403,7 +418,8 @@ class AuthManager:
 
     def bootstrap_admin(self, provided_token: str,
                         user_id: str = "admin",
-                        name: str = "Bootstrap Admin") -> tuple:
+                        name: str = "Bootstrap Admin",
+                        admin_api_key: str = "") -> tuple:
         """
         Create the first admin API key using a one-time bootstrap token.
         This is intentionally disabled once any active API key exists.
@@ -419,7 +435,26 @@ class AuthManager:
             role=Role.ADMIN,
             name=name,
             description="Initial admin key created via bootstrap",
+            raw_key=admin_api_key,
         )
+
+    def bootstrap_admin_identity(self, provided_token: str,
+                                 user_id: str = "admin",
+                                 name: str = "Bootstrap Admin",
+                                 admin_api_key: str = "",
+                                 token_expires_in: Optional[int] = None) -> tuple:
+        raw_key, key = self.bootstrap_admin(
+            provided_token,
+            user_id=user_id,
+            name=name,
+            admin_api_key=admin_api_key,
+        )
+        token = self.create_token(
+            key.user_id,
+            key.role,
+            expires_in=token_expires_in or self.token_expiry,
+        )
+        return raw_key, key, token
 
     # ── JWT ───────────────────────────────────────────────────────────────────
 
