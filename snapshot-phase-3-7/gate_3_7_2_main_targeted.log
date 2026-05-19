@@ -1,0 +1,25 @@
+
+tests/test_main_entrypoint_quality_ratchet.py::test_main_helper_functions_cover_security_defaults_and_port_selection 
+-------------------------------- live log call --------------------------------
+WARNING  main:main.py:178 Skipping API port 9001 because SEARXNG_URL is configured on the same port.
+WARNING  main:main.py:178 Skipping API port 9001 because SEARXNG_URL is configured on the same port.
+WARNING  main:main.py:178 Skipping API port 9001 because SEARXNG_URL is configured on the same port.
+WARNING  main:main.py:178 Skipping API port 9001 because SEARXNG_URL is configured on the same port.
+PASSED                                                                   [  8%]
+tests/test_main_entrypoint_quality_ratchet.py::test_run_api_builds_core_routes_and_runtime_entrypoints PASSED [ 16%]
+tests/test_main_entrypoint_quality_ratchet.py::test_run_api_exposes_models_rag_tools_and_admin_surfaces PASSED [ 25%]
+tests/test_main_entrypoint_quality_ratchet.py::test_run_api_uses_fallback_port_when_primary_is_unavailable 
+-------------------------------- live log call --------------------------------
+WARNING  main:main.py:898 API port 8130 unavailable: port in use
+WARNING  main:main.py:878 Preferred API port 8130 unavailable. Using fallback port 8131.
+PASSED                                                                   [ 33%]
+tests/test_main_entrypoint_quality_ratchet.py::test_main_create_admin_failure_exits_cleanly_without_secret_leakage PASSED [ 41%]
+tests/test_main_entrypoint_quality_ratchet.py::test_main_cli_mode_runs_cli_and_stops_agent PASSED [ 50%]
+tests/test_startup_security.py::TestStartupSecurity::test_import_main_fails_fast_with_missing_secret PASSED [ 58%]
+tests/test_startup_security.py::TestStartupSecurity::test_import_main_rejects_public_bind_without_auth PASSED [ 66%]
+tests/test_startup_security.py::TestStartupSecurity::test_import_main_allows_safe_startup_config PASSED [ 75%]
+tests/test_http_tracing.py::test_http_tracing_middleware_records_safe_authenticated_request_span PASSED [ 83%]
+tests/test_http_tracing.py::test_http_tracing_middleware_tracks_anonymous_rejections PASSED [ 91%]
+tests/test_http_tracing.py::test_http_tracing_middleware_masks_dynamic_paths_without_route_template PASSED [100%]
+
+============================= 12 passed in 2.10s ==============================
