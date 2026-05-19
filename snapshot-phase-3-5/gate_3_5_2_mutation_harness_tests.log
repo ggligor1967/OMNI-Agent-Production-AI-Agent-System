@@ -1,0 +1,9 @@
+
+tests/test_mutation_harness.py::test_target_list_loads_and_points_to_existing_files PASSED [ 16%]
+tests/test_mutation_harness.py::test_smoke_command_can_be_generated PASSED [ 33%]
+tests/test_mutation_harness.py::test_parser_handles_sample_mutation_results PASSED [ 50%]
+tests/test_mutation_harness.py::test_harness_refuses_dirty_tree_by_default PASSED [ 66%]
+tests/test_mutation_harness.py::test_harness_writes_no_secrets_to_reports PASSED [ 83%]
+tests/test_mutation_harness.py::test_temporary_mutation_worktree_is_cleaned_up_or_isolated PASSED [100%]
+
+============================== 6 passed in 0.34s ==============================
