@@ -1,0 +1,10 @@
+
+tests/test_sandbox_policy.py::test_default_policy_denies_network PASSED  [ 14%]
+tests/test_sandbox_policy.py::test_default_policy_denies_unrestricted_env_access PASSED [ 28%]
+tests/test_sandbox_policy.py::test_write_outside_allowed_path_is_denied PASSED [ 42%]
+tests/test_sandbox_policy.py::test_allowed_temp_write_path_is_permitted_by_policy PASSED [ 57%]
+tests/test_sandbox_policy.py::test_timeout_is_represented_in_policy PASSED [ 71%]
+tests/test_sandbox_policy.py::test_denial_emits_sanitized_security_audit_event PASSED [ 85%]
+tests/test_sandbox_policy.py::test_policy_logs_do_not_include_secret_values PASSED [100%]
+
+============================== 7 passed in 0.20s ==============================
