@@ -1,0 +1,7 @@
+
+tests/test_mutation_smoke_summary.py::test_summary_json_schema_is_valid PASSED [ 25%]
+tests/test_mutation_smoke_summary.py::test_missing_required_fields_are_rejected PASSED [ 50%]
+tests/test_mutation_smoke_summary.py::test_mutation_score_calculation_is_correct PASSED [ 75%]
+tests/test_mutation_smoke_summary.py::test_smoke_summary_does_not_include_sensitive_terms PASSED [100%]
+
+============================== 4 passed in 0.07s ==============================

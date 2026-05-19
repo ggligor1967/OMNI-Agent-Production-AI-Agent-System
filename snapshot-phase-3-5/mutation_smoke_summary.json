@@ -1,0 +1,18 @@
+{
+  "incompetent": 0,
+  "killed": 0,
+  "limits_note": "Smoke mode uses only a small subset of targets and mutants.",
+  "mode": "smoke",
+  "mutation_score": 0.0,
+  "runtime_seconds": 5.652,
+  "survived": 2,
+  "target_modules": [
+    "agent/model_router.py",
+    "agent/sandbox.py"
+  ],
+  "test_command": "python -m pytest tests/test_models.py tests/test_model_routing_tracing.py -q ; python -m pytest tests/test_sandbox_policy.py tests/test_sandbox_isolation_proofs.py tests/test_security_event_audit.py -q",
+  "timeout": 0,
+  "timestamp": "2026-05-19T12:45:29.395995+00:00",
+  "tool": "local-ast-harness",
+  "total_mutants": 2
+}
