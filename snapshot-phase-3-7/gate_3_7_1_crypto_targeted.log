@@ -1,0 +1,15 @@
+
+tests/test_crypto_utils_quality_ratchet.py::test_hash_helpers_cover_safe_algorithms_and_fingerprint PASSED [  8%]
+tests/test_crypto_utils_quality_ratchet.py::test_hmac_and_key_derivation_are_deterministic_with_explicit_inputs PASSED [ 16%]
+tests/test_crypto_utils_quality_ratchet.py::test_password_hashing_rejects_malformed_payload_without_leaking_secret PASSED [ 25%]
+tests/test_crypto_utils_quality_ratchet.py::test_aead_wrap_and_unwrap_detect_tampering_without_key_leakage PASSED [ 33%]
+tests/test_crypto_utils_quality_ratchet.py::test_jwt_helpers_reject_invalid_and_expired_tokens_without_secret_leakage PASSED [ 41%]
+tests/test_crypto_utils_quality_ratchet.py::test_crypto_utils_facade_covers_operations_and_safe_encodings PASSED [ 50%]
+tests/test_crypto_utils_quality_ratchet.py::test_custore_tracks_key_registry_and_audit_entries PASSED [ 58%]
+tests/test_crypto_utils_quality_ratchet.py::test_crypto_routes_allow_safe_hashes_and_reject_unsafe_algorithms PASSED [ 66%]
+tests/test_crypto_utils_quality_ratchet.py::test_crypto_routes_round_trip_encrypt_decrypt_jwt_and_stats PASSED [ 75%]
+tests/test_md5_sweep.py::test_crypto_utils_disable_md5_helpers PASSED    [ 83%]
+tests/test_md5_sweep.py::test_crypto_module_no_longer_uses_hashlib_md5 PASSED [ 91%]
+tests/test_md5_sweep.py::test_active_md5_uses_are_documented_as_non_security_exceptions PASSED [100%]
+
+============================= 12 passed in 2.31s ==============================
