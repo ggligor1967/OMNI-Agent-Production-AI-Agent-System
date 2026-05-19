@@ -1,0 +1,7 @@
+
+tests/test_knowledge_graph_quality_ratchet.py::test_graph_store_round_trips_and_deletes_nodes_and_edges PASSED [ 25%]
+tests/test_knowledge_graph_quality_ratchet.py::test_knowledge_graph_crud_traversal_and_analytics_paths PASSED [ 50%]
+tests/test_knowledge_graph_quality_ratchet.py::test_knowledge_graph_merge_delete_and_reload_paths PASSED [ 75%]
+tests/test_knowledge_graph_quality_ratchet.py::test_knowledge_graph_register_routes_exposes_query_path_and_stats PASSED [100%]
+
+============================== 4 passed in 0.86s ==============================
