@@ -1,0 +1,2 @@
+queued		docs: add manual PR handoff instructions	CI	main	push	26130520215	4s	2026-05-19T23:01:18Z
+in_progress		docs: add remote handoff evidence logs	CI	main	push	26130491182	46s	2026-05-19T23:00:36Z
