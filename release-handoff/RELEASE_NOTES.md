@@ -19,7 +19,7 @@ This handoff package captures the repository state after the completed Phase 0 t
 - Ruff: PASS
 - coverage: PASS (`68.45%`)
 - active-path Bandit: PASS
-- pip-audit: PASS via ASCII mirror workaround
+- pip-audit: PASS via direct local audit with UTF-8 environment overrides and a writable temp cache directory
 
 ## Tags
 

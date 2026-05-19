@@ -3,8 +3,8 @@
 ## Audit Status
 
 - pip-audit: PASS
-- evidence file: `release-handoff/evidence/pip_audit_ascii.log`
-- workaround if used: direct `pip-audit` from the Unicode workspace path failed with `UnicodeDecodeError` in `release-handoff/evidence/pip_audit.log`; Gate H.0 used an ASCII mirror plus `PIPAPI_PYTHON_LOCATION` to audit the mirrored project virtual-environment interpreter path
+- evidence file: `release-handoff/evidence/final_pip_audit.log`
+- workaround if used: Gate H.0 needed an ASCII mirror after a direct `UnicodeDecodeError`; final handoff verification passed directly in the Unicode workspace after forcing `PYTHONIOENCODING=utf-8`, `PYTHONUTF8=1`, and `--cache-dir` to a writable temp path
 
 ## Dependency Remediation
 

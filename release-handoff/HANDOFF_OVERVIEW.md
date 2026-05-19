@@ -2,7 +2,7 @@
 
 ## Current Status
 
-OMNI Agent is locally verified through Phase 3.8, with all phase completion tags from `phase-0-complete` through `phase-3.8-complete` present, a clean release/handoff documentation package in progress, and current local release-gate verification passing.
+OMNI Agent is locally verified through Phase 3.8, with all phase completion tags from `phase-0-complete` through `phase-3.8-complete` present, the release/handoff documentation package assembled, and the current local release-gate verification passing.
 
 ## Completed Tags
 
@@ -26,7 +26,7 @@ OMNI Agent is locally verified through Phase 3.8, with all phase completion tags
 - Ruff: PASS
 - coverage: PASS (`68.45%`)
 - active-path Bandit: PASS
-- pip-audit: PASS via ASCII-path workaround
+- pip-audit: PASS via direct local audit with UTF-8 environment overrides and a writable temp cache directory
 
 ## Quality Model
 

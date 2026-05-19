@@ -3,13 +3,13 @@
 ## Operational Risks
 
 - The local handoff package does not prove GitHub-hosted CI behavior because no remote push or GitHub Actions run was performed in this scope.
-- Local verification was performed on a Windows workspace path containing a Unicode em dash, which continues to complicate some tooling behavior.
+- Local verification was performed on a Windows workspace path containing a Unicode em dash, which still complicates some tools and required an explicit UTF-8 environment fix for `pip-audit`.
 - Streaming coverage is strong, but the latest passing suite still emits non-blocking `response.drain()` deprecation warnings in `agent/streaming.py`.
 
 ## Security Risks
 
 - Full-agent Bandit remains a separate audit lane rather than part of the blocking local release-gate surface.
-- Local `pip-audit` requires an ASCII-path workaround in this workspace context.
+- Local `pip-audit` now passes in this workspace, but only when run with explicit UTF-8 environment overrides and a writable cache directory.
 - Security posture is validated locally, but not re-proved on remote CI in this handoff package.
 
 ## Quality Risks
@@ -20,7 +20,7 @@
 
 ## Dependency / Environment Risks
 
-- Dependency audit success depends on the ASCII-mirror workaround when the repository lives under the Windows Unicode path.
+- Dependency audit success in this workspace depends on a documented local execution fix (`PYTHONIOENCODING=utf-8`, `PYTHONUTF8=1`, and a writable temp cache directory) when the repository lives under the Windows Unicode path.
 - The handoff package does not update dependency files or prove behavior in a clean fresh clone on another machine.
 - Local SQLite-backed development/test assumptions remain different from the documented Postgres production target.
 
