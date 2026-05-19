@@ -61,7 +61,8 @@ jobs:
       - run: pip-audit
         timeout-minutes: 5
 
-      - run: coverage erase && coverage run -m pytest tests/ && coverage report
+      - name: Coverage threshold gate
+        run: coverage erase && coverage run -m pytest tests/ && coverage report
 
   full-agent-bandit-audit:
     runs-on: ubuntu-latest
