@@ -28,11 +28,13 @@ ADR_FILES = (
     Path("docs/adr/ADR-002-enterprise-module-deduplication.md"),
     Path("docs/adr/ADR-003-db-strategy.md"),
 )
+COVERAGE_POLICY_DOC = Path("docs/testing/coverage.md")
 REQUIRED_VERSIONED_DOCS = (
     Path("README.md"),
     Path("AGENTS.md"),
     Path("CLAUDE.md"),
     Path("tests/SUPPORT_MATRIX.md"),
+    COVERAGE_POLICY_DOC,
     Path("docs/adr/README.md"),
     *ADR_FILES,
 )
@@ -62,6 +64,11 @@ LEGACY_PATH_DOCS = (
     Path("CLAUDE.md"),
 )
 CRITICAL_BANDIT_SKIPS = {"B602", "B102", "B307", "B608"}
+COVERAGE_LOG_CANDIDATES = (
+    Path("snapshot-phase-3-6/gate_3_6_4_coverage.log"),
+    Path("snapshot-phase-3-6/gate_3_6_3_coverage_rerun.log"),
+    Path("snapshot-phase-3-6/gate_3_6_2_coverage_report.log"),
+)
 
 
 @dataclass(frozen=True)
@@ -85,6 +92,13 @@ class RepoFacts:
     pytest_pass_count: int | None
     baseline_tag: str
     adr_files: tuple[str, ...]
+    coverage_fail_under: int | None
+    coverage_total_percent: float | None
+    coverage_total_statements: int | None
+    coverage_total_missed: int | None
+    main_py_coverage: float | None
+    crypto_utils_coverage: float | None
+    coverage_evidence_path: str | None
 
 
 def read_text(path: Path) -> str:
@@ -183,6 +197,12 @@ def extract_pytest_pass_count(path: Path) -> int | None:
 
 def extract_preferred_pytest_pass_count(root: Path) -> int | None:
     candidates = (
+        root / "snapshot-phase-3-6/gate_3_6_4_pytest.log",
+        root / "snapshot-phase-3-6/gate_3_6_3_pytest_rerun.log",
+        root / "snapshot-phase-3-6/gate_3_6_3_pytest.log",
+        root / "snapshot-phase-3-6/gate_3_6_2_pytest.log",
+        root / "snapshot-phase-3-6/gate_3_6_2_coverage_pytest.log",
+        root / "snapshot-phase-3-6/gate_3_6_1_pytest.log",
         root / "snapshot-phase-3-5/gate_3_5_4_pytest.log",
         root / "snapshot-phase-3-5/gate_3_5_3_pytest.log",
         root / "snapshot-phase-3-5/gate_3_5_2_pytest.log",
@@ -209,9 +229,61 @@ def extract_preferred_pytest_pass_count(root: Path) -> int | None:
     return None
 
 
+def extract_fail_under(path: Path) -> int | None:
+    if not path.exists():
+        return None
+    match = re.search(r"^\s*fail_under\s*=\s*(\d+)\s*$", read_text(path), flags=re.MULTILINE)
+    return int(match.group(1)) if match else None
+
+
+def extract_coverage_metrics(path: Path) -> tuple[float | None, int | None, int | None, float | None, float | None]:
+    if not path.exists():
+        return None, None, None, None, None
+
+    text = read_text(path)
+    total_match = re.search(r"^TOTAL\s+(\d+)\s+(\d+)\s+([0-9.]+)%", text, flags=re.MULTILINE)
+    main_match = re.search(r"^main\.py\s+\d+\s+\d+\s+([0-9.]+)%", text, flags=re.MULTILINE)
+    crypto_match = re.search(r"^agent[\\/]+crypto_utils\.py\s+\d+\s+\d+\s+([0-9.]+)%", text, flags=re.MULTILINE)
+
+    total_percent = float(total_match.group(3)) if total_match else None
+    total_statements = int(total_match.group(1)) if total_match else None
+    total_missed = int(total_match.group(2)) if total_match else None
+    main_percent = float(main_match.group(1)) if main_match else None
+    crypto_percent = float(crypto_match.group(1)) if crypto_match else None
+    return total_percent, total_statements, total_missed, main_percent, crypto_percent
+
+
+def extract_preferred_coverage_metrics(
+    root: Path,
+) -> tuple[float | None, int | None, int | None, float | None, float | None, str | None]:
+    for candidate in COVERAGE_LOG_CANDIDATES:
+        absolute_candidate = root / candidate
+        total_percent, total_statements, total_missed, main_percent, crypto_percent = extract_coverage_metrics(
+            absolute_candidate
+        )
+        if total_percent is not None:
+            return (
+                total_percent,
+                total_statements,
+                total_missed,
+                main_percent,
+                crypto_percent,
+                candidate.as_posix(),
+            )
+    return None, None, None, None, None, None
+
+
 def collect_repo_facts(root: Path) -> RepoFacts:
     ci_text = read_text(root / ".github/workflows/ci.yml")
     model_count, docstring_count = extract_model_facts(root / "agent/model_registry.py")
+    (
+        coverage_total_percent,
+        coverage_total_statements,
+        coverage_total_missed,
+        main_py_coverage,
+        crypto_utils_coverage,
+        coverage_evidence_path,
+    ) = extract_preferred_coverage_metrics(root)
     return RepoFacts(
         model_count=model_count,
         model_docstring_count=docstring_count,
@@ -227,6 +299,13 @@ def collect_repo_facts(root: Path) -> RepoFacts:
         pytest_pass_count=extract_preferred_pytest_pass_count(root),
         baseline_tag="phase-2-complete",
         adr_files=tuple(path.name for path in ADR_FILES),
+        coverage_fail_under=extract_fail_under(root / ".coveragerc"),
+        coverage_total_percent=coverage_total_percent,
+        coverage_total_statements=coverage_total_statements,
+        coverage_total_missed=coverage_total_missed,
+        main_py_coverage=main_py_coverage,
+        crypto_utils_coverage=crypto_utils_coverage,
+        coverage_evidence_path=coverage_evidence_path,
     )
 
 
@@ -382,6 +461,17 @@ def run_checks(root: Path) -> tuple[RepoFacts, list[CheckResult]]:
         support_matrix_problems.append("support matrix is missing the release-gate pytest command 'pytest tests/ -q'")
     if not facts.ci_has_ruff_gate or "ruff check ." not in support_matrix:
         support_matrix_problems.append("support matrix is missing the release-gate ruff command 'ruff check .'" )
+    if facts.ci_has_coverage_gate and facts.coverage_fail_under is not None:
+        if "docs/testing/coverage.md" not in support_matrix:
+            support_matrix_problems.append("support matrix is missing the Phase 3.6 coverage policy document reference")
+        if f"fail_under = {facts.coverage_fail_under}" not in support_matrix:
+            support_matrix_problems.append(
+                f"support matrix is missing the recorded coverage floor 'fail_under = {facts.coverage_fail_under}'"
+            )
+        if facts.coverage_total_percent is not None and f"{facts.coverage_total_percent:.2f}%" not in support_matrix:
+            support_matrix_problems.append(
+                f"support matrix is missing the current coverage total '{facts.coverage_total_percent:.2f}%'"
+            )
     for lane_name in ("release-gate", "full-agent-bandit-audit", "legacy-audit"):
         if lane_name not in support_matrix:
             support_matrix_problems.append(f"support matrix is missing CI lane name '{lane_name}'")
@@ -460,6 +550,57 @@ def run_checks(root: Path) -> tuple[RepoFacts, list[CheckResult]]:
         )
     )
 
+    coverage_policy_text = read_existing(root, COVERAGE_POLICY_DOC)
+    coverage_policy_problems: list[str] = []
+    coverage_policy_lower = coverage_policy_text.casefold()
+    if facts.coverage_fail_under is None or f"fail_under = {facts.coverage_fail_under}" not in coverage_policy_text:
+        coverage_policy_problems.append("coverage policy is missing the recorded fail_under floor")
+    if "baseline guard" not in coverage_policy_lower:
+        coverage_policy_problems.append("coverage policy does not describe the floor as a baseline guard")
+    if "not a quality target" not in coverage_policy_lower:
+        coverage_policy_problems.append("coverage policy does not state that the floor is not a quality target")
+    if facts.coverage_total_percent is None or f"{facts.coverage_total_percent:.2f}%" not in coverage_policy_text:
+        coverage_policy_problems.append("coverage policy is missing the current total coverage percentage")
+    if facts.coverage_total_statements is None or str(facts.coverage_total_statements) not in coverage_policy_text:
+        coverage_policy_problems.append("coverage policy is missing the current total statement count")
+    if facts.coverage_total_missed is None or str(facts.coverage_total_missed) not in coverage_policy_text:
+        coverage_policy_problems.append("coverage policy is missing the current missed-statement count")
+    if (
+        facts.main_py_coverage is None
+        or "main.py" not in coverage_policy_text
+        or f"{facts.main_py_coverage:.2f}%" not in coverage_policy_text
+        or ">= 30%" not in coverage_policy_text
+    ):
+        coverage_policy_problems.append("coverage policy is missing the Priority 1 ratchet for main.py")
+    if (
+        facts.crypto_utils_coverage is None
+        or "agent/crypto_utils.py" not in coverage_policy_text
+        or f"{facts.crypto_utils_coverage:.2f}%" not in coverage_policy_text
+        or ">= 50%" not in coverage_policy_text
+    ):
+        coverage_policy_problems.append("coverage policy is missing the Priority 1 ratchet for agent/crypto_utils.py")
+    for module_name in ("agent/ollama_client.py", "agent/streaming.py", "agent/knowledge_graph.py"):
+        if module_name not in coverage_policy_text:
+            coverage_policy_problems.append(f"coverage policy is missing Priority 2 module '{module_name}'")
+    if "no artificial tests" not in coverage_policy_lower:
+        coverage_policy_problems.append("coverage policy must forbid artificial tests")
+    if "active runtime code" not in coverage_policy_lower:
+        coverage_policy_problems.append("coverage policy must forbid excluding active runtime code to raise coverage")
+    if "per-file hard threshold" not in coverage_policy_lower:
+        coverage_policy_problems.append("coverage policy must state that no per-file hard threshold exists yet")
+
+    results.append(
+        CheckResult(
+            code="DOC011",
+            ok=not coverage_policy_problems,
+            message=(
+                "Coverage policy is synchronized with the Phase 3.6 floor, measured totals, and ratchet priorities."
+                if not coverage_policy_problems
+                else "; ".join(coverage_policy_problems)
+            ),
+        )
+    )
+
     return facts, results
 
 
@@ -479,6 +620,13 @@ def render_report(root: Path, facts: RepoFacts, results: Sequence[CheckResult]) 
     lines.append(f"- Baseline tag: `{facts.baseline_tag}`")
     lines.append(f"- Available phase tags: `{', '.join(facts.phase_tags) or 'none'}`")
     lines.append(f"- Snapshot pytest pass count: `{facts.pytest_pass_count}`")
+    lines.append(f"- Coverage fail_under: `{facts.coverage_fail_under}`")
+    lines.append(f"- Coverage total: `{facts.coverage_total_percent}`")
+    lines.append(f"- Coverage statements: `{facts.coverage_total_statements}`")
+    lines.append(f"- Coverage missed: `{facts.coverage_total_missed}`")
+    lines.append(f"- main.py coverage: `{facts.main_py_coverage}`")
+    lines.append(f"- agent/crypto_utils.py coverage: `{facts.crypto_utils_coverage}`")
+    lines.append(f"- Coverage evidence source: `{facts.coverage_evidence_path}`")
     lines.append(f"- CI has pytest gate: `{facts.ci_has_pytest_gate}`")
     lines.append(f"- CI has ruff gate: `{facts.ci_has_ruff_gate}`")
     lines.append(f"- CI has coverage gate: `{facts.ci_has_coverage_gate}`")

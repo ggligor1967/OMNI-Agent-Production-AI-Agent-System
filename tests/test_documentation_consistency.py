@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import sys
 from pathlib import Path
+from typing import Any
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "tools" / "check_documentation_consistency.py"
 SPEC = importlib.util.spec_from_file_location("documentation_consistency", MODULE_PATH)
@@ -30,36 +31,39 @@ def make_model_registry(count: int, doc_count: int | None = None) -> str:
 
 
 def make_ci_workflow() -> str:
-    return """name: CI
+        return """name: CI
 
 on: [push, pull_request]
 
 jobs:
-  release-gate:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [\"3.12\", \"3.13\"]
-    steps:
-      - run: python -m compileall agent main.py
-      - run: pytest tests/ -q
-      - run: ruff check .
-      - name: Bandit active-path gate
-        run: |
-          bandit -ll -ii -c bandit.yaml \\
-            main.py \\
-            agent/core.py
-      - run: coverage erase && coverage run -m pytest tests/ && coverage report
+    release-gate:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                python-version: [\"3.12\", \"3.13\"]
+        steps:
+            - run: python -m compileall agent main.py
+            - run: pytest tests/ -q
+            - run: ruff check .
+            - run: python tools/check_documentation_consistency.py --root .
+            - name: Bandit active-path gate
+                run: |
+                    bandit -ll -ii -c bandit.yaml \\
+                        main.py \\
+                        agent/core.py
+            - run: pip-audit
+            - name: Coverage threshold gate
+                run: coverage erase && coverage run -m pytest tests/ && coverage report
 
-  full-agent-bandit-audit:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo audit
+    full-agent-bandit-audit:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo audit
 
-  legacy-audit:
-    runs-on: ubuntu-latest
-    steps:
-      - run: pytest tests/_archive/ -q || true
+    legacy-audit:
+        runs-on: ubuntu-latest
+        steps:
+            - run: pytest tests/_archive/ -q || true
 """
 
 
@@ -82,36 +86,110 @@ Model Catalog Contract: **27 cloud models**
 ```bash
 pytest tests/ -q
 ruff check .
+python tools/check_documentation_consistency.py --root .
+pip-audit
+coverage erase && coverage run -m pytest tests/ && coverage report
 ```
 
 Current result:
 
 - **{pass_count} passed**
+- coverage floor: `fail_under = 58`
+- coverage total: `59.65%`
+- coverage policy: `docs/testing/coverage.md`
 - **0 failed**
 - **0 errors**
+"""
+
+
+def make_coveragerc() -> str:
+    return """[run]
+include =
+    agent/*
+    main.py
+    config.py
+    job_search_*.py
+    tools/check_documentation_consistency.py
+
+[report]
+fail_under = 58
+"""
+
+
+def make_coverage_log() -> str:
+    return """============================= 473 passed in 10.41s =============================
+Name                                       Stmts   Miss   Cover   Missing
+-------------------------------------------------------------------------
+agent\\crypto_utils.py                        233    165  29.18%   ...
+agent\\knowledge_graph.py                     299    170  43.14%   ...
+agent\\ollama_client.py                        83     55  33.73%   ...
+agent\\streaming.py                           210    123  41.43%   ...
+main.py                                      566    460  18.73%   ...
+-------------------------------------------------------------------------
+TOTAL                                      10338   4171  59.65%
+"""
+
+
+def make_coverage_doc() -> str:
+    return """# Coverage Policy
+
+## Baseline Guard
+
+- `fail_under = 58`
+- baseline guard for the active runtime surface
+- not a quality target
+
+## Current Measured State
+
+- total coverage: `59.65%`
+- total statements: `10338`
+- missed statements: `4171`
+
+## Quality Ratchet Policy
+
+### Priority 1
+
+- `main.py`: current `18.73%`, next target `>= 30%`
+- `agent/crypto_utils.py`: current `29.18%`, next target `>= 50%`
+
+### Priority 2
+
+- `agent/ollama_client.py`
+- `agent/streaming.py`
+- `agent/knowledge_graph.py`
+
+## Interpretation Rules
+
+- no artificial tests
+- do not exclude active runtime code to improve the percentage
+- no per-file hard threshold yet
 """
 
 
 def build_valid_repo(root: Path) -> None:
     write(root / "agent/model_registry.py", make_model_registry(27))
     write(root / ".github/workflows/ci.yml", make_ci_workflow())
+    write(root / ".coveragerc", make_coveragerc())
     write(root / "bandit.yaml", "exclude_dirs:\n  - agent/_legacy\n  - tests\nskips: []\n")
     write(root / "pytest.ini", "[pytest]\nasyncio_mode = auto\ntestpaths = tests\n")
     write(root / "ruff.toml", "[lint]\nselect = [\"E9\", \"F63\"]\n")
-    write(root / "snapshot-phase-3-1/pytest_start.log", "============================= 410 passed in 8.42s =============================\n")
+    write(root / "snapshot-phase-3-6/gate_3_6_3_pytest.log", "============================= 410 passed in 8.42s =============================\n")
+    write(root / "snapshot-phase-3-6/gate_3_6_3_coverage_rerun.log", make_coverage_log())
 
     baseline = "Documentation baseline: phase-2-complete"
     storage_line = "Storage strategy: SQLite for local development and tests; Postgres is the production target."
+    coverage_line = "Coverage policy: fail_under = 58 is the baseline guard; see docs/testing/coverage.md.\n"
     common_doc = (
         f"{baseline}\n\n"
         "OMNI Agent routes across 27 cloud models.\n"
         f"{storage_line}\n"
     )
-    write(root / "README.md", common_doc)
+    write(root / "README.md", common_doc + coverage_line)
     write(root / "AGENTS.md", common_doc + "Use agent/_legacy for archived code.\n")
     write(root / "CLAUDE.md", common_doc + "Use agent/_legacy for archived code.\n")
     write(root / ".env.example", "# AVAILABLE MODELS (all 27 cloud models):\n")
     write(root / "tests/SUPPORT_MATRIX.md", make_support_matrix(410))
+    write(root / "docs/testing/coverage.md", make_coverage_doc())
 
     write(root / "docs/adr/ADR-001-model-registry.md", "# ADR-001\nThe runtime MODELS registry contains 27 entries.\nTests and docs must assert 27 models, not 24.\n")
     write(root / "docs/adr/ADR-002-enterprise-module-deduplication.md", "# ADR-002\nPhase 2 canonical modules are documented here.\n")
@@ -125,7 +203,7 @@ def build_valid_repo(root: Path) -> None:
     )
 
 
-def failing_codes(results: list[object]) -> set[str]:
+def failing_codes(results: list[Any]) -> set[str]:
     return {result.code for result in results if not result.ok}
 
 
@@ -150,6 +228,7 @@ def test_run_checks_reports_expected_drift(tmp_path, monkeypatch) -> None:
     write(tmp_path / "AGENTS.md", "Documentation baseline: phase-2-complete\nUse agent/legacy/ for archived code.\n")
     write(tmp_path / "CLAUDE.md", "OMNI Agent routes across 27 cloud LLM models.\n")
     write(tmp_path / "tests/SUPPORT_MATRIX.md", "# Support Matrix\nActive Suite Status: **PASSING** (325/325 tests)\n")
+    write(tmp_path / "docs/testing/coverage.md", "# Coverage Policy\n\n- `fail_under = 58`\n")
     (tmp_path / "docs/adr/README.md").unlink()
 
     monkeypatch.setattr(DOC_CHECK, "get_phase_tags", lambda root: ("phase-0-complete",))
@@ -157,7 +236,7 @@ def test_run_checks_reports_expected_drift(tmp_path, monkeypatch) -> None:
     _, results = DOC_CHECK.run_checks(tmp_path)
     failures = failing_codes(results)
 
-    assert {"DOC001", "DOC002", "DOC004", "DOC005", "DOC006", "DOC007", "DOC008", "DOC010"} <= failures
+    assert {"DOC001", "DOC002", "DOC004", "DOC005", "DOC006", "DOC007", "DOC008", "DOC010", "DOC011"} <= failures
 
 
 def test_run_checks_flags_critical_bandit_skips(tmp_path, monkeypatch) -> None:
@@ -200,13 +279,28 @@ def test_extract_pytest_pass_count_reads_utf16_logs(tmp_path) -> None:
     assert DOC_CHECK.extract_pytest_pass_count(log_path) == 417
 
 
-def test_extract_preferred_pytest_pass_count_prefers_phase_3_5_evidence(tmp_path) -> None:
+def test_extract_preferred_pytest_pass_count_prefers_phase_3_6_evidence(tmp_path) -> None:
     write(tmp_path / "snapshot-phase-3-1/pytest_start.log", "============================= 417 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-3/gate_3_3_3_pytest.log", "============================= 444 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-4/gate_3_4_3_pytest.log", "============================= 452 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-5/gate_3_5_3_pytest.log", "============================= 469 passed in 9.99s =============================\n")
+    write(tmp_path / "snapshot-phase-3-6/gate_3_6_3_pytest.log", "============================= 473 passed in 9.99s =============================\n")
 
-    assert DOC_CHECK.extract_preferred_pytest_pass_count(tmp_path) == 469
+    assert DOC_CHECK.extract_preferred_pytest_pass_count(tmp_path) == 473
+
+
+def test_run_checks_flags_missing_coverage_policy_details(tmp_path, monkeypatch) -> None:
+    build_valid_repo(tmp_path)
+    write(tmp_path / "docs/testing/coverage.md", "# Coverage Policy\n\n- `fail_under = 58`\n")
+    monkeypatch.setattr(
+        DOC_CHECK,
+        "get_phase_tags",
+        lambda root: ("phase-0-complete", "phase-1-complete", "phase-2-complete"),
+    )
+
+    _, results = DOC_CHECK.run_checks(tmp_path)
+
+    assert "DOC011" in failing_codes(results)
 
 
 def test_main_returns_zero_in_report_only_mode(tmp_path, monkeypatch) -> None:

@@ -2,7 +2,7 @@
 
 Documentation baseline: phase-2-complete
 Generated: 2026-05-19
-Active Suite Status: **PASSING** (469/469 tests)
+Active Suite Status: **PASSING** (474/474 tests)
 Model Catalog Contract: **27 cloud models**
 
 ---
@@ -21,6 +21,7 @@ python -m compileall agent main.py
 pytest tests/ -q
 ruff check .
 python tools/check_documentation_consistency.py --root .
+pip-audit
 coverage erase && coverage run -m pytest tests/ && coverage report
 ```
 
@@ -30,7 +31,10 @@ Bandit remains a blocking active-path gate in `.github/workflows/ci.yml`, with p
 
 ## Latest Verified Local Evidence
 
-- **469 passed** — `snapshot-phase-3-5/gate_3_5_4_pytest.log`
+- **474 passed** — `snapshot-phase-3-6/gate_3_6_4_pytest.log`
+- Coverage threshold gate — `snapshot-phase-3-6/gate_3_6_4_coverage.log` (`TOTAL 10416 / 4174 / 59.93%`, `fail_under = 58`)
+- Coverage policy document — `docs/testing/coverage.md`
+- Threshold-enforcement reference evidence — `snapshot-phase-3-6/gate_3_6_3_coverage_rerun.log` (`TOTAL 10338 / 4171 / 59.65%`)
 - Mutation smoke summary — `snapshot-phase-3-5/mutation_smoke_summary.json`
 - Mutation focused baseline summary — `snapshot-phase-3-5/mutation_baseline_summary.json`
 - Mutation focused baseline raw log — `snapshot-phase-3-5/mutation_baseline_raw.log`
@@ -53,6 +57,7 @@ The blocking suite is `pytest tests/ -q` with discovery controlled by `pytest.in
 - `test_auth_ownership_binding.py` — auth ownership binding
 - `test_chat_tracing.py` — chat-path tracing regression coverage
 - `test_core_init_sanity.py` — core init AST audit
+- `test_coverage_config.py` — coverage floor and baseline contract
 - `test_dashboard.py` — dashboard UI
 - `test_documentation_consistency.py` — documentation contract checker
 - `test_export_api_contracts.py` — export API compatibility
@@ -96,5 +101,6 @@ The blocking suite is `pytest tests/ -q` with discovery controlled by `pytest.in
 - Use `docs/adr/ADR-002-enterprise-module-deduplication.md` for Phase 2 canonical-module decisions.
 - Use `docs/adr/ADR-003-db-strategy.md` for the SQLite-local / Postgres-production storage policy.
 - Use `docs/performance.md` for the Phase 3.3 local workload contract and baseline metrics.
+- Use `docs/testing/coverage.md` for the Phase 3.6 baseline floor and Quality Ratchet Policy.
 - Use `docs/testing/mutation_testing.md` for the Phase 3.5 local mutation-testing scope, safety rules, and recorded baseline metrics.
 - The support matrix lives at `tests/SUPPORT_MATRIX.md`; there is no separate root-level `SUPPORT_MATRIX.md`.

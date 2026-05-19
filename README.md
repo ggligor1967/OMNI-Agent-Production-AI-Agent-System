@@ -329,9 +329,11 @@ docker-compose up -d
 pytest tests/ -q                         # Active release-gate test command
 ruff check .                             # Active release-gate lint command
 python tools/check_documentation_consistency.py --root . --report-only
+coverage erase && coverage run -m pytest tests/ && coverage report
 ```
 
 See `tests/SUPPORT_MATRIX.md` for the active suite inventory, CI lane names, and the latest committed verification evidence.
+See `docs/testing/coverage.md` for the Phase 3.6 coverage baseline guard and Quality Ratchet Policy. The latest Gate 3.6.4 validation rerun measured `59.93%` coverage across `10416` statements with `4174` missed; `fail_under = 58` remains the anti-regression floor, not a quality target.
 
 ---
 
