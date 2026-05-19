@@ -19,7 +19,7 @@ The threshold policy is anchored to the committed Phase 3.6 threshold-reference 
 - total statements: `10338`
 - missed statements: `4171`
 
-The latest committed Phase 3.8 Priority 2 ratchet evidence in `snapshot-phase-3-8/gate_3_8_3_coverage.log` records the current local state after the knowledge-graph gate:
+The latest committed Phase 3.8 final verification evidence in `snapshot-phase-3-8/gate_3_8_5_coverage.log` records the current local state after the full release-gate rerun:
 
 - total coverage: `68.45%`
 - total statements: `10462`
@@ -67,4 +67,5 @@ The global floor catches regressions, but improvement work should follow a modul
 - Phase 3.8 Ollama client ratchet evidence: `snapshot-phase-3-8/OLLAMA_CLIENT_RATCHET.md`
 - Phase 3.8 streaming ratchet evidence: `snapshot-phase-3-8/STREAMING_RATCHET.md`
 - Phase 3.8 knowledge graph ratchet evidence: `snapshot-phase-3-8/KNOWLEDGE_GRAPH_RATCHET.md`
-- Latest committed ratchet coverage evidence: `snapshot-phase-3-8/gate_3_8_3_coverage.log`
+- Phase 3.8 dependency-audit rerun note: `snapshot-phase-3-8/DEPENDENCY_REMEDIATION.md`
+- Latest committed final verification coverage evidence: `snapshot-phase-3-8/gate_3_8_5_coverage.log`

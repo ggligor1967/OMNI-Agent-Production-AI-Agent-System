@@ -2,7 +2,7 @@
 
 Documentation baseline: phase-2-complete
 Generated: 2026-05-19
-Active Suite Status: **PASSING** (509/509 tests)
+Active Suite Status: **PASSING** (510/510 tests)
 Model Catalog Contract: **27 cloud models**
 
 ---
@@ -31,17 +31,19 @@ Bandit remains a blocking active-path gate in `.github/workflows/ci.yml`, with p
 
 ## Latest Verified Local Evidence
 
-- **509 passed** — `snapshot-phase-3-8/gate_3_8_3_pytest.log`
-- Phase 3.8 Priority 2 ratchet coverage — `snapshot-phase-3-8/gate_3_8_3_coverage.log` (`TOTAL 10462 / 3301 / 68.45%`, `fail_under = 58`)
+- **510 passed** — `snapshot-phase-3-8/gate_3_8_5_pytest.log`
+- Phase 3.8 final verification coverage — `snapshot-phase-3-8/gate_3_8_5_coverage.log` (`TOTAL 10462 / 3301 / 68.45%`, `fail_under = 58`)
 - Phase 3.8 ratchet report — `docs/testing/coverage.md` (`agent/ollama_client.py 33.73% → 100.00%`, `agent/streaming.py 41.43% → 90.00%`, `agent/knowledge_graph.py 43.14% → 99.00%`)
+- pip-audit passed in mirrored project venv — `snapshot-phase-3-8/dependency_remediation_pip_audit_ascii.log`
+- Phase 3.8 dependency-audit note — `snapshot-phase-3-8/DEPENDENCY_REMEDIATION.md`
 - Coverage policy document — `docs/testing/coverage.md`
 - Threshold-enforcement reference evidence — `snapshot-phase-3-6/gate_3_6_3_coverage_rerun.log` (`TOTAL 10338 / 4171 / 59.65%`)
 - Mutation smoke summary — `snapshot-phase-3-5/mutation_smoke_summary.json`
 - Mutation focused baseline summary — `snapshot-phase-3-5/mutation_baseline_summary.json`
 - Mutation focused baseline raw log — `snapshot-phase-3-5/mutation_baseline_raw.log`
 - Ruff passed — `snapshot-phase-3-8/gate_3_8_3_ruff.log`
-- Documentation consistency report — `snapshot-phase-3-7/gate_3_7_4_doc_consistency.log`
-- Bandit active-path report — `snapshot-phase-3-7/gate_3_7_4_bandit_active_path.log`
+- Documentation consistency report — `snapshot-phase-3-8/gate_3_8_5_doc_consistency.log`
+- Bandit active-path report — `snapshot-phase-3-8/gate_3_8_5_bandit_active_path.log`
 - Sandbox isolation proofs — `snapshot-phase-3-4/gate_3_4_4_isolation_tests.log`
 - Sandbox evaluation summary — `snapshot-phase-3-4/SANDBOX_V2_EVALUATION.md`
 - Performance smoke summary — `snapshot-phase-3-3/performance_smoke_summary.json`
