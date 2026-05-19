@@ -9,3 +9,4 @@ Recommended next steps:
 3. Reference `release-handoff/HANDOFF_OVERVIEW.md`.
 4. Reference tag `release-handoff-phase-0-3.8`.
 5. Verify GitHub Actions release gate.
+6. Open a release/handoff PR from a release branch if the project workflow requires PR review instead of direct main handoff.

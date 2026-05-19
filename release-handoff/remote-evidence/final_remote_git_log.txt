@@ -1,0 +1,20 @@
+c339cbd docs: add remote handoff summary
+4b4d91d docs: add manual PR handoff instructions
+d1604fe docs: add remote handoff evidence logs
+68fa281 docs: add remote handoff prepush evidence
+e40d04b docs: record blocked remote handoff attempt
+b16afc6 docs: add release handoff final report
+2d84cb9 docs: add release notes risks and next actions
+a8e9394 docs: add release handoff state summaries
+0dd6cbc docs: add phase ledger and evidence map
+9673824 chore: add release handoff baseline evidence
+c5c354e docs: add phase 3.8 priority 2 quality ratchet report
+cfa9eed docs: record phase 3.8 priority 2 quality ratchet results
+3067a70 test: ratchet knowledge graph coverage
+e98e4eb test: ratchet streaming coverage
+a32586c test: ratchet ollama client coverage
+dbd4880 chore: add phase 3.8 priority 2 ratchet baseline
+c01f592 docs: add phase 3.7 quality ratchet report
+31c7da7 docs: record phase 3.7 quality ratchet results
+486ee84 test: record phase 3.7 mutation follow-up
+013195b test: ratchet main entrypoint coverage
