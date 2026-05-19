@@ -1,0 +1,50 @@
+55e0682 docs: add phase 3.5 final report
+11e4341 docs: record focused mutation testing baseline
+1bb2636 test: record mutation testing smoke baseline
+6aeec67 test: add local mutation testing harness
+ce5f8e5 docs: define mutation testing baseline strategy
+233eaf3 chore: add phase 3.5 baseline evidence
+ac71949 docs: add phase 3.4 final report
+50ae2d9 test: add sandbox v2 isolation proof baseline
+eb3dba2 security: define sandbox v2 policy interface
+0a4240d docs: add sandbox v2 capability matrix
+f2a2613 docs: define sandbox v2 threat model
+6e885ff chore: add phase 3.4 baseline evidence
+8d5b0e4 docs: add phase 3.3 performance baseline report
+9ffb8ee docs: record local performance baseline
+f96e498 test: add local performance smoke baseline
+3b97ac9 test: add local performance load harness
+ec84e43 docs: define performance baseline workload
+bf95eb0 chore: add phase 3.3 baseline evidence
+34d90f1 feat: trace HTTP request entry path
+4712186 feat: trace routing and model fallback chain
+9fa9a4c feat: trace omni chat runtime path
+85f762c feat: add safe OpenTelemetry tracing foundation
+be760eb chore: add phase 3.2 baseline evidence
+4ba70cb ci: enforce documentation consistency
+c8f4cc5 docs: synchronize documentation contract
+9ae3abc test: add documentation consistency checker
+85799c4 docs: add phase 3.1 documentation inventory
+7eb9f1d chore: add phase 3.1 baseline evidence
+e539dcd refactor: isolate hot-path complexity
+57154e1 fix: repair export api contracts
+2ad2e89 perf: add rag retrieval benchmark baseline
+9a9bdad docs: define sqlite dev and postgres production strategy
+f836c80 refactor: replace aioredis with redis asyncio
+c61eef7 refactor: organize active agent modules into subpackages
+4820f4a docs: define canonical enterprise modules
+320a833 chore: classify orphan modules for phase 2
+f5ece90 chore: add phase 2 baseline evidence
+62f6262 security: sweep active md5 usage
+5ef3078 security: surface hot-path silent exceptions
+e02d1f3 security: parameterize hot-path rag queries
+8049866 security: audit auth tool and sandbox events
+57afcca security: harden dashboard rendering and csp
+7a20174 security: add central anti-ssrf validator
+085fcf2 security: require confirmation for mutating tools
+c4c0996 security: enforce tool registry execution path
+a7d2fa5 security: bind session ownership to auth context
+cc9e446 security: add first-admin auth bootstrap CLI
+2afa3b7 chore: add phase 1 baseline evidence
+6db2201 docs: add phase 0 matrix rerun evidence
+32afc7c ci: align bandit release gate with active path policy
