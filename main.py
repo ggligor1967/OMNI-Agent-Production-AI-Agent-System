@@ -3,6 +3,7 @@ OMNI AGENT - Main Entrypoint
 Run modes: telegram | cli | api | all
 """
 import asyncio
+import hashlib
 import logging
 import signal
 import sys
@@ -12,6 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Dict, Any, Optional, TYPE_CHECKING
 from urllib.parse import urlparse
+from agent.tracing import SpanKind, tracer
 from config import CONFIG
 
 if TYPE_CHECKING:
@@ -184,6 +186,79 @@ def _api_bind_ports() -> list[int]:
             "No usable API ports configured. Adjust API_PORT/API_FALLBACK_PORTS so they do not overlap SEARXNG_URL."
         )
     return bind_ports
+
+
+def _trace_hash(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    digest = hashlib.sha256(text.encode("utf-8", errors="replace")).hexdigest()
+    return f"sha256:{digest[:16]}"
+
+
+def _request_route_template(request: Any) -> str:
+    match_info = getattr(request, "match_info", None)
+    route = getattr(match_info, "route", None)
+    resource = getattr(route, "resource", None)
+    canonical = getattr(resource, "canonical", None)
+    if canonical:
+        return canonical
+
+    resource_info = resource.get_info() if resource and hasattr(resource, "get_info") else {}
+    formatter = resource_info.get("formatter") if isinstance(resource_info, dict) else None
+    if formatter:
+        return formatter
+
+    path = getattr(request, "path", "") or getattr(getattr(request, "rel_url", None), "path", "")
+    segments = [segment for segment in (path or "").split("/") if segment]
+    if len(segments) > 2:
+        return "/unknown"
+    return path or "/unknown"
+
+
+def build_http_tracing_middleware(agent: Any):
+    from aiohttp import web
+    from agent.auth import auth_context_from_request
+
+    trace = getattr(agent, "tracer", tracer)
+
+    @web.middleware
+    async def _middleware(request, handler):
+        route_template = _request_route_template(request)
+        query = getattr(getattr(request, "rel_url", None), "query", {}) or {}
+
+        async with trace.safe_async_span(
+            "http.request",
+            SpanKind.HTTP,
+            http_method=getattr(request, "method", "UNKNOWN"),
+            http_route=route_template,
+            query_count=len(query),
+        ) as request_span:
+            response = None
+            try:
+                response = await handler(request)
+                return response
+            except web.HTTPException as exc:
+                response = exc
+                request_span.add_event("http.error", {"error": str(exc)})
+                raise
+            except Exception as exc:
+                request_span.set("status_code", 500)
+                request_span.add_event("http.error", {"error": str(exc)})
+                raise
+            finally:
+                ctx = auth_context_from_request(request)
+                request_span.set("authenticated", bool(ctx.authenticated))
+                request_span.set(
+                    "role",
+                    ctx.role.value if getattr(ctx, "role", None) else "anonymous",
+                )
+                if getattr(ctx, "user_id", ""):
+                    request_span.set("user_id_hash", _trace_hash(ctx.user_id))
+                if response is not None:
+                    request_span.set("status_code", int(getattr(response, "status", 500)))
+
+    return _middleware
 
 
 async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
@@ -555,6 +630,7 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
     security_audit = build_memory_audit_callback(agent.memory)
 
     app = web.Application(middlewares=[
+        build_http_tracing_middleware(agent),
         agent.auth.middleware(
             public_paths=["/status", "/health", "/auth/bootstrap", "/dashboard", "/favicon.ico", "/cache/stats", "/audit"],
             audit_callback=security_audit,
