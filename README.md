@@ -350,6 +350,28 @@ This baseline is **local-only** and does **not** define production SLOs. See `do
 
 ---
 
+## Mutation Testing Baseline
+
+Phase 3.5 adds a local AST-based mutation harness for selected active/hot-path modules:
+
+- `agent/model_router.py`
+- `agent/rag.py`
+- `agent/sandbox.py`
+- `agent/workflow.py`
+
+It runs only against temporary overlay copies, refuses dirty working trees by default, and does **not** make mutation score a blocking CI gate in this phase.
+
+```bash
+python tools/mutation/run_mutation_baseline.py --smoke
+python tools/mutation/run_mutation_baseline.py --baseline
+```
+
+Latest recorded focused baseline (`2026-05-19`, commit `1bb2636fc9e443eae55cebea17cde045c99dabaf`) captured `8` mutants with `0` killed, `8` survived, `0` timeout, `0` incompetent, mutation score `0.0`, and runtime `19.601` seconds.
+
+Artifacts are written under `snapshot-phase-3-5/`. See `docs/testing/mutation_testing.md` for scope, safety rules, smoke/baseline commands, and the recorded mutation metrics.
+
+---
+
 ## License
 
 MIT

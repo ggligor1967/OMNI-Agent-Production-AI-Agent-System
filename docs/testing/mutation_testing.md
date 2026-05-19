@@ -72,6 +72,40 @@ $$
 
 When every mutant is incompetent, the score is reported as `0.0` to avoid false inflation.
 
+## Latest Recorded Results
+
+Phase 3.5 smoke snapshot (`snapshot-phase-3-5/mutation_smoke_summary.json`):
+
+- Date: `2026-05-19`
+- Source commit: `1bb2636fc9e443eae55cebea17cde045c99dabaf`
+- Tool: `local-ast-harness`
+- Target modules: `agent/model_router.py`, `agent/sandbox.py`
+- Test command: `python -m pytest tests/test_models.py tests/test_model_routing_tracing.py -q ; python -m pytest tests/test_sandbox_policy.py tests/test_sandbox_isolation_proofs.py tests/test_security_event_audit.py -q`
+- Total mutants: `2`
+- Killed: `0`
+- Survived: `2`
+- Timeout: `0`
+- Incompetent: `0`
+- Mutation score: `0.0`
+- Runtime: `5.652` seconds
+
+Phase 3.5 focused baseline (`snapshot-phase-3-5/mutation_baseline_summary.json`):
+
+- Date: `2026-05-19`
+- Source commit: `1bb2636fc9e443eae55cebea17cde045c99dabaf`
+- Tool: `local-ast-harness`
+- Target modules: `agent/model_router.py`, `agent/rag.py`, `agent/sandbox.py`, `agent/workflow.py`
+- Test command: `python -m pytest tests/test_models.py tests/test_model_routing_tracing.py -q ; python -m pytest tests/test_new_modules.py tests/test_sql_injection_sweep.py -q ; python -m pytest tests/test_sandbox_policy.py tests/test_sandbox_isolation_proofs.py tests/test_security_event_audit.py -q ; python -m pytest tests/test_advanced_modules.py tests/test_tool_registry_enforcement.py -q`
+- Total mutants: `8`
+- Killed: `0`
+- Survived: `8`
+- Timeout: `0`
+- Incompetent: `0`
+- Mutation score: `0.0`
+- Runtime: `19.601` seconds
+
+All selected mutants survived in this first recorded baseline. That result is tracked as blind-spot evidence, not as a release failure and not as justification to change production behavior solely to improve mutation score.
+
 ## Execution Policy
 
 - Target list must be explicit.

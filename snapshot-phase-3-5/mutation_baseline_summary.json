@@ -1,0 +1,20 @@
+{
+  "incompetent": 0,
+  "killed": 0,
+  "limits_note": "Focused baseline is intentionally capped per target to keep Phase 3.5 local and reproducible.",
+  "mode": "baseline",
+  "mutation_score": 0.0,
+  "runtime_seconds": 19.601,
+  "survived": 8,
+  "target_modules": [
+    "agent/model_router.py",
+    "agent/rag.py",
+    "agent/sandbox.py",
+    "agent/workflow.py"
+  ],
+  "test_command": "python -m pytest tests/test_models.py tests/test_model_routing_tracing.py -q ; python -m pytest tests/test_new_modules.py tests/test_sql_injection_sweep.py -q ; python -m pytest tests/test_sandbox_policy.py tests/test_sandbox_isolation_proofs.py tests/test_security_event_audit.py -q ; python -m pytest tests/test_advanced_modules.py tests/test_tool_registry_enforcement.py -q",
+  "timeout": 0,
+  "timestamp": "2026-05-19T12:46:43.070641+00:00",
+  "tool": "local-ast-harness",
+  "total_mutants": 8
+}

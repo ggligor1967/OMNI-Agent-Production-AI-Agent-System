@@ -2,7 +2,7 @@
 
 Documentation baseline: phase-2-complete
 Generated: 2026-05-19
-Active Suite Status: **PASSING** (459/459 tests)
+Active Suite Status: **PASSING** (469/469 tests)
 Model Catalog Contract: **27 cloud models**
 
 ---
@@ -30,10 +30,13 @@ Bandit remains a blocking active-path gate in `.github/workflows/ci.yml`, with p
 
 ## Latest Verified Local Evidence
 
-- **459 passed** — `snapshot-phase-3-4/gate_3_4_4_pytest.log`
+- **469 passed** — `snapshot-phase-3-5/gate_3_5_4_pytest.log`
+- Mutation smoke summary — `snapshot-phase-3-5/mutation_smoke_summary.json`
+- Mutation focused baseline summary — `snapshot-phase-3-5/mutation_baseline_summary.json`
+- Mutation focused baseline raw log — `snapshot-phase-3-5/mutation_baseline_raw.log`
+- Ruff passed — `snapshot-phase-3-5/gate_3_5_4_ruff.log`
+- Documentation consistency report — `snapshot-phase-3-5/gate_3_5_4_doc_consistency.log`
 - Sandbox isolation proofs — `snapshot-phase-3-4/gate_3_4_4_isolation_tests.log`
-- Ruff passed — `snapshot-phase-3-4/gate_3_4_4_ruff.log`
-- Documentation consistency report — `snapshot-phase-3-4/gate_3_4_4_doc_consistency.log`
 - Bandit active-path report — `snapshot-phase-3-4/gate_3_4_4_bandit_active_path.log`
 - Sandbox evaluation summary — `snapshot-phase-3-4/SANDBOX_V2_EVALUATION.md`
 - Performance smoke summary — `snapshot-phase-3-3/performance_smoke_summary.json`
@@ -63,6 +66,8 @@ The blocking suite is `pytest tests/ -q` with discovery controlled by `pytest.in
 - `test_phase2_refactor_equivalence.py` — Phase 2 behavior equivalence
 - `test_performance_harness.py` — local performance harness contract
 - `test_performance_smoke_summary.py` — smoke summary schema and redaction
+- `test_mutation_harness.py` — local mutation harness contract
+- `test_mutation_smoke_summary.py` — mutation smoke summary schema and redaction
 - `test_redis_asyncio_cache.py` — Redis asyncio alignment
 - `test_security_auth_tools.py` — auth and tool enforcement
 - `test_security_event_audit.py` — security audit logging
@@ -91,4 +96,5 @@ The blocking suite is `pytest tests/ -q` with discovery controlled by `pytest.in
 - Use `docs/adr/ADR-002-enterprise-module-deduplication.md` for Phase 2 canonical-module decisions.
 - Use `docs/adr/ADR-003-db-strategy.md` for the SQLite-local / Postgres-production storage policy.
 - Use `docs/performance.md` for the Phase 3.3 local workload contract and baseline metrics.
+- Use `docs/testing/mutation_testing.md` for the Phase 3.5 local mutation-testing scope, safety rules, and recorded baseline metrics.
 - The support matrix lives at `tests/SUPPORT_MATRIX.md`; there is no separate root-level `SUPPORT_MATRIX.md`.
