@@ -335,6 +335,21 @@ See `tests/SUPPORT_MATRIX.md` for the active suite inventory, CI lane names, and
 
 ---
 
+## Performance Baseline
+
+Phase 3.3 adds a loopback-only local performance harness for `GET /status` and a deterministic `POST /chat` fixture route.
+It records request count, failure count, error rate, and p50 / p95 / p99 / max latency without requiring real external LLM providers.
+
+```bash
+python tools/performance/run_local_baseline.py --smoke
+python tools/performance/run_local_baseline.py --baseline
+```
+
+Artifacts are written under `snapshot-phase-3-3/`.
+This baseline is **local-only** and does **not** define production SLOs. See `docs/performance.md` for workload scope, safety rules, and the latest recorded baseline.
+
+---
+
 ## License
 
 MIT

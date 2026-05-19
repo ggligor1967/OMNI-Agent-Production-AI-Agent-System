@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gc
 import os
 import sys
 import tempfile
@@ -125,4 +126,8 @@ async def start_local_fixture() -> AsyncIterator[LocalFixtureRuntime]:
     finally:
         await runner.cleanup()
         tracer.shutdown()
-        tempdir.cleanup()
+        gc.collect()
+        try:
+            tempdir.cleanup()
+        except PermissionError:
+            pass

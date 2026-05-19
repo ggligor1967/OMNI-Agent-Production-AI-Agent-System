@@ -183,6 +183,12 @@ def extract_pytest_pass_count(path: Path) -> int | None:
 
 def extract_preferred_pytest_pass_count(root: Path) -> int | None:
     candidates = (
+        root / "snapshot-phase-3-3/gate_3_3_4_pytest.log",
+        root / "snapshot-phase-3-3/gate_3_3_3_pytest.log",
+        root / "snapshot-phase-3-3/gate_3_3_2_pytest.log",
+        root / "snapshot-phase-3-3/gate_3_3_1_pytest.log",
+        root / "snapshot-phase-3-3/pytest_start.log",
+        root / "snapshot-phase-3-2/gate324_pytest_full.log",
         root / "snapshot-phase-3-1/gate_3_1_3_pytest.log",
         root / "snapshot-phase-3-1/pytest_start.log",
     )
@@ -357,7 +363,7 @@ def run_checks(root: Path) -> tuple[RepoFacts, list[CheckResult]]:
     support_matrix_problems: list[str] = []
     if not text_mentions_pass_count(support_matrix, facts.pytest_pass_count):
         support_matrix_problems.append(
-            f"support matrix pass count does not match snapshot-phase-3-1/pytest_start.log ({facts.pytest_pass_count})"
+            f"support matrix pass count does not match the preferred pytest snapshot ({facts.pytest_pass_count})"
         )
     for version in facts.ci_python_versions:
         if f"Python {version}" not in support_matrix:

@@ -55,6 +55,30 @@ The harness defaults should remain conservative:
 - duration: `30s` or less
 - smoke duration: `15s` or less
 
+## Latest Verified Baseline
+
+- Date: `2026-05-19`
+- Harness implementation commit: `f96e498`
+- Command: `python tools/performance/run_local_baseline.py --baseline`
+- Workload: alternating loopback requests to `GET /status` and deterministic `POST /chat`
+- Target: in-process fixture bound to `127.0.0.1`
+- Request count: `6034`
+- Failure count: `0`
+- Error rate: `0.0`
+- p50 latency: `9.331 ms`
+- p95 latency: `19.076 ms`
+- p99 latency: `30.519 ms`
+- Max latency: `149.195 ms`
+- Summary JSON: `snapshot-phase-3-3/performance_baseline_summary.json`
+- Summary Markdown: `snapshot-phase-3-3/performance_baseline_summary.md`
+
+## Known Limitations
+
+- This baseline measures a loopback-only fixture app, not deployed infrastructure.
+- The chat scenario intentionally uses a deterministic local responder, so the result excludes real provider latency and network variance.
+- The numbers are suitable for regression comparison on a developer machine, not for production SLO claims.
+- Local CPU scheduling, antivirus, and background Windows activity can influence the tail latencies.
+
 ## Non-Goals
 
 - no production SLOs

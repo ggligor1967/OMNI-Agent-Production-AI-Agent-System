@@ -2,7 +2,7 @@
 
 Documentation baseline: phase-2-complete
 Generated: 2026-05-19
-Active Suite Status: **PASSING** (417/417 tests)
+Active Suite Status: **PASSING** (445/445 tests)
 Model Catalog Contract: **27 cloud models**
 
 ---
@@ -30,9 +30,11 @@ Bandit remains a blocking active-path gate in `.github/workflows/ci.yml`, with p
 
 ## Latest Verified Local Evidence
 
-- **417 passed** — `snapshot-phase-3-1/gate_3_1_3_pytest.log`
-- Ruff passed — `snapshot-phase-3-1/gate_3_1_3_ruff.log`
-- Documentation consistency report — `snapshot-phase-3-1/documentation_consistency_report_gate_3_1_3.md`
+- **445 passed** — `snapshot-phase-3-3/gate_3_3_4_pytest.log`
+- Ruff passed — `snapshot-phase-3-3/gate_3_3_4_ruff.log`
+- Documentation consistency report — `snapshot-phase-3-3/gate_3_3_4_doc_consistency.log`
+- Performance smoke summary — `snapshot-phase-3-3/performance_smoke_summary.json`
+- Performance baseline summary — `snapshot-phase-3-3/performance_baseline_summary.json`
 
 ---
 
@@ -43,16 +45,21 @@ The blocking suite is `pytest tests/ -q` with discovery controlled by `pytest.in
 - `test_advanced_modules.py` — runtime modules
 - `test_auth_bootstrap_cli.py` — auth bootstrap
 - `test_auth_ownership_binding.py` — auth ownership binding
+- `test_chat_tracing.py` — chat-path tracing regression coverage
 - `test_core_init_sanity.py` — core init AST audit
 - `test_dashboard.py` — dashboard UI
 - `test_documentation_consistency.py` — documentation contract checker
 - `test_export_api_contracts.py` — export API compatibility
+- `test_http_tracing.py` — HTTP entry tracing regression coverage
 - `test_job_search_tank_adr_improved.py` — job search improvements
 - `test_md5_sweep.py` — active-path MD5 sweep
 - `test_models.py` — model registry and routing
+- `test_model_routing_tracing.py` — router and fallback tracing regression coverage
 - `test_new_modules.py` — RAG, cache, templates, pipeline
 - `test_phase2_import_compatibility.py` — Phase 2 import compatibility
 - `test_phase2_refactor_equivalence.py` — Phase 2 behavior equivalence
+- `test_performance_harness.py` — local performance harness contract
+- `test_performance_smoke_summary.py` — smoke summary schema and redaction
 - `test_redis_asyncio_cache.py` — Redis asyncio alignment
 - `test_security_auth_tools.py` — auth and tool enforcement
 - `test_security_event_audit.py` — security audit logging
@@ -78,4 +85,5 @@ The blocking suite is `pytest tests/ -q` with discovery controlled by `pytest.in
 - Use `docs/adr/ADR-001-model-registry.md` for the model-catalog decision history.
 - Use `docs/adr/ADR-002-enterprise-module-deduplication.md` for Phase 2 canonical-module decisions.
 - Use `docs/adr/ADR-003-db-strategy.md` for the SQLite-local / Postgres-production storage policy.
+- Use `docs/performance.md` for the Phase 3.3 local workload contract and baseline metrics.
 - The support matrix lives at `tests/SUPPORT_MATRIX.md`; there is no separate root-level `SUPPORT_MATRIX.md`.
