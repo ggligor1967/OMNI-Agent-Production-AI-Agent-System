@@ -1,0 +1,29 @@
+
+tests/test_streaming_quality_ratchet.py::test_stream_chat_tokens_replays_history_publishes_tokens_and_persists_response PASSED [ 14%]
+tests/test_streaming_quality_ratchet.py::test_stream_chat_tokens_yields_error_frame_when_llm_fails 
+-------------------------------- live log call --------------------------------
+ERROR    agent.streaming:streaming.py:232 Streaming error: stream blew up
+PASSED                                                                   [ 28%]
+tests/test_streaming_quality_ratchet.py::test_register_streaming_routes_chat_route_streams_and_validates_prompt PASSED [ 42%]
+tests/test_streaming_quality_ratchet.py::test_register_streaming_routes_chat_rejects_forbidden_session PASSED [ 57%]
+tests/test_streaming_quality_ratchet.py::test_register_streaming_routes_events_route_filters_by_session_and_stats PASSED [ 71%]
+tests/test_streaming_quality_ratchet.py::test_register_streaming_routes_events_route_uses_authenticated_owner_prefix PASSED [ 85%]
+tests/test_streaming_quality_ratchet.py::test_register_streaming_routes_traces_route_replays_recent_and_live_spans PASSED [100%]
+
+============================== warnings summary ===============================
+tests/test_streaming_quality_ratchet.py::test_register_streaming_routes_chat_route_streams_and_validates_prompt
+tests/test_streaming_quality_ratchet.py::test_register_streaming_routes_chat_route_streams_and_validates_prompt
+  C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\streaming.py:283: DeprecationWarning: drain method is deprecated, use await resp.write()
+    await response.drain()
+
+tests/test_streaming_quality_ratchet.py::test_register_streaming_routes_events_route_filters_by_session_and_stats
+tests/test_streaming_quality_ratchet.py::test_register_streaming_routes_events_route_uses_authenticated_owner_prefix
+  C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\streaming.py:342: DeprecationWarning: drain method is deprecated, use await resp.write()
+    await response.drain()
+
+tests/test_streaming_quality_ratchet.py::test_register_streaming_routes_traces_route_replays_recent_and_live_spans
+  C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\streaming.py:383: DeprecationWarning: drain method is deprecated, use await resp.write()
+    await response.drain()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 7 passed, 5 warnings in 0.74s ========================
