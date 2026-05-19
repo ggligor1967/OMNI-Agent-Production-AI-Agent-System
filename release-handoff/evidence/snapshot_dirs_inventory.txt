@@ -1,0 +1,11 @@
+./snapshot-phase-1
+./snapshot-phase-2
+./snapshot-phase-3-1
+./snapshot-phase-3-2
+./snapshot-phase-3-3
+./snapshot-phase-3-4
+./snapshot-phase-3-5
+./snapshot-phase-3-6
+./snapshot-phase-3-7
+./snapshot-phase-3-8
+./snapshot-sprint-0
