@@ -1,0 +1,19 @@
+[run]
+include =
+    agent/*
+    main.py
+    config.py
+    job_search_*.py
+    tools/check_documentation_consistency.py
+omit =
+    agent/_legacy/*
+    tests/*
+    snapshot-*
+    tools/mutation/*
+    tools/performance/*
+    */site-packages/*
+    */Lib/*
+
+[report]
+show_missing = True
+skip_covered = False
