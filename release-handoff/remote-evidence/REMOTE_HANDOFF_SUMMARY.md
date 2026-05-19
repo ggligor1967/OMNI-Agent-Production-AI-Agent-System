@@ -2,7 +2,7 @@
 
 ## Overall Status
 
-PARTIAL
+PASS
 
 ## Remote
 
@@ -19,6 +19,8 @@ main
 - `d1604fe` `docs: add remote handoff evidence logs`
 - `4b4d91d` `docs: add manual PR handoff instructions`
 - `c339cbd` `docs: add remote handoff summary`
+- `464ae7e` `docs: complete remote handoff summary`
+- `c154e26` `ci: repair remote release gate failure`
 
 ## Branch Push
 
@@ -45,12 +47,24 @@ Manual instructions: `release-handoff/remote-evidence/PR_MANUAL_INSTRUCTIONS.md`
 
 ## Remote CI
 
-not verified
+PASS
+
+## CI Evidence
+
+- failed run: `26130941166`
+- fixed run: `26131399929`
+- failing lane: `release-gate (3.13)`
+- final status: `PASS`
+
+## Fix Summary
+
+- Updated `.github/workflows/ci.yml` so the `release-gate` checkout step uses `fetch-depth: 0`, making the required phase tags visible to `python tools/check_documentation_consistency.py --root .` in GitHub Actions.
+- Added `release-handoff/remote-evidence/CI_FAILURE_ANALYSIS.md` plus failed-run, repro, and post-fix verification evidence.
 
 ## Final Local State
 
-- git status: clean before final verification capture; only `release-handoff/remote-evidence/` files changed during final summary preparation
-- HEAD: `c339cbd11b221f90fe1ae8f0b5c6f45d38b8055f`
+- git status: clean after the CI repair push; only `release-handoff/remote-evidence/` files are pending while updating this summary
+- HEAD: `c154e2672bc5fa21221bf0900a59b18d28ee739e`
 - pytest: `510 passed, 5 warnings`
 - coverage: `68.45%`
 - Bandit: PASS
@@ -58,9 +72,8 @@ not verified
 
 ## Remaining Blockers
 
-- The latest completed `main` CI runs observed via `gh run list --branch main --limit 5` were failures: `26130553660`, `26130520215`, and `26130491182`.
-- CI status for the final summary-completion evidence commit is not yet verified until the next `main` workflow run finishes.
+none
 
 ## Next Action
 
-Verify the newest `main` GitHub Actions run for the summary-completion evidence commit; if the workflow still fails, inspect the `release-gate` job and decide whether a follow-up docs/CI fix or a release branch is required.
+Proceed with the remote handoff / release review using tag `release-handoff-phase-0-3.8`, while separately planning a future GitHub Actions maintenance pass for the non-blocking Node.js 20 deprecation warnings.
