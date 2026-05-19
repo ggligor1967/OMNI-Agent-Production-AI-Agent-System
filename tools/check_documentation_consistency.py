@@ -183,6 +183,11 @@ def extract_pytest_pass_count(path: Path) -> int | None:
 
 def extract_preferred_pytest_pass_count(root: Path) -> int | None:
     candidates = (
+        root / "snapshot-phase-3-4/gate_3_4_4_pytest.log",
+        root / "snapshot-phase-3-4/gate_3_4_3_pytest.log",
+        root / "snapshot-phase-3-4/gate_3_4_2_pytest.log",
+        root / "snapshot-phase-3-4/gate_3_4_1_pytest.log",
+        root / "snapshot-phase-3-4/pytest_start.log",
         root / "snapshot-phase-3-3/gate_3_3_4_pytest.log",
         root / "snapshot-phase-3-3/gate_3_3_3_pytest.log",
         root / "snapshot-phase-3-3/gate_3_3_2_pytest.log",

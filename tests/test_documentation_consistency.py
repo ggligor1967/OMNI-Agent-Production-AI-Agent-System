@@ -200,11 +200,12 @@ def test_extract_pytest_pass_count_reads_utf16_logs(tmp_path) -> None:
     assert DOC_CHECK.extract_pytest_pass_count(log_path) == 417
 
 
-def test_extract_preferred_pytest_pass_count_prefers_phase_3_3_evidence(tmp_path) -> None:
+def test_extract_preferred_pytest_pass_count_prefers_phase_3_4_evidence(tmp_path) -> None:
     write(tmp_path / "snapshot-phase-3-1/pytest_start.log", "============================= 417 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-3/gate_3_3_3_pytest.log", "============================= 444 passed in 9.99s =============================\n")
+    write(tmp_path / "snapshot-phase-3-4/gate_3_4_3_pytest.log", "============================= 452 passed in 9.99s =============================\n")
 
-    assert DOC_CHECK.extract_preferred_pytest_pass_count(tmp_path) == 444
+    assert DOC_CHECK.extract_preferred_pytest_pass_count(tmp_path) == 452
 
 
 def test_main_returns_zero_in_report_only_mode(tmp_path, monkeypatch) -> None:

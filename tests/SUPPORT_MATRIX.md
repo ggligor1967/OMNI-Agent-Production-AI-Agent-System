@@ -2,7 +2,7 @@
 
 Documentation baseline: phase-2-complete
 Generated: 2026-05-19
-Active Suite Status: **PASSING** (445/445 tests)
+Active Suite Status: **PASSING** (459/459 tests)
 Model Catalog Contract: **27 cloud models**
 
 ---
@@ -30,9 +30,12 @@ Bandit remains a blocking active-path gate in `.github/workflows/ci.yml`, with p
 
 ## Latest Verified Local Evidence
 
-- **445 passed** — `snapshot-phase-3-3/gate_3_3_4_pytest.log`
-- Ruff passed — `snapshot-phase-3-3/gate_3_3_4_ruff.log`
-- Documentation consistency report — `snapshot-phase-3-3/gate_3_3_4_doc_consistency.log`
+- **459 passed** — `snapshot-phase-3-4/gate_3_4_4_pytest.log`
+- Sandbox isolation proofs — `snapshot-phase-3-4/gate_3_4_4_isolation_tests.log`
+- Ruff passed — `snapshot-phase-3-4/gate_3_4_4_ruff.log`
+- Documentation consistency report — `snapshot-phase-3-4/gate_3_4_4_doc_consistency.log`
+- Bandit active-path report — `snapshot-phase-3-4/gate_3_4_4_bandit_active_path.log`
+- Sandbox evaluation summary — `snapshot-phase-3-4/SANDBOX_V2_EVALUATION.md`
 - Performance smoke summary — `snapshot-phase-3-3/performance_smoke_summary.json`
 - Performance baseline summary — `snapshot-phase-3-3/performance_baseline_summary.json`
 
@@ -63,6 +66,8 @@ The blocking suite is `pytest tests/ -q` with discovery controlled by `pytest.in
 - `test_redis_asyncio_cache.py` — Redis asyncio alignment
 - `test_security_auth_tools.py` — auth and tool enforcement
 - `test_security_event_audit.py` — security audit logging
+- `test_sandbox_isolation_proofs.py` — safe sandbox proof-of-isolation coverage
+- `test_sandbox_policy.py` — sandbox policy interface coverage
 - `test_silent_exception_sweep.py` — silent exception sweep
 - `test_sql_injection_sweep.py` — SQL parameterization checks
 - `test_ssrf_validator.py` — SSRF validation
