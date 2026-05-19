@@ -1,0 +1,20 @@
+c5c354e docs: add phase 3.8 priority 2 quality ratchet report
+cfa9eed docs: record phase 3.8 priority 2 quality ratchet results
+3067a70 test: ratchet knowledge graph coverage
+e98e4eb test: ratchet streaming coverage
+a32586c test: ratchet ollama client coverage
+dbd4880 chore: add phase 3.8 priority 2 ratchet baseline
+c01f592 docs: add phase 3.7 quality ratchet report
+31c7da7 docs: record phase 3.7 quality ratchet results
+486ee84 test: record phase 3.7 mutation follow-up
+013195b test: ratchet main entrypoint coverage
+e7eaf8f test: ratchet crypto utilities coverage
+cdbc29d chore: add phase 3.7 quality ratchet baseline
+f7d6b5a docs: add phase 3.6 coverage threshold report
+c3dc00f docs: document coverage quality ratchet policy
+2bac147 ci: enforce coverage threshold in release gate
+4f3dfdf test: enforce numeric coverage threshold
+a645df8 chore: measure stable coverage baseline
+8661287 chore: add phase 3.6 baseline evidence
+55e0682 docs: add phase 3.5 final report
+11e4341 docs: record focused mutation testing baseline

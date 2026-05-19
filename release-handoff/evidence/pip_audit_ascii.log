@@ -1,0 +1,2 @@
+WARNING:pip_audit._dependency_source.pip:pip-audit will run pip against C:\Users\gligo\AppData\Local\Temp\omni_release_handoff_ascii\.venv-1\Scripts\python.exe, but you have a virtual environment loaded at C:/Users/gligo/My Projects/OMNI Agent — Production AI Agent System/.venv-1. This may result in unintuitive audits, since your local environment will not be audited. You can forcefully override this behavior by setting PIPAPI_PYTHON_LOCATION to the location of your virtual environment's Python interpreter.
+No known vulnerabilities found
