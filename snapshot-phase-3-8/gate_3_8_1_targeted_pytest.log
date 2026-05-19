@@ -1,0 +1,11 @@
+
+tests/test_ollama_client_quality_ratchet.py::test_get_session_reuses_open_client_session_and_close_recreates_when_needed PASSED [ 12%]
+tests/test_ollama_client_quality_ratchet.py::test_health_and_model_listing_use_tags_endpoint PASSED [ 25%]
+tests/test_ollama_client_quality_ratchet.py::test_pull_model_streams_json_status_updates PASSED [ 37%]
+tests/test_ollama_client_quality_ratchet.py::test_chat_normalizes_response_and_sends_optional_fields PASSED [ 50%]
+tests/test_ollama_client_quality_ratchet.py::test_chat_raises_runtime_error_on_non_200_response PASSED [ 62%]
+tests/test_ollama_client_quality_ratchet.py::test_chat_stream_yields_only_non_empty_content_until_done PASSED [ 75%]
+tests/test_ollama_client_quality_ratchet.py::test_generate_and_embed_helpers_return_payload_data PASSED [ 87%]
+tests/test_ollama_client_quality_ratchet.py::test_embed_batch_and_tool_spec_cover_helper_paths PASSED [100%]
+
+============================== 8 passed in 0.78s ==============================
