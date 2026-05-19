@@ -333,7 +333,7 @@ coverage erase && coverage run -m pytest tests/ && coverage report
 ```
 
 See `tests/SUPPORT_MATRIX.md` for the active suite inventory, CI lane names, and the latest committed verification evidence.
-See `docs/testing/coverage.md` for the Phase 3.6 coverage baseline guard and Quality Ratchet Policy. The latest Gate 3.6.4 validation rerun measured `59.93%` coverage across `10416` statements with `4174` missed; `fail_under = 58` remains the anti-regression floor, not a quality target.
+See `docs/testing/coverage.md` for the Phase 3.6 baseline guard and the Phase 3.7 Quality Ratchet results. The latest committed Phase 3.7 ratchet evidence measured `65.34%` coverage across `10462` statements with `3626` missed; `main.py` improved from `18.73%` to `86.93%`, and `agent/crypto_utils.py` improved from `29.18%` to `99.57%`. `fail_under = 58` remains the anti-regression floor, not a quality target.
 
 ---
 

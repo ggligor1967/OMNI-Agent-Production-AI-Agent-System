@@ -64,10 +64,44 @@ LEGACY_PATH_DOCS = (
     Path("CLAUDE.md"),
 )
 CRITICAL_BANDIT_SKIPS = {"B602", "B102", "B307", "B608"}
+COVERAGE_REFERENCE_LOG = Path("snapshot-phase-3-6/gate_3_6_3_coverage_rerun.log")
 COVERAGE_LOG_CANDIDATES = (
+    Path("snapshot-phase-3-7/gate_3_7_4_coverage.log"),
+    Path("snapshot-phase-3-7/gate_3_7_2_coverage.log"),
+    Path("snapshot-phase-3-7/gate_3_7_1_coverage.log"),
     Path("snapshot-phase-3-6/gate_3_6_4_coverage.log"),
     Path("snapshot-phase-3-6/gate_3_6_3_coverage_rerun.log"),
     Path("snapshot-phase-3-6/gate_3_6_2_coverage_report.log"),
+)
+PREFERRED_PYTEST_LOG_CANDIDATES = (
+    Path("snapshot-phase-3-7/gate_3_7_4_pytest.log"),
+    Path("snapshot-phase-3-7/gate_3_7_3_pytest.log"),
+    Path("snapshot-phase-3-7/gate_3_7_2_pytest.log"),
+    Path("snapshot-phase-3-7/gate_3_7_1_pytest.log"),
+    Path("snapshot-phase-3-6/gate_3_6_4_pytest.log"),
+    Path("snapshot-phase-3-6/gate_3_6_3_pytest_rerun.log"),
+    Path("snapshot-phase-3-6/gate_3_6_3_pytest.log"),
+    Path("snapshot-phase-3-6/gate_3_6_2_pytest.log"),
+    Path("snapshot-phase-3-6/gate_3_6_2_coverage_pytest.log"),
+    Path("snapshot-phase-3-6/gate_3_6_1_pytest.log"),
+    Path("snapshot-phase-3-5/gate_3_5_4_pytest.log"),
+    Path("snapshot-phase-3-5/gate_3_5_3_pytest.log"),
+    Path("snapshot-phase-3-5/gate_3_5_2_pytest.log"),
+    Path("snapshot-phase-3-5/gate_3_5_1_pytest.log"),
+    Path("snapshot-phase-3-5/pytest_start.log"),
+    Path("snapshot-phase-3-4/gate_3_4_4_pytest.log"),
+    Path("snapshot-phase-3-4/gate_3_4_3_pytest.log"),
+    Path("snapshot-phase-3-4/gate_3_4_2_pytest.log"),
+    Path("snapshot-phase-3-4/gate_3_4_1_pytest.log"),
+    Path("snapshot-phase-3-4/pytest_start.log"),
+    Path("snapshot-phase-3-3/gate_3_3_4_pytest.log"),
+    Path("snapshot-phase-3-3/gate_3_3_3_pytest.log"),
+    Path("snapshot-phase-3-3/gate_3_3_2_pytest.log"),
+    Path("snapshot-phase-3-3/gate_3_3_1_pytest.log"),
+    Path("snapshot-phase-3-3/pytest_start.log"),
+    Path("snapshot-phase-3-2/gate324_pytest_full.log"),
+    Path("snapshot-phase-3-1/gate_3_1_3_pytest.log"),
+    Path("snapshot-phase-3-1/pytest_start.log"),
 )
 
 
@@ -93,6 +127,12 @@ class RepoFacts:
     baseline_tag: str
     adr_files: tuple[str, ...]
     coverage_fail_under: int | None
+    coverage_reference_percent: float | None
+    coverage_reference_statements: int | None
+    coverage_reference_missed: int | None
+    main_py_start_coverage: float | None
+    crypto_utils_start_coverage: float | None
+    coverage_reference_path: str | None
     coverage_total_percent: float | None
     coverage_total_statements: int | None
     coverage_total_missed: int | None
@@ -102,12 +142,24 @@ class RepoFacts:
 
 
 def read_text(path: Path) -> str:
-    for encoding in ("utf-8", "utf-8-sig", "utf-16", "utf-16-le", "utf-16-be"):
+    raw = path.read_bytes()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        return raw.decode("utf-8-sig")
+    if raw.startswith((b"\xff\xfe", b"\xfe\xff")):
+        return raw.decode("utf-16")
+    if b"\x00" in raw:
+        for encoding in ("utf-16", "utf-16-le", "utf-16-be"):
+            try:
+                return raw.decode(encoding)
+            except UnicodeError:
+                continue
+
+    for encoding in ("utf-8", "utf-8-sig", "cp1252", "cp850", "utf-16", "utf-16-le", "utf-16-be"):
         try:
-            return path.read_text(encoding=encoding)
+            return raw.decode(encoding)
         except UnicodeError:
             continue
-    return path.read_text(encoding="utf-8", errors="replace")
+    return raw.decode("utf-8", errors="replace")
 
 
 def extract_model_facts(path: Path) -> tuple[int, int | None]:
@@ -196,34 +248,9 @@ def extract_pytest_pass_count(path: Path) -> int | None:
 
 
 def extract_preferred_pytest_pass_count(root: Path) -> int | None:
-    candidates = (
-        root / "snapshot-phase-3-6/gate_3_6_4_pytest.log",
-        root / "snapshot-phase-3-6/gate_3_6_3_pytest_rerun.log",
-        root / "snapshot-phase-3-6/gate_3_6_3_pytest.log",
-        root / "snapshot-phase-3-6/gate_3_6_2_pytest.log",
-        root / "snapshot-phase-3-6/gate_3_6_2_coverage_pytest.log",
-        root / "snapshot-phase-3-6/gate_3_6_1_pytest.log",
-        root / "snapshot-phase-3-5/gate_3_5_4_pytest.log",
-        root / "snapshot-phase-3-5/gate_3_5_3_pytest.log",
-        root / "snapshot-phase-3-5/gate_3_5_2_pytest.log",
-        root / "snapshot-phase-3-5/gate_3_5_1_pytest.log",
-        root / "snapshot-phase-3-5/pytest_start.log",
-        root / "snapshot-phase-3-4/gate_3_4_4_pytest.log",
-        root / "snapshot-phase-3-4/gate_3_4_3_pytest.log",
-        root / "snapshot-phase-3-4/gate_3_4_2_pytest.log",
-        root / "snapshot-phase-3-4/gate_3_4_1_pytest.log",
-        root / "snapshot-phase-3-4/pytest_start.log",
-        root / "snapshot-phase-3-3/gate_3_3_4_pytest.log",
-        root / "snapshot-phase-3-3/gate_3_3_3_pytest.log",
-        root / "snapshot-phase-3-3/gate_3_3_2_pytest.log",
-        root / "snapshot-phase-3-3/gate_3_3_1_pytest.log",
-        root / "snapshot-phase-3-3/pytest_start.log",
-        root / "snapshot-phase-3-2/gate324_pytest_full.log",
-        root / "snapshot-phase-3-1/gate_3_1_3_pytest.log",
-        root / "snapshot-phase-3-1/pytest_start.log",
-    )
-    for candidate in candidates:
-        count = extract_pytest_pass_count(candidate)
+    for candidate in PREFERRED_PYTEST_LOG_CANDIDATES:
+        absolute_candidate = root / candidate
+        count = extract_pytest_pass_count(absolute_candidate)
         if count is not None:
             return count
     return None
@@ -273,9 +300,36 @@ def extract_preferred_coverage_metrics(
     return None, None, None, None, None, None
 
 
+def extract_reference_coverage_metrics(
+    root: Path,
+) -> tuple[float | None, int | None, int | None, float | None, float | None, str | None]:
+    absolute_candidate = root / COVERAGE_REFERENCE_LOG
+    total_percent, total_statements, total_missed, main_percent, crypto_percent = extract_coverage_metrics(
+        absolute_candidate
+    )
+    if total_percent is None:
+        return None, None, None, None, None, None
+    return (
+        total_percent,
+        total_statements,
+        total_missed,
+        main_percent,
+        crypto_percent,
+        COVERAGE_REFERENCE_LOG.as_posix(),
+    )
+
+
 def collect_repo_facts(root: Path) -> RepoFacts:
     ci_text = read_text(root / ".github/workflows/ci.yml")
     model_count, docstring_count = extract_model_facts(root / "agent/model_registry.py")
+    (
+        coverage_reference_percent,
+        coverage_reference_statements,
+        coverage_reference_missed,
+        main_py_start_coverage,
+        crypto_utils_start_coverage,
+        coverage_reference_path,
+    ) = extract_reference_coverage_metrics(root)
     (
         coverage_total_percent,
         coverage_total_statements,
@@ -300,6 +354,12 @@ def collect_repo_facts(root: Path) -> RepoFacts:
         baseline_tag="phase-2-complete",
         adr_files=tuple(path.name for path in ADR_FILES),
         coverage_fail_under=extract_fail_under(root / ".coveragerc"),
+        coverage_reference_percent=coverage_reference_percent,
+        coverage_reference_statements=coverage_reference_statements,
+        coverage_reference_missed=coverage_reference_missed,
+        main_py_start_coverage=main_py_start_coverage,
+        crypto_utils_start_coverage=crypto_utils_start_coverage,
+        coverage_reference_path=coverage_reference_path,
         coverage_total_percent=coverage_total_percent,
         coverage_total_statements=coverage_total_statements,
         coverage_total_missed=coverage_total_missed,
@@ -559,29 +619,60 @@ def run_checks(root: Path) -> tuple[RepoFacts, list[CheckResult]]:
         coverage_policy_problems.append("coverage policy does not describe the floor as a baseline guard")
     if "not a quality target" not in coverage_policy_lower:
         coverage_policy_problems.append("coverage policy does not state that the floor is not a quality target")
+    if (
+        facts.coverage_reference_percent is None
+        or f"{facts.coverage_reference_percent:.2f}%" not in coverage_policy_text
+    ):
+        coverage_policy_problems.append("coverage policy is missing the Phase 3.6 threshold-reference coverage percentage")
+    if (
+        facts.coverage_reference_statements is None
+        or str(facts.coverage_reference_statements) not in coverage_policy_text
+    ):
+        coverage_policy_problems.append("coverage policy is missing the Phase 3.6 threshold-reference statement count")
+    if (
+        facts.coverage_reference_missed is None
+        or str(facts.coverage_reference_missed) not in coverage_policy_text
+    ):
+        coverage_policy_problems.append("coverage policy is missing the Phase 3.6 threshold-reference missed-statement count")
     if facts.coverage_total_percent is None or f"{facts.coverage_total_percent:.2f}%" not in coverage_policy_text:
-        coverage_policy_problems.append("coverage policy is missing the current total coverage percentage")
+        coverage_policy_problems.append("coverage policy is missing the latest total coverage percentage")
     if facts.coverage_total_statements is None or str(facts.coverage_total_statements) not in coverage_policy_text:
-        coverage_policy_problems.append("coverage policy is missing the current total statement count")
+        coverage_policy_problems.append("coverage policy is missing the latest total statement count")
     if facts.coverage_total_missed is None or str(facts.coverage_total_missed) not in coverage_policy_text:
-        coverage_policy_problems.append("coverage policy is missing the current missed-statement count")
+        coverage_policy_problems.append("coverage policy is missing the latest missed-statement count")
+    if (
+        facts.main_py_start_coverage is None
+        or "main.py" not in coverage_policy_text
+        or f"{facts.main_py_start_coverage:.2f}%" not in coverage_policy_text
+    ):
+        coverage_policy_problems.append("coverage policy is missing the recorded starting coverage for main.py")
     if (
         facts.main_py_coverage is None
         or "main.py" not in coverage_policy_text
         or f"{facts.main_py_coverage:.2f}%" not in coverage_policy_text
         or ">= 30%" not in coverage_policy_text
     ):
-        coverage_policy_problems.append("coverage policy is missing the Priority 1 ratchet for main.py")
+        coverage_policy_problems.append("coverage policy is missing the Phase 3.7 Priority 1 result for main.py")
+    if (
+        facts.crypto_utils_start_coverage is None
+        or "agent/crypto_utils.py" not in coverage_policy_text
+        or f"{facts.crypto_utils_start_coverage:.2f}%" not in coverage_policy_text
+    ):
+        coverage_policy_problems.append("coverage policy is missing the recorded starting coverage for agent/crypto_utils.py")
     if (
         facts.crypto_utils_coverage is None
         or "agent/crypto_utils.py" not in coverage_policy_text
         or f"{facts.crypto_utils_coverage:.2f}%" not in coverage_policy_text
         or ">= 50%" not in coverage_policy_text
     ):
-        coverage_policy_problems.append("coverage policy is missing the Priority 1 ratchet for agent/crypto_utils.py")
+        coverage_policy_problems.append("coverage policy is missing the Phase 3.7 Priority 1 result for agent/crypto_utils.py")
     for module_name in ("agent/ollama_client.py", "agent/streaming.py", "agent/knowledge_graph.py"):
         if module_name not in coverage_policy_text:
             coverage_policy_problems.append(f"coverage policy is missing Priority 2 module '{module_name}'")
+    if "module-level ratchet" not in coverage_policy_lower:
+        coverage_policy_problems.append("coverage policy must describe the module-level ratchet as the quality mechanism")
+    if "global average alone" not in coverage_policy_lower:
+        coverage_policy_problems.append("coverage policy must state that the global average alone does not define quality")
     if "no artificial tests" not in coverage_policy_lower:
         coverage_policy_problems.append("coverage policy must forbid artificial tests")
     if "active runtime code" not in coverage_policy_lower:
@@ -594,7 +685,7 @@ def run_checks(root: Path) -> tuple[RepoFacts, list[CheckResult]]:
             code="DOC011",
             ok=not coverage_policy_problems,
             message=(
-                "Coverage policy is synchronized with the Phase 3.6 floor, measured totals, and ratchet priorities."
+                "Coverage policy is synchronized with the Phase 3.6 floor, Phase 3.7 results, and ratchet priorities."
                 if not coverage_policy_problems
                 else "; ".join(coverage_policy_problems)
             ),
@@ -621,6 +712,12 @@ def render_report(root: Path, facts: RepoFacts, results: Sequence[CheckResult]) 
     lines.append(f"- Available phase tags: `{', '.join(facts.phase_tags) or 'none'}`")
     lines.append(f"- Snapshot pytest pass count: `{facts.pytest_pass_count}`")
     lines.append(f"- Coverage fail_under: `{facts.coverage_fail_under}`")
+    lines.append(f"- Coverage reference total: `{facts.coverage_reference_percent}`")
+    lines.append(f"- Coverage reference statements: `{facts.coverage_reference_statements}`")
+    lines.append(f"- Coverage reference missed: `{facts.coverage_reference_missed}`")
+    lines.append(f"- main.py starting coverage: `{facts.main_py_start_coverage}`")
+    lines.append(f"- agent/crypto_utils.py starting coverage: `{facts.crypto_utils_start_coverage}`")
+    lines.append(f"- Coverage reference source: `{facts.coverage_reference_path}`")
     lines.append(f"- Coverage total: `{facts.coverage_total_percent}`")
     lines.append(f"- Coverage statements: `{facts.coverage_total_statements}`")
     lines.append(f"- Coverage missed: `{facts.coverage_total_missed}`")

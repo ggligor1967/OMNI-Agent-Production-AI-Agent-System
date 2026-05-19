@@ -95,7 +95,8 @@ Current result:
 
 - **{pass_count} passed**
 - coverage floor: `fail_under = 58`
-- coverage total: `59.65%`
+- threshold reference coverage total: `59.65%`
+- latest coverage total: `65.26%`
 - coverage policy: `docs/testing/coverage.md`
 - **0 failed**
 - **0 errors**
@@ -117,7 +118,21 @@ fail_under = 58
 
 
 def make_coverage_log() -> str:
-    return """============================= 473 passed in 10.41s =============================
+    return """============================= 489 passed in 10.41s =============================
+Name                                       Stmts   Miss   Cover   Missing
+-------------------------------------------------------------------------
+agent\\crypto_utils.py                        233      1  99.57%   ...
+agent\\knowledge_graph.py                     299    170  43.14%   ...
+agent\\ollama_client.py                        83     55  33.73%   ...
+agent\\streaming.py                           210    123  41.43%   ...
+main.py                                      566     74  86.93%   ...
+-------------------------------------------------------------------------
+TOTAL                                      10416   3619  65.26%
+"""
+
+
+def make_reference_coverage_log() -> str:
+    return """============================= 474 passed in 10.41s =============================
 Name                                       Stmts   Miss   Cover   Missing
 -------------------------------------------------------------------------
 agent\\crypto_utils.py                        233    165  29.18%   ...
@@ -141,16 +156,22 @@ def make_coverage_doc() -> str:
 
 ## Current Measured State
 
-- total coverage: `59.65%`
-- total statements: `10338`
-- missed statements: `4171`
+- Phase 3.6 threshold reference coverage: `59.65%`
+- Phase 3.6 threshold reference statements: `10338`
+- Phase 3.6 threshold reference missed statements: `4171`
+- latest Phase 3.7 coverage: `65.26%`
+- latest Phase 3.7 statements: `10416`
+- latest Phase 3.7 missed statements: `3619`
 
 ## Quality Ratchet Policy
 
+- module-level ratchet is the quality mechanism
+- global average alone does not define quality
+
 ### Priority 1
 
-- `main.py`: current `18.73%`, next target `>= 30%`
-- `agent/crypto_utils.py`: current `29.18%`, next target `>= 50%`
+- `main.py`: start `18.73%`, target `>= 30%`, current `86.93%`
+- `agent/crypto_utils.py`: start `29.18%`, target `>= 50%`, current `99.57%`
 
 ### Priority 2
 
@@ -173,8 +194,10 @@ def build_valid_repo(root: Path) -> None:
     write(root / "bandit.yaml", "exclude_dirs:\n  - agent/_legacy\n  - tests\nskips: []\n")
     write(root / "pytest.ini", "[pytest]\nasyncio_mode = auto\ntestpaths = tests\n")
     write(root / "ruff.toml", "[lint]\nselect = [\"E9\", \"F63\"]\n")
-    write(root / "snapshot-phase-3-6/gate_3_6_3_pytest.log", "============================= 410 passed in 8.42s =============================\n")
-    write(root / "snapshot-phase-3-6/gate_3_6_3_coverage_rerun.log", make_coverage_log())
+    write(root / "snapshot-phase-3-6/gate_3_6_3_pytest.log", "============================= 474 passed in 8.42s =============================\n")
+    write(root / "snapshot-phase-3-6/gate_3_6_3_coverage_rerun.log", make_reference_coverage_log())
+    write(root / "snapshot-phase-3-7/gate_3_7_2_pytest.log", "============================= 489 passed in 8.42s =============================\n")
+    write(root / "snapshot-phase-3-7/gate_3_7_2_coverage.log", make_coverage_log())
 
     baseline = "Documentation baseline: phase-2-complete"
     storage_line = "Storage strategy: SQLite for local development and tests; Postgres is the production target."
@@ -188,7 +211,7 @@ def build_valid_repo(root: Path) -> None:
     write(root / "AGENTS.md", common_doc + "Use agent/_legacy for archived code.\n")
     write(root / "CLAUDE.md", common_doc + "Use agent/_legacy for archived code.\n")
     write(root / ".env.example", "# AVAILABLE MODELS (all 27 cloud models):\n")
-    write(root / "tests/SUPPORT_MATRIX.md", make_support_matrix(410))
+    write(root / "tests/SUPPORT_MATRIX.md", make_support_matrix(489))
     write(root / "docs/testing/coverage.md", make_coverage_doc())
 
     write(root / "docs/adr/ADR-001-model-registry.md", "# ADR-001\nThe runtime MODELS registry contains 27 entries.\nTests and docs must assert 27 models, not 24.\n")
@@ -218,7 +241,7 @@ def test_run_checks_passes_for_synchronized_fixture(tmp_path, monkeypatch) -> No
     facts, results = DOC_CHECK.run_checks(tmp_path)
 
     assert facts.model_count == 27
-    assert facts.pytest_pass_count == 410
+    assert facts.pytest_pass_count == 489
     assert failing_codes(results) == set()
 
 
@@ -279,14 +302,31 @@ def test_extract_pytest_pass_count_reads_utf16_logs(tmp_path) -> None:
     assert DOC_CHECK.extract_pytest_pass_count(log_path) == 417
 
 
-def test_extract_preferred_pytest_pass_count_prefers_phase_3_6_evidence(tmp_path) -> None:
+def test_extract_coverage_metrics_reads_cp1252_logs(tmp_path) -> None:
+    log_path = tmp_path / "coverage.log"
+    log_text = (
+        "rootdir: C:\\Users\\gligo\\My Projects\\OMNI Agent — Production AI Agent System\n"
+        "Name                                       Stmts   Miss   Cover   Missing\n"
+        "-------------------------------------------------------------------------\n"
+        "agent\\\\crypto_utils.py                        233    165  29.18%   ...\n"
+        "main.py                                      566    460  18.73%   ...\n"
+        "-------------------------------------------------------------------------\n"
+        "TOTAL                                      10338   4171  59.65%\n"
+    )
+    log_path.write_bytes(log_text.encode("cp1252"))
+
+    assert DOC_CHECK.extract_coverage_metrics(log_path) == (59.65, 10338, 4171, 18.73, 29.18)
+
+
+def test_extract_preferred_pytest_pass_count_prefers_phase_3_7_evidence(tmp_path) -> None:
     write(tmp_path / "snapshot-phase-3-1/pytest_start.log", "============================= 417 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-3/gate_3_3_3_pytest.log", "============================= 444 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-4/gate_3_4_3_pytest.log", "============================= 452 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-5/gate_3_5_3_pytest.log", "============================= 469 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-6/gate_3_6_3_pytest.log", "============================= 473 passed in 9.99s =============================\n")
+    write(tmp_path / "snapshot-phase-3-7/gate_3_7_2_pytest.log", "============================= 489 passed in 9.99s =============================\n")
 
-    assert DOC_CHECK.extract_preferred_pytest_pass_count(tmp_path) == 473
+    assert DOC_CHECK.extract_preferred_pytest_pass_count(tmp_path) == 489
 
 
 def test_run_checks_flags_missing_coverage_policy_details(tmp_path, monkeypatch) -> None:
