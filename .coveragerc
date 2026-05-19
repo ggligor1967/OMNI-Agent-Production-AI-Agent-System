@@ -1,0 +1,30 @@
+[run]
+# Keep the measured Phase 3.6 coverage scope comparable to the baseline by
+# following the active release-gate surface that is already exercised by the
+# stable test suite. Do not broaden this into a repo-wide audit: CI already
+# keeps full-agent audit work in a separate non-blocking lane while orphan /
+# standalone modules are still being classified.
+include =
+    agent/*
+    main.py
+    config.py
+    job_search_*.py
+    tools/check_documentation_consistency.py
+omit =
+    agent/_legacy/*
+    tests/*
+    snapshot-*
+    tools/mutation/*
+    tools/performance/*
+    */site-packages/*
+    */Lib/*
+
+[report]
+show_missing = True
+skip_covered = False
+fail_under = 58
+precision = 2
+exclude_lines =
+    pragma: no cover
+    if TYPE_CHECKING:
+    if __name__ == .__main__.:
