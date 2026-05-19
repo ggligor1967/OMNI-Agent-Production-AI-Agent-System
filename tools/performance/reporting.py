@@ -200,6 +200,11 @@ def contains_sensitive_content(text: str) -> bool:
     return any(marker in lowered for marker in SENSITIVE_MARKERS)
 
 
+def ensure_text_is_safe(text: str, *, label: str) -> None:
+    if contains_sensitive_content(text):
+        raise ValueError(f"{label} contains sensitive content markers")
+
+
 def write_summary_outputs(
     summary: Mapping[str, Any],
     *,
@@ -207,10 +212,14 @@ def write_summary_outputs(
     markdown_path: Path,
 ) -> None:
     validated = validate_summary_payload(summary)
+    json_text = json.dumps(validated, indent=2, sort_keys=True)
+    markdown_text = summary_to_markdown(validated)
+    ensure_text_is_safe(json_text, label="Performance summary JSON")
+    ensure_text_is_safe(markdown_text, label="Performance summary Markdown")
     json_path.parent.mkdir(parents=True, exist_ok=True)
     markdown_path.parent.mkdir(parents=True, exist_ok=True)
-    json_path.write_text(json.dumps(validated, indent=2, sort_keys=True), encoding="utf-8")
-    markdown_path.write_text(summary_to_markdown(validated), encoding="utf-8")
+    json_path.write_text(json_text, encoding="utf-8")
+    markdown_path.write_text(markdown_text, encoding="utf-8")
 
 
 def observations_to_dicts(observations: Iterable[RequestObservation]) -> list[dict[str, Any]]:

@@ -1,0 +1,7 @@
+
+tests/test_performance_smoke_summary.py::test_summary_json_schema_is_valid PASSED [ 25%]
+tests/test_performance_smoke_summary.py::test_summary_parser_rejects_missing_metrics PASSED [ 50%]
+tests/test_performance_smoke_summary.py::test_smoke_report_omits_sensitive_terms PASSED [ 75%]
+tests/test_performance_smoke_summary.py::test_smoke_command_uses_loopback_target_by_default PASSED [100%]
+
+============================== 4 passed in 0.40s ==============================

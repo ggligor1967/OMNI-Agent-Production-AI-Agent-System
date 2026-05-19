@@ -21,6 +21,7 @@ from tools.performance.local_fixture import start_local_fixture
 from tools.performance.reporting import (
     RequestObservation,
     build_summary,
+    ensure_text_is_safe,
     observations_to_dicts,
     write_summary_outputs,
 )
@@ -301,11 +302,10 @@ async def run_harness(config: HarnessConfig) -> dict[str, Any]:
         json_path=config.summary_json_path,
         markdown_path=config.summary_md_path,
     )
+    raw_log_text = _render_raw_log(config=config, target=base_url, observations=observations)
+    ensure_text_is_safe(raw_log_text, label="Performance raw log")
     config.raw_log_path.parent.mkdir(parents=True, exist_ok=True)
-    config.raw_log_path.write_text(
-        _render_raw_log(config=config, target=base_url, observations=observations),
-        encoding="utf-8",
-    )
+    config.raw_log_path.write_text(raw_log_text, encoding="utf-8")
     return {
         "summary": summary,
         "observations": observations_to_dicts(observations),

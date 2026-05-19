@@ -1,0 +1,38 @@
+{
+  "duration_seconds": 6.0,
+  "error_rate": 0.0,
+  "failure_count": 0,
+  "max_ms": 16.363,
+  "mode": "smoke",
+  "p50_ms": 4.293,
+  "p95_ms": 5.91,
+  "p99_ms": 11.052,
+  "request_count": 2918,
+  "routes": [
+    {
+      "error_rate": 0.0,
+      "failure_count": 0,
+      "max_ms": 16.363,
+      "p50_ms": 4.36,
+      "p95_ms": 6.074,
+      "p99_ms": 11.147,
+      "request_count": 1459,
+      "route": "/chat"
+    },
+    {
+      "error_rate": 0.0,
+      "failure_count": 0,
+      "max_ms": 16.209,
+      "p50_ms": 4.219,
+      "p95_ms": 5.643,
+      "p99_ms": 10.951,
+      "request_count": 1459,
+      "route": "/status"
+    }
+  ],
+  "target": "http://127.0.0.1:59752",
+  "timestamp": "2026-05-19T09:29:20.102040+00:00"
+}
+Wrote raw log to C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\snapshot-phase-3-3\performance_smoke_raw.log
+Wrote summary JSON to C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\snapshot-phase-3-3\performance_smoke_summary.json
+Wrote summary Markdown to C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\snapshot-phase-3-3\performance_smoke_summary.md
