@@ -1,0 +1,6 @@
+completed	success	docs: update remote CI handoff evidence	CI	main	push	26131515209	2m3s	2026-05-19T23:27:27Z
+completed	success	ci: repair remote release gate failure	CI	main	push	26131399929	1m47s	2026-05-19T23:24:27Z
+completed	failure	docs: complete remote handoff summary	CI	main	push	26130941166	1m46s	2026-05-19T23:12:21Z
+completed	failure	docs: add remote handoff summary	CI	main	push	26130553660	1m56s	2026-05-19T23:02:08Z
+completed	failure	docs: add manual PR handoff instructions	CI	main	push	26130520215	1m54s	2026-05-19T23:01:18Z
+completed	failure	docs: add remote handoff evidence logs	CI	main	push	26130491182	1m56s	2026-05-19T23:00:36Z

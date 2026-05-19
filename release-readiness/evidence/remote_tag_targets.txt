@@ -1,0 +1,32 @@
+## REMOTE phase-0-complete
+f9ba306a1ee7fd94c078cf1ac02ad81fe671049c	refs/tags/phase-0-complete
+6db220142fe2c4022b28cbcc8fe9ec6c27931df1	refs/tags/phase-0-complete^{}
+## REMOTE phase-1-complete
+f6eea4b092e75c413b5a4bd2b5c8f9eb79854661	refs/tags/phase-1-complete
+62f626254ebf26ba6be4e16c091613aeae5cac77	refs/tags/phase-1-complete^{}
+## REMOTE phase-2-complete
+8b8d2b53fbda4133a7c22bce863689269803d188	refs/tags/phase-2-complete
+e539dcdf716fd54237d2c506b2d49be8dee03012	refs/tags/phase-2-complete^{}
+## REMOTE phase-3.1-complete
+eef3ebfd5f6c8555c951e41124949e96d814a9ef	refs/tags/phase-3.1-complete
+4ba70cb1352e2f4a266315f7a324f0a5c15a83ed	refs/tags/phase-3.1-complete^{}
+## REMOTE phase-3.2-complete
+aa2be9c41fe70900cdd349860147beaa4aa21d89	refs/tags/phase-3.2-complete
+34d90f1ea631162fc88f51056b496528d4a3a430	refs/tags/phase-3.2-complete^{}
+## REMOTE phase-3.3-complete
+8d5b0e45ed55fe53506af36e8d0af98581041504	refs/tags/phase-3.3-complete
+## REMOTE phase-3.4-complete
+ac71949ca0ff419bb1aac5f6aa2d7d12c67af84b	refs/tags/phase-3.4-complete
+## REMOTE phase-3.5-complete
+211b3a4b642fdc93d554a894d7fb2e50668ca8e1	refs/tags/phase-3.5-complete
+55e0682935132328f4b3ab2d49915229d23382cd	refs/tags/phase-3.5-complete^{}
+## REMOTE phase-3.6-complete
+99a9361532be77231d5fc27c2bb70c8392ec5381	refs/tags/phase-3.6-complete
+f7d6b5ae568b4c991e71d2e92bdfc2e54b40c786	refs/tags/phase-3.6-complete^{}
+## REMOTE phase-3.7-complete
+c01f592f65ba0268971a32c33be33eedb38cf94c	refs/tags/phase-3.7-complete
+## REMOTE phase-3.8-complete
+c5c354ea40beab508ba806e6ae164a0bb66a54c4	refs/tags/phase-3.8-complete
+## REMOTE release-handoff-phase-0-3.8
+ec543a1d1a646a3ed93b2d7999d190006976e895	refs/tags/release-handoff-phase-0-3.8
+b16afc6ec1b2640d732f7253d25c7d4ab083f7f6	refs/tags/release-handoff-phase-0-3.8^{}

@@ -1,0 +1,20 @@
+6a1bb1e docs: update remote CI handoff evidence
+c154e26 ci: repair remote release gate failure
+464ae7e docs: complete remote handoff summary
+c339cbd docs: add remote handoff summary
+4b4d91d docs: add manual PR handoff instructions
+d1604fe docs: add remote handoff evidence logs
+68fa281 docs: add remote handoff prepush evidence
+e40d04b docs: record blocked remote handoff attempt
+b16afc6 docs: add release handoff final report
+2d84cb9 docs: add release notes risks and next actions
+a8e9394 docs: add release handoff state summaries
+0dd6cbc docs: add phase ledger and evidence map
+9673824 chore: add release handoff baseline evidence
+c5c354e docs: add phase 3.8 priority 2 quality ratchet report
+cfa9eed docs: record phase 3.8 priority 2 quality ratchet results
+3067a70 test: ratchet knowledge graph coverage
+e98e4eb test: ratchet streaming coverage
+a32586c test: ratchet ollama client coverage
+dbd4880 chore: add phase 3.8 priority 2 ratchet baseline
+c01f592 docs: add phase 3.7 quality ratchet report
