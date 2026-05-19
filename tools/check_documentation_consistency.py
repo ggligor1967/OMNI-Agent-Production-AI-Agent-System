@@ -66,6 +66,7 @@ LEGACY_PATH_DOCS = (
 CRITICAL_BANDIT_SKIPS = {"B602", "B102", "B307", "B608"}
 COVERAGE_REFERENCE_LOG = Path("snapshot-phase-3-6/gate_3_6_3_coverage_rerun.log")
 COVERAGE_LOG_CANDIDATES = (
+    *(Path(f"snapshot-phase-3-8/gate_3_8_{gate}_coverage.log") for gate in range(9, -1, -1)),
     Path("snapshot-phase-3-7/gate_3_7_4_coverage.log"),
     Path("snapshot-phase-3-7/gate_3_7_2_coverage.log"),
     Path("snapshot-phase-3-7/gate_3_7_1_coverage.log"),
@@ -74,6 +75,7 @@ COVERAGE_LOG_CANDIDATES = (
     Path("snapshot-phase-3-6/gate_3_6_2_coverage_report.log"),
 )
 PREFERRED_PYTEST_LOG_CANDIDATES = (
+    *(Path(f"snapshot-phase-3-8/gate_3_8_{gate}_pytest.log") for gate in range(9, -1, -1)),
     Path("snapshot-phase-3-7/gate_3_7_4_pytest.log"),
     Path("snapshot-phase-3-7/gate_3_7_3_pytest.log"),
     Path("snapshot-phase-3-7/gate_3_7_2_pytest.log"),

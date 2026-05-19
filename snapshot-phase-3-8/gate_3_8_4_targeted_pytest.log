@@ -1,0 +1,14 @@
+
+tests/test_documentation_consistency.py::test_run_checks_passes_for_synchronized_fixture PASSED [  9%]
+tests/test_documentation_consistency.py::test_run_checks_reports_expected_drift PASSED [ 18%]
+tests/test_documentation_consistency.py::test_run_checks_flags_critical_bandit_skips PASSED [ 27%]
+tests/test_documentation_consistency.py::test_historical_adr_context_does_not_trigger_stale_model_failure PASSED [ 36%]
+tests/test_documentation_consistency.py::test_extract_pytest_pass_count_reads_utf16_logs PASSED [ 45%]
+tests/test_documentation_consistency.py::test_extract_coverage_metrics_reads_cp1252_logs PASSED [ 54%]
+tests/test_documentation_consistency.py::test_extract_preferred_pytest_pass_count_prefers_phase_3_8_evidence PASSED [ 63%]
+tests/test_documentation_consistency.py::test_extract_preferred_coverage_metrics_prefers_phase_3_8_evidence PASSED [ 72%]
+tests/test_documentation_consistency.py::test_run_checks_flags_missing_coverage_policy_details PASSED [ 81%]
+tests/test_documentation_consistency.py::test_main_returns_zero_in_report_only_mode PASSED [ 90%]
+tests/test_documentation_consistency.py::test_main_returns_nonzero_on_failures_without_report_only PASSED [100%]
+
+============================= 11 passed in 0.48s ==============================

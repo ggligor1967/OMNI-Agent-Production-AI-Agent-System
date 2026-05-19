@@ -19,11 +19,11 @@ The threshold policy is anchored to the committed Phase 3.6 threshold-reference 
 - total statements: `10338`
 - missed statements: `4171`
 
-The latest Phase 3.7 ratchet evidence in `snapshot-phase-3-7/gate_3_7_4_coverage.log` records the current local state after the documentation gate re-validation:
+The latest committed Phase 3.8 Priority 2 ratchet evidence in `snapshot-phase-3-8/gate_3_8_3_coverage.log` records the current local state after the knowledge-graph gate:
 
-- total coverage: `65.34%`
+- total coverage: `68.45%`
 - total statements: `10462`
-- missed statements: `3626`
+- missed statements: `3301`
 
 This measurement follows the normalized `.coveragerc` scope for active runtime code and should stay comparable to the stable Phase 3.6 baseline analysis.
 
@@ -40,12 +40,12 @@ The global floor catches regressions, but improvement work should follow a modul
 
 ### Priority 2
 
-| Module | Current | Notes |
-| --- | --- | --- |
-| `agent/ollama_client.py` | `33.73%` | Active provider integration surface. |
-| `agent/streaming.py` | `41.43%` | Runtime event delivery and response streaming surface. |
-| `agent/knowledge_graph.py` | `43.14%` | Active storage/query surface still below the healthier runtime cluster. |
-| Other active low-coverage runtime modules | varies | Continue ratcheting in later phases using the release-gate coverage report as evidence. |
+| Module | Start | Target | Current | Status | Rationale |
+| --- | --- | --- | --- | --- | --- |
+| `agent/ollama_client.py` | `33.73%` | `>= 55%` | `100.00%` | `PASS` | Active provider integration surface with direct request/response and streaming risk. |
+| `agent/streaming.py` | `41.43%` | `>= 60%` | `90.00%` | `PASS` | Runtime event delivery and SSE response streaming surface. |
+| `agent/knowledge_graph.py` | `43.14%` | `>= 60%` | `99.00%` | `PASS` | Active storage/query/traversal surface with persistence and route behavior. |
+| Other active low-coverage runtime modules | varies | later phase | varies | pending | Continue ratcheting in later phases using the release-gate coverage report as evidence. |
 
 ## Interpretation Rules
 
@@ -64,4 +64,7 @@ The global floor catches regressions, but improvement work should follow a modul
 - Threshold-reference evidence: `snapshot-phase-3-6/gate_3_6_3_coverage_rerun.log`
 - Phase 3.7 crypto ratchet evidence: `snapshot-phase-3-7/CRYPTO_UTILS_RATCHET.md`
 - Phase 3.7 main entrypoint ratchet evidence: `snapshot-phase-3-7/MAIN_ENTRYPOINT_RATCHET.md`
-- Latest Phase 3.7 ratchet coverage evidence: `snapshot-phase-3-7/gate_3_7_4_coverage.log`
+- Phase 3.8 Ollama client ratchet evidence: `snapshot-phase-3-8/OLLAMA_CLIENT_RATCHET.md`
+- Phase 3.8 streaming ratchet evidence: `snapshot-phase-3-8/STREAMING_RATCHET.md`
+- Phase 3.8 knowledge graph ratchet evidence: `snapshot-phase-3-8/KNOWLEDGE_GRAPH_RATCHET.md`
+- Latest committed ratchet coverage evidence: `snapshot-phase-3-8/gate_3_8_3_coverage.log`

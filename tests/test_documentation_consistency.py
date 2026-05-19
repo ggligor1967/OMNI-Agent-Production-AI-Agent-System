@@ -318,15 +318,43 @@ def test_extract_coverage_metrics_reads_cp1252_logs(tmp_path) -> None:
     assert DOC_CHECK.extract_coverage_metrics(log_path) == (59.65, 10338, 4171, 18.73, 29.18)
 
 
-def test_extract_preferred_pytest_pass_count_prefers_phase_3_7_evidence(tmp_path) -> None:
+def test_extract_preferred_pytest_pass_count_prefers_phase_3_8_evidence(tmp_path) -> None:
     write(tmp_path / "snapshot-phase-3-1/pytest_start.log", "============================= 417 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-3/gate_3_3_3_pytest.log", "============================= 444 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-4/gate_3_4_3_pytest.log", "============================= 452 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-5/gate_3_5_3_pytest.log", "============================= 469 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-6/gate_3_6_3_pytest.log", "============================= 473 passed in 9.99s =============================\n")
     write(tmp_path / "snapshot-phase-3-7/gate_3_7_2_pytest.log", "============================= 489 passed in 9.99s =============================\n")
+    write(tmp_path / "snapshot-phase-3-8/gate_3_8_3_pytest.log", "============================= 509 passed in 9.99s =============================\n")
 
-    assert DOC_CHECK.extract_preferred_pytest_pass_count(tmp_path) == 489
+    assert DOC_CHECK.extract_preferred_pytest_pass_count(tmp_path) == 509
+
+
+def test_extract_preferred_coverage_metrics_prefers_phase_3_8_evidence(tmp_path) -> None:
+    write(tmp_path / "snapshot-phase-3-7/gate_3_7_4_coverage.log", make_coverage_log())
+    write(
+        tmp_path / "snapshot-phase-3-8/gate_3_8_3_coverage.log",
+        """============================= 509 passed in 10.41s =============================
+Name                                       Stmts   Miss   Cover   Missing
+-------------------------------------------------------------------------
+agent\\crypto_utils.py                        233      1  99.57%   ...
+agent\\knowledge_graph.py                     299      3  99.00%   ...
+agent\\ollama_client.py                        83      0 100.00%   ...
+agent\\streaming.py                           210     21  90.00%   ...
+main.py                                      566     74  86.93%   ...
+-------------------------------------------------------------------------
+TOTAL                                      10462   3301  68.45%
+""",
+    )
+
+    assert DOC_CHECK.extract_preferred_coverage_metrics(tmp_path) == (
+        68.45,
+        10462,
+        3301,
+        86.93,
+        99.57,
+        "snapshot-phase-3-8/gate_3_8_3_coverage.log",
+    )
 
 
 def test_run_checks_flags_missing_coverage_policy_details(tmp_path, monkeypatch) -> None:
