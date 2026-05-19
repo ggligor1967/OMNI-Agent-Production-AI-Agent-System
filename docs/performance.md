@@ -46,6 +46,8 @@ The performance harness is expected to run in one of these safe local modes:
 1. **Preferred:** an in-process or loopback-only fixture app that reuses OMNI middleware where practical (`auth`, tracing) but replaces the LLM path with deterministic local responses.
 2. **Allowed:** a loopback-only local OMNI API process started specifically for the benchmark.
 
+Phase 3.3 uses an equivalent local `asyncio` + `aiohttp` harness instead of adding Locust as a new dependency to the blocking local baseline. That keeps the harness reproducible on the existing toolchain, avoids expanding the release-gate dependency surface, and still produces the required latency percentiles and failure metrics.
+
 The harness defaults should remain conservative:
 
 - users: `5`
