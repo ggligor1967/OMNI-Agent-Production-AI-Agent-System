@@ -2,15 +2,15 @@
 
 ## Status
 
-PASS
+PARTIAL
 
 ## Pages / Views
 
 | Page / Route | Found | Browser Tested | Result |
 | ------------ | ----- | -------------- | ------ |
-| `/dashboard` shell | Yes | No | Planned for B.3 |
-| `/dashboard` Overview tab | Yes | No | Planned for B.3 |
-| `/dashboard` Chat tab | Yes | No | Planned for B.3 |
+| `/dashboard` shell | Yes | Yes | Loaded in integrated browser; defects recorded in B.3 evidence. |
+| `/dashboard` Overview tab | Yes | Yes | FAIL: loaded with `[object Object]` rendering defects and CSP console violations. |
+| `/dashboard` Chat tab | Yes | Yes (diagnostic workaround) | BUG: normal tab click failed; panel became visible only after direct `showTab('chat')` invocation for diagnosis. |
 | `/dashboard` Compare tab | Yes | No | Planned for B.3 |
 | `/dashboard` RAG tab | Yes | No | Planned for B.3 |
 | `/dashboard` Pipelines tab | Yes | No | Planned for B.3 |
@@ -18,9 +18,9 @@ PASS
 | `/dashboard` KG tab | Yes | No | Planned for B.3 |
 | `/dashboard` Tools tab | Yes | No | Planned for B.3 |
 | `/dashboard` Models tab | Yes | No | Planned for B.3 |
-| `/` protected root | Yes | No | Planned for auth/browser check |
-| `/status` JSON view | Yes | No | Planned for B.3 |
-| `/health` JSON view | Yes | No | Planned for B.3 |
+| `/` protected root | Yes | Yes | PASS: browser displayed `401 Unauthorized` JSON body. |
+| `/status` JSON view | Yes | Yes | PASS: raw JSON visible in browser. |
+| `/health` JSON view | Yes | Yes | PASS: raw JSON visible in browser and matched `/status`. |
 
 ## Buttons
 
@@ -94,3 +94,8 @@ PASS
 | KG workflow | KG tab | extract → search/path/stats/export | No | Planned |
 | Tool schema/call workflow | Tools tab | refresh tools → inspect schemas → safe call where allowed | No | Planned |
 | Model/persona/template/memory workflow | Models tab | refresh catalog/personas/templates/memories → optional set persona | No | Planned |
+
+## Notes
+
+- Execution status for tested controls is now tracked in `BUTTONS_AND_FORMS_VALIDATION.md` and `evidence/b3_browser_observations.md`.
+- Untested controls remain inventory items only and must not be counted as passing coverage.
