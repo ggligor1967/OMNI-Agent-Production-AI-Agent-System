@@ -1,0 +1,8 @@
+{
+  "status": 200,
+  "reason": "OK",
+  "user_id": "local_exploratory_developer",
+  "role": "developer",
+  "expires_in": 600,
+  "token": "[redacted]"
+}

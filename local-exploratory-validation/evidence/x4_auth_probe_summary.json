@@ -1,0 +1,69 @@
+{
+  "unauthenticated_protected_route": {
+    "status": 401,
+    "reason": "Unauthorized",
+    "body_preview": "{\"error\": \"unauthorized\", \"detail\": \"No credentials provided\"}"
+  },
+  "invalid_token": {
+    "status": 401,
+    "reason": "Unauthorized",
+    "body_preview": "{\"error\": \"unauthorized\", \"detail\": \"Invalid or expired JWT\"}"
+  },
+  "malformed_authorization_header": {
+    "status": 401,
+    "reason": "Unauthorized",
+    "body_preview": "{\"error\": \"unauthorized\", \"detail\": \"No credentials provided\"}"
+  },
+  "bootstrap_malformed_json": {
+    "status": 400,
+    "reason": "Bad Request",
+    "body_preview": "{\"error\": \"invalid_json\", \"detail\": \"Malformed JSON request body\"}"
+  },
+  "admin_only_route_as_admin": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"keys\": [{\"key_id\": \"631c65b1-9c1\", \"user_id\": \"admin\", \"role\": \"admin\", \"name\": \"Dev Admin Key\", \"description\": \"\", \"created_at\": 1773321671.3119915, \"expires_at\": null, \"last_used_at\": 1773363085.3966696, \"revoked\": false, \"request_count"
+  },
+  "admin_only_route_as_developer": {
+    "status": 403,
+    "reason": "Forbidden",
+    "body_preview": "{\"error\": \"forbidden\", \"detail\": \"Role 'developer' cannot access '/auth/keys'\"}"
+  },
+  "developer_route_as_developer": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"count\": 37, \"available_count\": 27, \"models\": [{\"id\": \"cogito-2.1:671b-cloud\", \"display_name\": \"Cogito 2.1 671B\", \"provider\": \"Cogito\", \"context_k\": 131, \"tier\": \"flagship\", \"capabilities\": [\"reasoning\", \"math\", \"long_ctx\"], \"capability_co"
+  },
+  "readonly_route_as_readonly": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"count\": 37, \"available_count\": 27, \"models\": [{\"id\": \"cogito-2.1:671b-cloud\", \"display_name\": \"Cogito 2.1 671B\", \"provider\": \"Cogito\", \"context_k\": 131, \"tier\": \"flagship\", \"capabilities\": [\"reasoning\", \"math\", \"long_ctx\"], \"capability_co"
+  },
+  "admin_token_create": {
+    "status": 200,
+    "reason": "OK",
+    "user_id": "local_exploratory_developer",
+    "role": "developer",
+    "expires_in": 600,
+    "token": "[redacted]"
+  },
+  "valid_jwt_route_access": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"count\": 37, \"available_count\": 27, \"models\": [{\"id\": \"cogito-2.1:671b-cloud\", \"display_name\": \"Cogito 2.1 671B\", \"provider\": \"Cogito\", \"context_k\": 131, \"tier\": \"flagship\", \"capabilities\": [\"reasoning\", \"math\", \"long_ctx\"], \"capability_co"
+  },
+  "admin_token_revoke": {
+    "status": 200,
+    "reason": "OK",
+    "revoked": true
+  },
+  "revoked_jwt_route_access": {
+    "status": 401,
+    "reason": "Unauthorized",
+    "body_preview": "{\"error\": \"unauthorized\", \"detail\": \"Token has been revoked\"}"
+  },
+  "secret_leak_scan": {
+    "leak_detected": false,
+    "hits": []
+  }
+}

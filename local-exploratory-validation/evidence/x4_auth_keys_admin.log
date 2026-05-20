@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 1164
+Date: Wed, 20 May 2026 17:46:03 GMT
+Server: Python/3.13 aiohttp/3.13.5
+Connection: close
+
+{"keys": [{"key_id": "631c65b1-9c1", "user_id": "admin", "role": "admin", "name": "Dev Admin Key", "description": "", "created_at": 1773321671.3119915, "expires_at": null, "last_used_at": 1773363085.3966696, "revoked": false, "request_count": 1085}, {"key_id": "253d7163-7a0", "user_id": "local_exploratory_admin", "role": "admin", "name": "Local Exploratory Admin", "description": "Synthetic local exploratory validation key", "created_at": 1779298683.3608844, "expires_at": null, "last_used_at": 1779299163.9312763, "revoked": false, "request_count": 26}, {"key_id": "44dd5994-e03", "user_id": "local_exploratory_developer", "role": "developer", "name": "Local Exploratory Developer", "description": "Synthetic local exploratory validation key", "created_at": 1779298683.366851, "expires_at": null, "last_used_at": null, "revoked": false, "request_count": 0}, {"key_id": "9c4fde36-018", "user_id": "local_exploratory_readonly", "role": "readonly", "name": "Local Exploratory Readonly", "description": "Synthetic local exploratory validation key", "created_at": 1779298683.3729007, "expires_at": null, "last_used_at": null, "revoked": false, "request_count": 0}]}
