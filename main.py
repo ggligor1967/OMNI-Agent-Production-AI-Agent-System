@@ -4,6 +4,7 @@ Run modes: telegram | cli | api | all
 """
 import asyncio
 import hashlib
+import json
 import logging
 import signal
 import sys
@@ -216,6 +217,49 @@ def _request_route_template(request: Any) -> str:
     return path or "/unknown"
 
 
+async def _parse_json_object_request(request: Any) -> tuple[dict[str, Any] | None, Any]:
+    from aiohttp import web
+
+    if not request.content_length:
+        return {}, None
+
+    content_type = (request.content_type or "").lower()
+    if not (
+        content_type == "application/json"
+        or content_type == "text/json"
+        or content_type.endswith("+json")
+    ):
+        return None, web.json_response(
+            {
+                "error": "invalid_request",
+                "detail": "Content-Type must be application/json",
+            },
+            status=400,
+        )
+
+    try:
+        data = await request.json()
+    except (json.JSONDecodeError, UnicodeDecodeError, ValueError):
+        return None, web.json_response(
+            {
+                "error": "invalid_json",
+                "detail": "Malformed JSON request body",
+            },
+            status=400,
+        )
+
+    if not isinstance(data, dict):
+        return None, web.json_response(
+            {
+                "error": "invalid_request",
+                "detail": "JSON body must be an object",
+            },
+            status=400,
+        )
+
+    return data, None
+
+
 def build_http_tracing_middleware(agent: Any):
     from aiohttp import web
     from agent.auth import auth_context_from_request
@@ -278,7 +322,9 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
         }
 
     async def chat_endpoint(request: web.Request) -> web.Response:
-        data = await request.json()
+        data, error_response = await _parse_json_object_request(request)
+        if error_response:
+            return error_response
         ctx = auth_context_from_request(request)
         user_id = effective_user_id(
             ctx,

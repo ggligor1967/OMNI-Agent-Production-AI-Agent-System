@@ -1,0 +1,36 @@
+2026-05-20 22:59:08,998 [INFO] main: Starting OMNI Agent in mode: api
+2026-05-20 22:59:09,987 [INFO] agent.memory: Memory DB initialized at data/omni_agent.db
+2026-05-20 22:59:09,996 [INFO] agent.prompt_templates: Loaded 10 built-in templates
+2026-05-20 22:59:10,000 [INFO] agent.workflow: Workflow registered: 'research' (4 steps)
+2026-05-20 22:59:10,004 [INFO] agent.workflow: Workflow registered: 'analyze_text' (3 steps)
+2026-05-20 22:59:10,005 [INFO] agent.workflow: Workflow registered: 'code_review' (2 steps)
+2026-05-20 22:59:10,043 [INFO] agent.notifications: Notification channel added: console (console)
+2026-05-20 22:59:10,054 [INFO] agent.scheduler: Job registered: 'memory_cleanup' [0 3 * * *]
+2026-05-20 22:59:10,055 [INFO] agent.scheduler: Job registered: 'health_report' [*/15 * * * *]
+2026-05-20 22:59:10,055 [INFO] agent.core: OMNI Agent starting...
+2026-05-20 22:59:10,305 [INFO] agent.scheduler: Scheduler started.
+2026-05-20 22:59:10,306 [INFO] agent.scheduler: Heartbeat started (interval=60s)
+2026-05-20 22:59:10,395 [INFO] agent.scheduler: Heartbeat: ✓ {'memory_db': 'ok', 'ollama': 'ok', 'tracer': 'ok', 'event_bus': 'ok'}
+2026-05-20 22:59:12,314 [WARNING] agent.cache: Cache: Redis unavailable (Timeout connecting to server); falling back to in-memory store
+2026-05-20 22:59:12,314 [INFO] agent.core: Cache backend: memory
+2026-05-20 22:59:12,315 [INFO] agent.pipeline: Pipeline registered: 'research' (4 steps)
+2026-05-20 22:59:12,315 [INFO] agent.pipeline: Pipeline registered: 'code_gen' (5 steps)
+2026-05-20 22:59:12,315 [INFO] agent.pipeline: Pipeline registered: 'job_search_tank_adr_improved' (1 steps)
+2026-05-20 22:59:12,316 [INFO] agent.core: OMNI Agent ready.
+2026-05-20 22:59:12,395 [INFO] agent.config_manager: Config manager API at /config/
+2026-05-20 22:59:12,396 [INFO] agent.auth: Auth routes registered at /auth/*
+2026-05-20 22:59:12,397 [INFO] agent.export: Export routes registered at /export/*
+2026-05-20 22:59:12,397 [INFO] agent.streaming: Streaming SSE routes registered: /stream/chat, /stream/events, /stream/traces, /stream/stats
+2026-05-20 22:59:12,398 [INFO] agent.dashboard: Dashboard registered at /dashboard
+2026-05-20 22:59:12,399 [INFO] __main__: API server running on http://127.0.0.1:8765
+
+🚀 OMNI Agent running in 'api' mode at http://127.0.0.1:8765/dashboard. Press Ctrl+C to stop.
+
+2026-05-20 22:59:42,180 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:22:59:42 +0300] "GET /status HTTP/1.1" 200 990 "-" "curl/8.19.0"
+2026-05-20 22:59:42,218 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:22:59:42 +0300] "GET /health HTTP/1.1" 200 990 "-" "curl/8.19.0"
+2026-05-20 22:59:42,256 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:22:59:42 +0300] "POST /chat HTTP/1.1" 401 231 "-" "curl/8.19.0"
+2026-05-20 22:59:42,295 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:22:59:42 +0300] "POST /chat HTTP/1.1" 401 230 "-" "curl/8.19.0"
+2026-05-20 22:59:42,462 [INFO] agent.auth: API key created: 90d92e2d-ea1 for user=local-bugfix-admin role=admin
+2026-05-20 22:59:42,463 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:22:59:42 +0300] "POST /auth/bootstrap HTTP/1.1" 201 569 "-" "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.8457"
+2026-05-20 22:59:42,516 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:22:59:42 +0300] "POST /auth/token HTTP/1.1" 200 439 "-" "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.8457"
+2026-05-20 22:59:42,553 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:22:59:42 +0300] "POST /chat HTTP/1.1" 400 234 "-" "curl/8.19.0"

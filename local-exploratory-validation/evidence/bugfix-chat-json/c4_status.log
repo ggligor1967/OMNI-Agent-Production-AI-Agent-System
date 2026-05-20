@@ -1,0 +1,14 @@
+﻿  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+System.Management.Automation.RemoteException
+  0      0   0      0   0      0      0      0                              0
+100    830 100    830   0      0 125.8k      0                              0
+100    830 100    830   0      0 123.0k      0                              0
+100    830 100    830   0      0 120.4k      0                              0
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 830
+Date: Wed, 20 May 2026 19:59:42 GMT
+Server: Python/3.13 aiohttp/3.13.5
+
+{"status": {"state": "running", "started": 1779307150.060239}, "health": {"ts": 1779307150.3064697, "checks": {"memory_db": "ok", "ollama": "ok", "tracer": "ok", "event_bus": "ok"}, "healthy": true}, "jobs": [{"name": "memory_cleanup", "cron": "0 3 * * *", "enabled": true, "last_run": null, "run_count": 0, "next_run": 1779332400.0}, {"name": "health_report", "cron": "*/15 * * * *", "enabled": true, "last_run": null, "run_count": 0, "next_run": 1779307200.0}], "skills": [], "router": {"total_models": 27, "providers": ["OpenAI OSS", "NVIDIA", "MiniMax", "Zhipu AI", "Moonshot AI", "Cogito", "RNJ Labs", "Google", "DeepSeek", "Mistral AI", "Alibaba"], "task_types": ["code", "math", "vision", "creative", "reasoning", "translation", "agent", "fast", "general"], "fallback_chains": 4, "session_overrides": 0}, "model_stats": []}

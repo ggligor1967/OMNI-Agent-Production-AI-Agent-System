@@ -1,0 +1,33 @@
+﻿C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:280:async def chat_endpoint(request: web.Request) -> web.Response:
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:281:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:374:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:402:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:428:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:439:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:474:data = await request.json() if request.content_length else {}
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:498:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:535:data = await request.json() if request.content_length else {}
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:556:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:618:data: Dict[str, Any] = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:646:app.router.add_post("/chat", chat_endpoint)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:704:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:746:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:796:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:820:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:847:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_bootstrap_json_errors.py:51:self.assertNotIn("JSONDecodeError", body_text)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\BUG_BACKLOG_EXPLORATORY.md:5:### BUG-X6-CHAT-MALFORMED-JSON-500
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\BUG_BACKLOG_EXPLORATORY.md:22:- server stdout contains `json.decoder.JSONDecodeError`
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\BUG_BACKLOG_EXPLORATORY.md:24:- `main.py` `chat_endpoint` calls `await request.json()` without bounded parse handling
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\BUG_BACKLOG_EXPLORATORY.md:26:- `local-exploratory-validation/evidence/x6_malformed_chat_json_authenticated.log`
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\ERROR_HANDLING_EXPLORATION.md:15:| Malformed JSON on `/chat` without auth | `POST /chat` malformed JSON, no auth | `401 Unauthorized` with bounded JSON body | PASS (auth middleware intercepts before body parsing) |
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\ERROR_HANDLING_EXPLORATION.md:16:| Malformed JSON on `/chat` with valid auth | `POST /chat` malformed JSON + admin key | `500 Internal Server Error` plain-text response | BUG |
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\ERROR_HANDLING_EXPLORATION.md:29:### BUG-X6-CHAT-MALFORMED-JSON-500
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\ERROR_HANDLING_EXPLORATION.md:36:- `local-exploratory-validation/evidence/x6_malformed_chat_json_authenticated.log`
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\ERROR_HANDLING_EXPLORATION.md:39:- `main.py` `chat_endpoint` performs `data = await request.json()` before any bounded parse handling
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\ERROR_HANDLING_EXPLORATION.md:40:- server stdout records `json.decoder.JSONDecodeError: Expecting value: line 1 column 12 (char 11)`
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\LOCAL_EXPLORATORY_VALIDATION_REPORT.md:34:| X.6 | Error handling / edge cases | FAIL | Confirmed bug: authenticated malformed JSON to `/chat` returns `500` instead of bounded `400` |
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\LOCAL_EXPLORATORY_VALIDATION_REPORT.md:40:### BUG-X6-CHAT-MALFORMED-JSON-500
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\LOCAL_EXPLORATORY_VALIDATION_REPORT.md:46:- server-side `JSONDecodeError` in stdout evidence
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\LOCAL_EXPLORATORY_VALIDATION_REPORT.md:53:- `local-exploratory-validation/evidence/x6_malformed_chat_json_authenticated.log`
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\local-exploratory-validation\LOCAL_EXPLORATORY_VALIDATION_REPORT.md:104:Fix confirmed exploratory validation bugs in a separate scoped pass, beginning with bounded malformed-JSON handling for `POST /chat`, then rerun the affected exploratory checks and final verification.

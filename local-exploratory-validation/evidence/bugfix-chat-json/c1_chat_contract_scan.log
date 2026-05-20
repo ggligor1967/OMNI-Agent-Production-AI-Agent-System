@@ -1,0 +1,177 @@
+﻿C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:21:from aiohttp import web
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:220:from aiohttp import web
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:265:"""Minimal aiohttp REST API server."""
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:266:from aiohttp import web
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:280:async def chat_endpoint(request: web.Request) -> web.Response:
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:281:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:296:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:303:return web.json_response({"error": "message required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:312:return web.json_response({
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:319:return web.json_response(_status_payload())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:322:return web.json_response(_status_payload())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:330:return web.json_response({"memories": results})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:357:return web.json_response({
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:369:return web.json_response({"error": "Model not found"}, status=404)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:370:return web.json_response(spec.to_dict())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:374:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:384:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:391:return web.json_response({
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:402:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:406:return web.json_response({"error": "prompt required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:422:return web.json_response({"prompt": text, "results": results})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:428:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:432:return web.json_response({"error": "text required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:435:return web.json_response(doc.to_dict())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:439:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:444:return web.json_response({"error": "query required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:446:return web.json_response({
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:454:return web.json_response({"documents": agent.rag.list_documents(),
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:461:return web.json_response({"deleted": ok, "doc_id": doc_id})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:467:return web.json_response({
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:474:data = await request.json() if request.content_length else {}
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:478:return web.json_response({"error": f"Pipeline '{name}' not found"}, status=404)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:479:return web.json_response(run.to_dict())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:484:return web.json_response({
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:493:return web.json_response({"templates": agent.templates.list_templates(tag=tag)})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:498:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:503:return web.json_response({"messages": messages})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:505:return web.json_response({"error": str(e)}, status=404)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:507:return web.json_response({"error": str(e)}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:514:return web.json_response(stats)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:519:return web.json_response({"flushed": True})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:524:return web.json_response({"log": log})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:530:return web.json_response({"workflows": agent.workflows.list_workflows()})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:535:data = await request.json() if request.content_length else {}
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:538:return web.json_response(run.to_dict())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:540:return web.json_response({"error": str(e)}, status=404)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:549:return web.json_response({"tools": agent.tool_registry.openai_schemas(category)})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:551:return web.json_response({"tools": agent.tool_registry.anthropic_schemas(category)})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:552:return web.json_response({"tools": agent.tool_registry.list_tools(category)})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:556:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:567:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:581:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:594:return web.json_response(result.to_dict())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:600:return web.json_response(agent.tracer.summary())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:606:return web.json_response({"spans": [s.to_dict() for s in spans]})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:610:return web.json_response({"errors": agent.tracer.recent_errors(limit=20)})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:618:data: Dict[str, Any] = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:623:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:627:return web.json_response({"error": "text required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:629:return web.json_response(result.to_dict())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:646:app.router.add_post("/chat", chat_endpoint)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:689:return web.json_response({"personas": agent.persona_registry.list_personas(tag)})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:700:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:704:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:708:return web.json_response({"error": f"Unknown persona '{name}'"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:709:return web.json_response(agent.persona_manager.session_info(session_id))
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:720:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:724:return web.json_response(agent.persona_manager.session_info(session_id))
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:729:return web.json_response({"suites": agent.evaluator.list_suites()})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:734:return web.json_response(agent.evaluator.get_history(suite, model or ""))
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:738:return web.json_response(agent.evaluator.model_comparison(suite))
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:743:return web.json_response(agent.knowledge_graph.stats())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:746:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:749:return web.json_response({"error": "text required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:756:return web.json_response({"node": node.to_dict()})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:761:return web.json_response({"error": "name required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:763:return web.json_response({"neighbours": [n.to_dict() for n in nodes]})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:770:return web.json_response({"error": "no path found"}, status=404)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:771:return web.json_response({"path": path})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:774:return web.json_response(agent.knowledge_graph.stats())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:796:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:800:return web.json_response({"error": "code required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:807:return web.json_response(result.to_dict())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:810:return web.json_response({"history": agent.sandbox.get_history(limit=20),
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:820:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:825:return web.json_response({"error": "source required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:827:return web.json_response(result.to_dict())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:830:return web.json_response({"models": agent.vision.get_vision_models()})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:844:return web.json_response({"channels": agent.notifier.list_channels()})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:847:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:858:return web.json_response(rec.to_dict())
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\main.py:861:return web.json_response({
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:4:(RBAC), per-tier rate limiting, and request middleware for aiohttp.
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:13:- aiohttp middleware for automatic auth enforcement
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:58:"chat", "status", "memories", "stream/chat", "stream/events",
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:132:payload = json.loads(_b64url_decode(body_part))
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:204:"""Safely extract the auth context from an aiohttp request-like object."""
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:420:# aiohttp middleware
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:597:# ── aiohttp Middleware ────────────────────────────────────────────────────
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:603:aiohttp middleware factory.
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:606:from aiohttp import web
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:648:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:663:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:675:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:690:from aiohttp import web
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:701:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:706:return web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:722:return None, web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:725:"detail": "Content-Type must be application/json",
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:731:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:732:except (json.JSONDecodeError, UnicodeDecodeError, ValueError):
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:733:return None, web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:742:return None, web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:751:return None, web.json_response(
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:776:return web.json_response({"error": str(e)}, status=403)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:778:return web.json_response({"error": str(e)}, status=409)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:783:return web.json_response(resp, status=201)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:789:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:799:return web.json_response({"error": f"Unknown role '{role_str}'"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:802:return web.json_response({"error": "user_id required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:811:return web.json_response(resp, status=201)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:818:return web.json_response({"keys": self.list_keys(user_id=user_id)})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:827:return web.json_response({"error": "Key not found"}, status=404)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:828:return web.json_response({"revoked": True, "key_id": key_id})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:834:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:839:return web.json_response({"error": "user_id required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:843:return web.json_response({"error": f"Unknown role '{role_str}'"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:845:return web.json_response({
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:856:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:860:return web.json_response({"error": "token required"}, status=400)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:862:return web.json_response({"revoked": True})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:868:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:872:return web.json_response({"valid": False}, status=401)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\agent\auth.py:874:return web.json_response({
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_bootstrap_json_errors.py:7:from aiohttp import web
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_bootstrap_json_errors.py:8:from aiohttp.test_utils import TestClient, TestServer
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_bootstrap_json_errors.py:42:headers={"Content-Type": "application/json"},
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_bootstrap_json_errors.py:51:self.assertNotIn("JSONDecodeError", body_text)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_bootstrap_json_errors.py:59:headers={"Content-Type": "text/plain"},
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_bootstrap_json_errors.py:66:"detail": "Content-Type must be application/json",
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_bootstrap_json_errors.py:73:headers={"Content-Type": "application/json"},
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:9:from aiohttp import web
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:10:from aiohttp.test_utils import TestClient, TestServer
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:122:async def chat(request):
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:123:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:138:return web.json_response({"error": "forbidden", "detail": str(exc)}, status=403)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:141:return web.json_response({"user_id": user_id, "session_id": session_id})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:152:return web.json_response({"error": "forbidden", "detail": str(exc)}, status=403)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:154:data = await request.json()
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:156:return web.json_response({"session_id": session_id, "persona": self.personas[session_id]})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:167:return web.json_response({"error": "forbidden", "detail": str(exc)}, status=403)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:169:return web.json_response({
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:174:app.router.add_post("/chat", chat)
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_auth_ownership_binding.py:190:"/chat",
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:8:from aiohttp import web
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:9:from aiohttp.test_utils import TestClient, TestServer
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:68:async def chat_parallel(self, messages: list[dict[str, str]], model_ids: list[str] | None = None) -> dict[str, dict[str, Any]]:
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:327:async def chat(self, user_id: str, session_id: str, text: str) -> str:
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:333:import aiohttp.web as aiohttp_web
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:362:original_runner = aiohttp_web.AppRunner
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:363:original_site = aiohttp_web.TCPSite
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:371:aiohttp_web.AppRunner = _FakeRunner
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:372:aiohttp_web.TCPSite = _FakeSite
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:376:aiohttp_web.AppRunner = original_runner
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:377:aiohttp_web.TCPSite = original_site
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:437:empty_chat_resp = await client.post("/chat", json={})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:441:"/chat",
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:447:"/chat",
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:470:persona_set_resp = await client.post("/personas/session/chat", json={"persona": "assistant"})
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:471:persona_info_resp = await client.get("/personas/session/chat")
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:641:import aiohttp.web as aiohttp_web
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:671:original_runner = aiohttp_web.AppRunner
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:672:original_site = aiohttp_web.TCPSite
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:680:aiohttp_web.AppRunner = _FakeRunner
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:681:aiohttp_web.TCPSite = _FlakySite
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:685:aiohttp_web.AppRunner = original_runner
+C:\Users\gligo\My Projects\OMNI Agent — Production AI Agent System\tests\test_main_entrypoint_quality_ratchet.py:686:aiohttp_web.TCPSite = original_site

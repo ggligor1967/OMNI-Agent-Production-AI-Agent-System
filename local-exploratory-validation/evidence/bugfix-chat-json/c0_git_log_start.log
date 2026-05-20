@@ -1,0 +1,30 @@
+﻿08cd966 docs: finalize local exploratory validation report
+066eace docs: record local shutdown cleanup validation
+de63985 docs: record local error-handling exploratory validation
+e6f1ed3 docs: record local workflow exploratory validation
+03a64ce docs: record local auth and RBAC exploratory validation
+a5caef5 docs: record local API exploratory validation
+cd5ae3d docs: record local dashboard exploratory validation
+d083ee9 docs: record local exploratory runtime session
+cc9f9c5 chore: add local exploratory validation baseline
+f961f5b fix(validation): close local browser dashboard and bootstrap bugs
+47253c6 docs(validation): record local browser validation findings
+737830a docs: record local browser runtime startup evidence
+dcae3ec docs: inventory local browser and route surface
+35034f2 chore: add local browser validation baseline
+88e2a73 ci: upgrade GitHub Actions for Node 24
+dd88d34 fix: resolve local health endpoint validation mismatch
+60e98af docs: add local operational validation report
+f039932 fix: prefer Git Bash for sandbox shell execution on Windows
+e258ea7 docs: record local observability validation
+f6ad160 docs: record local sandbox validation
+723d0e9 docs: record local auth validation
+68b6de9 docs: record local API validation
+71ce82a docs: record local startup validation
+a0d08c7 chore: add local operational validation baseline
+bbd41d2 docs: add production environment decision summary
+3dd8b09 docs: define required production decision inputs
+8e18556 docs: define production infrastructure ownership decision
+3e81f23 docs: define production environment decision
+5c64489 chore: add production environment decision baseline evidence
+1b54de4 docs: add production readiness execution report

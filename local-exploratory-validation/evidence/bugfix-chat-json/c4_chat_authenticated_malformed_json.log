@@ -1,0 +1,14 @@
+﻿  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+System.Management.Automation.RemoteException
+  0      0   0      0   0      0      0      0                              0
+100     82 100     66 100     16  11771   2853                              0
+100     82 100     66 100     16  11599   2811                              0
+100     82 100     66 100     16  11355   2752                              0
+HTTP/1.1 400 Bad Request
+Content-Type: application/json; charset=utf-8
+Content-Length: 66
+Date: Wed, 20 May 2026 19:59:42 GMT
+Server: Python/3.13 aiohttp/3.13.5
+
+{"error": "invalid_json", "detail": "Malformed JSON request body"}

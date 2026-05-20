@@ -1,0 +1,14 @@
+﻿  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+System.Management.Automation.RemoteException
+  0      0   0      0   0      0      0      0                              0
+100    121 100     62 100     59  10324   9825                              0
+100    121 100     62 100     59  10068   9581                              0
+100    121 100     62 100     59   9839   9363                              0
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json; charset=utf-8
+Content-Length: 62
+Date: Wed, 20 May 2026 19:59:42 GMT
+Server: Python/3.13 aiohttp/3.13.5
+
+{"error": "unauthorized", "detail": "No credentials provided"}

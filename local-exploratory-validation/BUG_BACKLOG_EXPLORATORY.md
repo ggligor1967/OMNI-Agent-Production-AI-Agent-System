@@ -2,34 +2,44 @@
 
 ## Open Bugs
 
+- None. No confirmed exploratory bugs remain open after the scoped follow-up fix and loopback retest for `BUG-X6-CHAT-MALFORMED-JSON-500`.
+
+## Resolved Bugs
+
 ### BUG-X6-CHAT-MALFORMED-JSON-500
 
-- Status: OPEN
+- Status: RESOLVED
 - Severity: Medium
 - Area: API / error handling
 - Route: `POST /chat`
-- Repro:
+- Original repro:
   1. Send authenticated `POST /chat`
   2. Use `Content-Type: application/json`
   3. Send malformed JSON body such as `{"message":`
-- Expected:
+- Original expected:
   - bounded client error such as `400 Bad Request`
   - JSON error payload
   - no internal exception escalation for invalid client input
-- Observed:
+- Original observed:
   - `500 Internal Server Error`
   - plain-text body: `Server got itself in trouble`
   - server stdout contains `json.decoder.JSONDecodeError`
-- Likely cause:
-  - `main.py` `chat_endpoint` calls `await request.json()` without bounded parse handling
-- Evidence:
+- Resolution summary:
+  - `main.py` now routes `/chat` request parsing through a bounded JSON-object helper
+  - malformed authenticated JSON now returns structured `400 invalid_json`
+  - missing auth and invalid auth behavior remain `401 Unauthorized`
+  - regression coverage added in `tests/test_chat_json_errors.py`
+- Historical evidence:
   - `local-exploratory-validation/evidence/x6_malformed_chat_json_authenticated.log`
   - `local-exploratory-validation/evidence/x1_server_stdout.log`
   - `local-exploratory-validation/ERROR_HANDLING_EXPLORATION.md`
-- Recommended fix lane:
-  - add bounded JSON parse handling in `/chat`
-  - return structured `400` response for malformed JSON
-  - add regression tests for authenticated malformed JSON requests
+- Fix evidence:
+  - `local-exploratory-validation/evidence/bugfix-chat-json/CHAT_JSON_CONTRACT_ANALYSIS.md`
+  - `local-exploratory-validation/evidence/bugfix-chat-json/c4_chat_authenticated_malformed_json.log`
+  - `local-exploratory-validation/evidence/bugfix-chat-json/c4_chat_missing_auth.log`
+  - `local-exploratory-validation/evidence/bugfix-chat-json/c4_chat_invalid_auth.log`
+  - `local-exploratory-validation/evidence/bugfix-chat-json/c4_server_log_leak_scan.log`
+  - `tests/test_chat_json_errors.py`
 
 ## Non-Bug Observations
 

@@ -2,9 +2,11 @@
 
 ## Overall Result
 
-FAIL
+PASS
 
 A local-only exploratory validation pass was completed against the loopback runtime on `127.0.0.1:8765`.
+
+The single confirmed exploratory bug identified during X.6 was fixed in a scoped follow-up lane, retested live on loopback, and reverified locally.
 
 This is **not** a production-readiness approval.
 This is **not** a deployment.
@@ -31,27 +33,33 @@ This is **not** Phase 3.9.
 | X.3 | API exploration | PASS | Public and authenticated routes exercised; safe GET coverage confirmed |
 | X.4 | Auth / RBAC exploration | PASS | Bootstrap, key management, token issue/revoke, and role enforcement confirmed |
 | X.5 | Workflow / template / tool exploration | PASS | Safe surfaces exercised; `analyze_text` workflow succeeded but was slow (~`55.8s`) |
-| X.6 | Error handling / edge cases | FAIL | Confirmed bug: authenticated malformed JSON to `/chat` returns `500` instead of bounded `400` |
+| X.6 | Error handling / edge cases | PASS | Follow-up live retest confirms authenticated malformed JSON to `/chat` now returns bounded `400 invalid_json`; missing/invalid auth behavior remains unchanged |
 | X.7 | Shutdown / cleanup | PASS | Runtime stopped locally; port closed and original process disappeared |
-| X.8 | Final verification | PASS | Final verification suite green for docs, compile, pytest, Ruff, coverage, active-path Bandit, and direct dependency `pip-audit` snapshot |
+| X.8 | Final verification | PASS | Post-fix verification suite green for docs, compile, pytest, Ruff, coverage, active-path Bandit, and `pip-audit` |
 
-## Confirmed Bug
+## Resolved Bug
 
 ### BUG-X6-CHAT-MALFORMED-JSON-500
 
 - Route: `POST /chat`
 - Trigger: authenticated request with malformed JSON body
-- Observed:
+- Original observed state:
   - `500 Internal Server Error`
   - server-side `JSONDecodeError` in stdout evidence
-- Expected:
-  - bounded `400` client error with structured JSON response
-- Impact:
-  - invalid client input is escalated as an internal server error
-- Evidence:
+- Resolved state:
+  - bounded `400 Bad Request` with structured JSON response `{"error":"invalid_json","detail":"Malformed JSON request body"}`
+  - missing and invalid auth probes still return `401 Unauthorized`
+  - isolated server log scan found no traceback, `JSONDecodeError`, `Internal Server Error`, or secret echo
+- Historical evidence:
   - `local-exploratory-validation/ERROR_HANDLING_EXPLORATION.md`
   - `local-exploratory-validation/evidence/x6_malformed_chat_json_authenticated.log`
   - `local-exploratory-validation/evidence/x1_server_stdout.log`
+- Fix verification evidence:
+  - `local-exploratory-validation/evidence/bugfix-chat-json/CHAT_JSON_CONTRACT_ANALYSIS.md`
+  - `local-exploratory-validation/evidence/bugfix-chat-json/c4_chat_authenticated_malformed_json.log`
+  - `local-exploratory-validation/evidence/bugfix-chat-json/c4_chat_missing_auth.log`
+  - `local-exploratory-validation/evidence/bugfix-chat-json/c4_chat_invalid_auth.log`
+  - `local-exploratory-validation/evidence/bugfix-chat-json/c4_server_log_leak_scan.log`
 
 ## Non-Bug Observation
 
@@ -63,20 +71,19 @@ This is **not** Phase 3.9.
 
 | Check | Result | Evidence |
 | ----- | ------ | -------- |
-| Documentation consistency | PASS | `local-exploratory-validation/evidence/x8_doc_consistency.log` |
-| Compileall | PASS | `local-exploratory-validation/evidence/x8_compile.log` |
-| Pytest | PASS (`518 passed, 5 warnings`) | `local-exploratory-validation/evidence/x8_pytest.log` |
-| Ruff | PASS | `local-exploratory-validation/evidence/x8_ruff.log` |
-| Coverage | PASS (`68.48%`) | `local-exploratory-validation/evidence/x8_coverage_report.log` |
-| Bandit active-path | PASS | `local-exploratory-validation/evidence/x8_bandit_active_path.log` |
-| pip-audit | PASS on pinned direct dependency snapshot | `local-exploratory-validation/evidence/x8_pip_audit_direct.log` |
+| Documentation consistency | PASS | `local-exploratory-validation/evidence/bugfix-chat-json/c6_doc_consistency.log` |
+| Compileall | PASS | `local-exploratory-validation/evidence/bugfix-chat-json/c6_compile.log` |
+| Pytest | PASS (`524 passed, 5 warnings`) | `local-exploratory-validation/evidence/bugfix-chat-json/c6_pytest.log` |
+| Ruff | PASS | `local-exploratory-validation/evidence/bugfix-chat-json/c6_ruff.log` |
+| Coverage | PASS (`68.52%`) | `local-exploratory-validation/evidence/bugfix-chat-json/c6_coverage.log` |
+| Bandit active-path | PASS | `local-exploratory-validation/evidence/bugfix-chat-json/c6_bandit_active_path.log` |
+| pip-audit | PASS | `local-exploratory-validation/evidence/bugfix-chat-json/c6_pip_audit.log` |
 
-## Notes on pip-audit Evidence
+## Notes on post-fix verification
 
-- Baseline X.0 already captured a passing `pip-audit` result.
-- During X.8, a fresh full-environment rerun hit Windows-specific tooling friction (encoding/cache behavior) and was not used as the final evidence lane.
-- A deterministic rerun against a pinned snapshot of direct declared dependencies completed successfully with `No known vulnerabilities found`.
-- No dependency changes were made during this exploratory pass.
+- The post-fix verification suite was rerun after the scoped `/chat` malformed-JSON remediation and its accompanying evidence updates.
+- `pip-audit` completed successfully with `No known vulnerabilities found` while using a local cache directory and spinner-disabled invocation suitable for this Windows environment.
+- No production deployment or external exposure was performed as part of this follow-up verification.
 
 ## Deliverables Produced
 
@@ -101,4 +108,4 @@ This is **not** Phase 3.9.
 
 ## Next Action
 
-Fix confirmed exploratory validation bugs in a separate scoped pass, beginning with bounded malformed-JSON handling for `POST /chat`, then rerun the affected exploratory checks and final verification.
+Carry the verified `/chat` malformed-JSON fix through normal source-control review and CI while keeping production release and deployment gates closed.
