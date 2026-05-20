@@ -1,0 +1,9 @@
+HTTP/1.1 405 Method Not Allowed
+Content-Type: text/plain; charset=utf-8
+Allow: POST
+Content-Length: 23
+Date: Wed, 20 May 2026 17:54:04 GMT
+Server: Python/3.13 aiohttp/3.13.5
+Connection: close
+
+405: Method Not Allowed
