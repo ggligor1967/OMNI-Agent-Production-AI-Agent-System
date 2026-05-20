@@ -1,0 +1,30 @@
+88e2a73 ci: upgrade GitHub Actions for Node 24
+dd88d34 fix: resolve local health endpoint validation mismatch
+60e98af docs: add local operational validation report
+f039932 fix: prefer Git Bash for sandbox shell execution on Windows
+e258ea7 docs: record local observability validation
+f6ad160 docs: record local sandbox validation
+723d0e9 docs: record local auth validation
+68b6de9 docs: record local API validation
+71ce82a docs: record local startup validation
+a0d08c7 chore: add local operational validation baseline
+bbd41d2 docs: add production environment decision summary
+3dd8b09 docs: define required production decision inputs
+8e18556 docs: define production infrastructure ownership decision
+3e81f23 docs: define production environment decision
+5c64489 chore: add production environment decision baseline evidence
+1b54de4 docs: add production readiness execution report
+2d10344 docs: record GitHub release publication decision
+1e93413 docs: define rollback drill plan
+fa47fe6 docs: define production load and SLO plan
+7599e35 docs: record observability exporter readiness decision
+4e311c7 docs: record sandbox runtime readiness decision
+7eafde5 docs: record deployment topology readiness decision
+96394fa docs: record production database readiness decision
+038490b docs: review production secrets and config readiness
+9f68886 chore: add production readiness baseline evidence
+d748935 docs: add release readiness final report
+d6c2325 docs: add GitHub release draft status
+fdb0149 docs: add production readiness review package
+7c0d705 docs: add GitHub release draft materials
+df3c016 chore: add release readiness baseline evidence
