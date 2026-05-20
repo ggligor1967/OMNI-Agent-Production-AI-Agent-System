@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 692
+Date: Wed, 20 May 2026 17:52:20 GMT
+Server: Python/3.13 aiohttp/3.13.5
+Connection: close
+
+{"run_id": "2300ebc9", "pipeline": "analyze_text", "status": "success", "steps": [{"step_id": "2fe9ad", "name": "entities", "status": "success", "output": "{'people': [], 'organizations': ['OMNI'], 'locations': []}", "error": "", "duration_ms": 24727.3, "retries": 0}, {"step_id": "97c512", "name": "sentiment", "status": "success", "output": "{'label': 'negative', 'score': 0.9, 'summary': 'Previous response lacked required JSON structure'}", "error": "", "duration_ms": 19103.5, "retries": 0}, {"step_id": "83fb75", "name": "echo_done", "status": "success", "output": "Analysis complete for input text", "error": "", "duration_ms": 0.4, "retries": 0}], "duration_ms": 43831.8, "error": ""}

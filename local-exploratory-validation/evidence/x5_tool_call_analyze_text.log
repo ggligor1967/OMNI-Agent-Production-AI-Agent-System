@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 416
+Date: Wed, 20 May 2026 17:52:20 GMT
+Server: Python/3.13 aiohttp/3.13.5
+Connection: close
+
+{"tool": "analyze_text", "success": true, "output": {"word_count": 7, "char_count": 55, "sentences": 1, "keywords": ["omni", "local", "exploratory", "validation", "synthetic", "tool", "input"], "sentiment": {"label": "neutral", "score": 0.0, "positive": 0, "negative": 0}, "language": "en", "entities": {"urls": [], "emails": [], "proper_nouns": ["OMNI"]}, "reading_time_seconds": 2}, "error": "", "latency_ms": 6.0}

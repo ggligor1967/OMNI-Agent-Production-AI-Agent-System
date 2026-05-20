@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 513
+Date: Wed, 20 May 2026 17:51:36 GMT
+Server: Python/3.13 aiohttp/3.13.5
+Connection: close
+
+{"workflows": [{"name": "research", "description": "Web research with summarization", "steps": 4, "model_hint": "qwen3-next:80b-cloud", "actions": ["memory", "llm", "tool", "structured"]}, {"name": "analyze_text", "description": "Deep text analysis: entities + sentiment + summary", "steps": 3, "model_hint": "", "actions": ["structured", "echo"]}, {"name": "code_review", "description": "Review code and return structured findings", "steps": 2, "model_hint": "devstral-2:123b-cloud", "actions": ["structured"]}]}

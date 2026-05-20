@@ -1,0 +1,57 @@
+{
+  "workflows_list": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"workflows\": [{\"name\": \"research\", \"description\": \"Web research with summarization\", \"steps\": 4, \"model_hint\": \"qwen3-next:80b-cloud\", \"actions\": [\"memory\", \"llm\", \"tool\", \"structured\"]}, {\"name\": \"analyze_text\", \"description\": \"Deep text "
+  },
+  "pipelines_list": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"pipelines\": [{\"name\": \"research\", \"description\": \"Web research with auto-summarization\", \"steps\": 4}, {\"name\": \"code_gen\", \"description\": \"Generate, review, and test code\", \"steps\": 5}, {\"name\": \"job_search_tank_adr_improved\", \"descriptio"
+  },
+  "templates_list": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"templates\": [{\"name\": \"agent_plan\", \"description\": \"Generate a step-by-step plan for an agentic task\", \"version\": \"1.0.0\", \"tags\": [\"agents\", \"planning\"], \"few_shot_count\": 0, \"system_prompt\": false, \"model_hint\": \"devstral-2:123b-cloud\","
+  },
+  "tools_list": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"tools\": [{\"name\": \"analyze_text\", \"description\": \"Analyze text for sentiment, keywords, and entities\", \"category\": \"analysis\", \"params\": [\"text\"], \"enabled\": true, \"call_count\": 1, \"error_count\": 0, \"avg_latency_ms\": 15.0}, {\"name\": \"exec"
+  },
+  "tools_openai_schema": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"tools\": [{\"type\": \"function\", \"function\": {\"name\": \"web_search\", \"description\": \"Search the web using SearXNG or DuckDuckGo\", \"parameters\": {\"type\": \"object\", \"properties\": {\"query\": {\"type\": \"string\", \"description\": \"Search query\"}, \"num"
+  },
+  "tools_anthropic_schema": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"tools\": [{\"name\": \"web_search\", \"description\": \"Search the web using SearXNG or DuckDuckGo\", \"input_schema\": {\"type\": \"object\", \"properties\": {\"query\": {\"type\": \"string\", \"description\": \"Search query\"}, \"num_results\": {\"type\": \"integer\", "
+  },
+  "personas_list": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"personas\": [{\"name\": \"assistant\", \"display_name\": \"General Assistant\", \"description\": \"Balanced, helpful general-purpose assistant\", \"response_style\": \"conversational\", \"formality\": 0.5, \"expertise_level\": \"intermediate\", \"tone_words\": [\""
+  },
+  "sandbox_history": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"history\": [], \"stats\": {\"total\": 0, \"success_rate\": 0.0, \"avg_duration_ms\": 0.0}}"
+  },
+  "template_render_agent_plan": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"messages\": [{\"role\": \"user\", \"content\": \"Create a detailed execution plan for the following task.\\n\\nTASK: Summarize local exploratory validation status\\n\\nAvailable tools: status, templates, tools\\nConstraints: local-only; no destructive"
+  },
+  "workflow_run_analyze_text": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"run_id\": \"2300ebc9\", \"pipeline\": \"analyze_text\", \"status\": \"success\", \"steps\": [{\"step_id\": \"2fe9ad\", \"name\": \"entities\", \"status\": \"success\", \"output\": \"{'people': [], 'organizations': ['OMNI'], 'locations': []}\", \"error\": \"\", \"duration_"
+  },
+  "tool_call_analyze_text": {
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"tool\": \"analyze_text\", \"success\": true, \"output\": {\"word_count\": 7, \"char_count\": 55, \"sentences\": 1, \"keywords\": [\"omni\", \"local\", \"exploratory\", \"validation\", \"synthetic\", \"tool\", \"input\"], \"sentiment\": {\"label\": \"neutral\", \"score\": 0.0"
+  }
+}

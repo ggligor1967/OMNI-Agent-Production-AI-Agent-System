@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 326
+Date: Wed, 20 May 2026 17:51:36 GMT
+Server: Python/3.13 aiohttp/3.13.5
+Connection: close
+
+{"pipelines": [{"name": "research", "description": "Web research with auto-summarization", "steps": 4}, {"name": "code_gen", "description": "Generate, review, and test code", "steps": 5}, {"name": "job_search_tank_adr_improved", "description": "Run the improved ADR tanker Switzerland search and export reports", "steps": 1}]}
