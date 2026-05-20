@@ -2,54 +2,59 @@
 
 ## Status
 
-PARTIAL
+PASS (targeted bugfix rerun)
 
-## Browser Routes Exercised During B.3
+## Scope
+
+This rerun retested the dashboard controls that previously failed during the local browser validation pass, using the integrated browser against a loopback-only runtime with auth enabled.
+
+## Browser Routes Exercised During F.4
 
 | Route | Browser Result | Notes |
 | ----- | -------------- | ----- |
-| `/` | `401 Unauthorized` | Public browser navigation confirmed auth rejection with JSON body `{"error":"unauthorized","detail":"No credentials provided"}`. |
-| `/status` | `200 OK` | Raw JSON rendered in browser. |
-| `/health` | `200 OK` | Raw JSON rendered in browser and matched the `/status` payload observed during this pass. |
-| `/dashboard` | Loaded with defects | Dashboard title rendered, but multiple UI defects were reproduced in the live integrated browser. |
+| `/dashboard` | `PASS` | Loaded in the integrated browser with updated CSP-safe wiring. |
+| `/status` | `PASS` | Live structured status data was consumed by the Overview cards. |
+| `/health` | `PASS` | Live health data rendered as readable status information. |
 
-## Buttons / Controls Tested
+## Buttons / Controls Retested
 
 | Control | Test Method | Result | Evidence |
 | ------- | ----------- | ------ | -------- |
-| `💬 Chat` tab | Normal browser click | BUG | Clicks did not switch away from Overview during normal interaction. DOM inspection showed inline `onclick="showTab('chat')"`, consistent with CSP-blocked inline handlers. |
-| `Save` API key button | Type dummy value `dummy-local-key` then normal browser click | BUG | Browser console emitted `Executing inline event handler violates ... Content Security Policy directive 'script-src ...'`; `sessionStorage.omni_api_key` remained empty and `#key-ok` stayed blank. |
-| `Refresh` audit button | Normal browser click | BLOCKED BY SAME DEFECT | Dashboard remained noisy with CSP violations; this control uses inline `onclick="loadAudit()"` in `agent/dashboard.py`, so it is affected by the same browser-blocked event-handler pattern. |
-| `Send` chat button | Script-assisted tab switch to Chat, then normal browser click after typing synthetic message | BUG | Browser console emitted the same inline-event CSP violation; no response metadata or assistant reply was produced. |
-| `Load History` / `Clear History` | Visible after script-assisted tab switch only | NOT ATTEMPTED | Left unclicked once root cause was confirmed on multiple live controls. |
+| `💬 Chat` tab | Normal browser click | PASS | Tab switched from Overview to Chat without any script-assisted workaround. |
+| `Save` API key button | Entered a temporary local validation key, then normal browser click | PASS | UI feedback changed to `✓ saved for this tab`; subsequent protected dashboard requests succeeded. |
+| `Send` chat button | Normal browser click after typing `ping` | PASS | User message appended immediately and assistant response rendered successfully. |
+| Enter-to-send | Typed `enter-send` then pressed Enter in the chat input | PASS | Delegated `keydown` handling sent the message successfully. |
 
-## Inputs / Forms Tested
+## Inputs / Forms Retested
 
 | Input / Form | Test Method | Result | Evidence |
 | ------------ | ----------- | ------ | -------- |
-| API key input | Typed dummy value only | PASS | Field accepted `dummy-local-key`; no real secret used. |
-| Chat message input | Script-assisted Chat panel, then typed synthetic message `local browser validation ping` | PASS | Field accepted text locally. |
-| API key save workflow | Dummy input + Save click | BUG | Save action blocked by CSP inline-event violation; no client-side persistence occurred. |
-| Chat send workflow | Synthetic message + Send click | BUG | Send action blocked by CSP inline-event violation before request dispatch. |
+| API key input | Typed temporary local validation key only | PASS | Field accepted the value locally; no real production secret was used. |
+| API key save workflow | Key input + `Save` click | PASS | Session-scoped persistence succeeded and the confirmation label rendered. |
+| Chat message input | Typed `ping` and `enter-send` | PASS | Input accepted text normally. |
+| Chat send workflow | Message input + `Send` click | PASS | Request dispatched and chat response rendered under auth-enabled runtime. |
 
-## Visual / Rendering Defects Reproduced
+## Visual / Rendering Checks
 
-| Surface | Observed Result | Likely Cause |
-| ------- | --------------- | ------------ |
-| Dashboard header status | `● [object Object]` | `/status` now returns structured `status`; `initOverview()` still treats it as a scalar string. |
-| Overview `Status -> State` | `[object Object]` | `agent/dashboard.py` uses `d.status` directly in card rendering. |
-| Overview `Agent -> Skills` | `"[object Object],[object Object],[object Object],[object Object]"` | `agent/dashboard.py` uses `d.skills` directly even though the payload is structured. |
-| Dashboard load / refresh | Repeated CSP `style-src` violations in console | HTML and generated markup still rely on inline `style=` attributes under a nonce-only CSP. |
+| Surface | Observed Result | Result |
+| ------- | --------------- | ------ |
+| Dashboard status line | `● running` | PASS |
+| Overview `Agent -> Skills` | Readable list (`summarize, word_count, reverse_text, translate_mock`) | PASS |
+| Overview `Routing -> Providers` | Readable comma-separated provider list | PASS |
+| Page body text | No `[object Object]` present | PASS |
 
-## Diagnostic Workaround Used
+## CSP / Console Check
 
-| Workaround | Purpose | Result | Scope |
-| ---------- | ------- | ------ | ----- |
-| Direct page-script invocation of `showTab('chat')` | Determine whether the Chat panel exists behind the broken click path | PASS | Chat panel became visible, proving the underlying tab function exists while the normal click path remains broken. This does **not** count as a successful user click path. |
+- Focused console capture around Save → Chat tab → Send returned **no CSP violation signatures**.
+- No `Content Security Policy`, `unsafe-inline`, `Refused to execute`, or `Refused to load` messages were emitted for the retested controls.
+- One expected browser console error was observed only when intentionally provoking `400 Bad Request` on malformed `POST /auth/bootstrap`; that was not a CSP issue.
 
 ## Assessment
 
-- Normal browser interaction with the dashboard is currently **not reliable** under the active nonce-based CSP.
-- Multiple live controls depend on inline event handlers such as `onclick="..."`, which the browser blocked during this validation pass.
-- Additional dashboard button/form coverage through standard click interaction is blocked until the dashboard stops depending on inline handlers/styles or the CSP policy is changed.
-- This file records only controls actually exercised during B.3; untested controls remain for later coverage and must not be counted as pass results.
+- The previously failing dashboard click and key interactions now work under the existing nonce-based CSP.
+- The fix did **not** weaken the CSP and did **not** reintroduce inline handlers.
+- This file reflects the targeted rerun scope for the confirmed bugs; it does not claim exhaustive coverage of every dashboard control.
+
+## Evidence
+
+- `local-browser-validation/evidence/bugfix-browser/f4_browser_rerun_observations.md`

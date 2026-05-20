@@ -2,22 +2,19 @@
 
 ## Confirmed Bugs
 
-| ID | Severity | Area | Summary | Evidence | Likely Fix Area |
-| -- | -------- | ---- | ------- | -------- | --------------- |
-| `LBV-UI-001` | High | Dashboard UI / CSP | Dashboard tabs and buttons rely on inline event handlers (`onclick`, `onkeydown`) that are blocked by the active nonce-only CSP, breaking normal browser interaction. | `BUTTONS_AND_FORMS_VALIDATION.md`, `evidence/b3_browser_observations.md` | `agent/dashboard.py` event binding model and dashboard CSP contract |
-| `LBV-UI-002` | Medium | Dashboard Overview | Overview renders structured `/status` payload fields as `[object Object]`, producing incorrect status and skills display. | `BUTTONS_AND_FORMS_VALIDATION.md`, `evidence/b3_browser_observations.md` | `agent/dashboard.py:initOverview()` display mapping |
-| `LBV-API-001` | Medium | Auth bootstrap endpoint | `POST /auth/bootstrap` with malformed JSON returns `500 Internal Server Error` due an unhandled `JSONDecodeError` instead of a bounded client error. | `ERROR_EDGE_CASE_VALIDATION.md`, `local-browser-validation/evidence/b2_server_stdout.log` | `agent/auth.py` bootstrap request parsing |
+| ID | Severity | Area | Summary | Current Status | Evidence | Fix Area |
+| -- | -------- | ---- | ------- | -------------- | -------- | -------- |
+| `LBV-001` | High | Dashboard UI / CSP | Dashboard tabs and buttons previously relied on inline event handlers that were blocked by the active nonce-only CSP. | CLOSED / VERIFIED (2026-05-20) | `BUTTONS_AND_FORMS_VALIDATION.md`, `local-browser-validation/evidence/bugfix-browser/f4_browser_rerun_observations.md` | `agent/dashboard.py` delegated event wiring + CSS class cleanup |
+| `LBV-002` | Medium | Dashboard Overview | Overview previously rendered structured `/status` payload fields as `[object Object]`. | CLOSED / VERIFIED (2026-05-20) | `BUTTONS_AND_FORMS_VALIDATION.md`, `local-browser-validation/evidence/bugfix-browser/f4_browser_rerun_observations.md` | `agent/dashboard.py` structured value formatting + overview mapping |
+| `LBV-003` | Medium | Auth bootstrap endpoint | `POST /auth/bootstrap` with malformed JSON previously returned `500 Internal Server Error`. | CLOSED / VERIFIED (2026-05-20) | `ERROR_EDGE_CASE_VALIDATION.md`, `local-browser-validation/evidence/bugfix-browser/f4_browser_rerun_observations.md`, `tests/test_auth_bootstrap_json_errors.py` | `agent/auth.py` guarded bootstrap request parsing |
 
 ## Important Observed Behaviors (Not Automatically Bugs)
 
 | ID | Area | Observation | Notes |
 | -- | ---- | ----------- | ----- |
-| `LBV-BEH-001` | Routing + auth middleware | Unknown unauthenticated route `/definitely-missing-route` returned `401` instead of surfacing `404`. | This may be acceptable under current middleware ordering, but it should be explicitly documented as the intended contract if kept. |
-| `LBV-ENV-001` | Validation environment | The repo `.env` bootstrap token did not match the active runtime's synthetic bootstrap token during this pass. | Environment nuance, not a product bug by itself. It affected how valid-auth setup had to be performed. |
+| `LBV-BEH-001` | Routing + auth middleware | Unknown unauthenticated route `/definitely-missing-route` returned `401` instead of surfacing `404`. | Still observed under `AUTH_ENFORCE=true`; treat as documented runtime behavior unless new requirements say otherwise. |
 
-## Recommended Follow-Up Order
+## Backlog State
 
-1. Fix `LBV-UI-001` first, because it blocks most dashboard click-path validation.
-2. Fix `LBV-UI-002` next, because it distorts operator-visible status data even when the page loads.
-3. Fix `LBV-API-001` to harden the public bootstrap error path and prevent avoidable `500` responses.
-4. Re-run the local browser validation pass after the above fixes before considering any wider readiness conclusion.
+- No confirmed browser-validation defects remain open from the targeted minimal-diff bugfix scope.
+- Any future dashboard or auth findings should be tracked as new scope rather than silently reopening these closed defects.

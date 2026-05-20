@@ -103,10 +103,55 @@ td{padding:5px 8px;border-bottom:1px solid #1e1e2a;}
 .msg-body{font-size:0.85rem;line-height:1.5;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .6s linear infinite;}
-.cmp-col{flex:1;min-width:0;}
+.cmp-col{flex:1;min-width:260px;}
 .cmp-title{font-size:0.75rem;color:var(--muted);margin-bottom:4px;}
 a{color:var(--blue);text-decoration:none;}
 a:hover{text-decoration:underline;}
+.text-muted{color:var(--muted);}
+.text-blue{color:var(--blue);}
+.text-green{color:var(--green);}
+.text-red{color:var(--red);}
+.fs-72{font-size:0.72rem;}
+.fs-75{font-size:0.75rem;}
+.fs-78{font-size:0.78rem;}
+.fs-80{font-size:0.8rem;}
+.fs-83{font-size:0.83rem;}
+.mt-4{margin-top:4px;}
+.mt-6{margin-top:6px;}
+.mt-8{margin-top:8px;}
+.mt-10{margin-top:10px;}
+.mt-12{margin-top:12px;}
+.mt-16{margin-top:16px;}
+.mb-12{margin-bottom:12px;}
+.mb-14{margin-bottom:14px;}
+.gap-8{gap:8px;}
+.flex-1{flex:1;}
+.flex-2{flex:2;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.flow-wrap{display:flex;gap:12px;flex-wrap:wrap;}
+.action-wrap{display:flex;gap:6px;flex-wrap:wrap;}
+.minh-80{min-height:80px;}
+.btn-mini{float:right;padding:2px 8px;font-size:0.72rem;}
+.auto-x{overflow-x:auto;}
+.align-right{text-align:right;}
+.item-row{border-bottom:1px solid var(--border);padding:6px 0;}
+.item-row:last-child{border-bottom:none;}
+.item-meta{font-size:0.72rem;color:var(--muted);}
+.item-body{font-size:0.83rem;margin-top:2px;}
+.list-empty{color:var(--muted);font-size:0.8rem;}
+.status-note{font-size:0.75rem;color:var(--muted);}
+.links-list{font-size:0.78rem;}
+.cmp-meta{font-size:0.72rem;color:var(--muted);margin-bottom:6px;}
+.cell-text{color:var(--text);}
+.cell-muted{color:var(--muted);}
+.cell-muted-sm{color:var(--muted);font-size:0.75rem;}
+.cell-error{color:var(--red);}
+.preview-text{font-size:0.75rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.memory-type{color:var(--muted);font-size:0.72rem;}
+.persona-desc{color:var(--muted);font-size:0.75rem;}
+.msg-role-user{color:var(--blue);}
+.msg-role-assistant{color:var(--green);}
+.msg-role-error{color:var(--red);}
 </style>
 </head>
 <body>
@@ -118,21 +163,21 @@ a:hover{text-decoration:underline;}
   </div>
   <div id="key-wrap">
     <input id="key-inp" type="password" placeholder="API Key (X-API-Key)" />
-    <button class="btn btn-g" onclick="saveKey()">Save</button>
-    <span id="key-ok" style="font-size:0.75rem;color:var(--muted)"></span>
+    <button id="save-key-btn" class="btn btn-g" data-action="save-key">Save</button>
+    <span id="key-ok" class="text-muted fs-75"></span>
   </div>
 </div>
 
 <div id="tabs">
-  <div class="tab active" onclick="showTab('overview')">&#x1F4CA; Overview</div>
-  <div class="tab" onclick="showTab('chat')">&#x1F4AC; Chat</div>
-  <div class="tab" onclick="showTab('compare')">&#x2696;&#xFE0F; Compare</div>
-  <div class="tab" onclick="showTab('rag')">&#x1F4DA; RAG</div>
-  <div class="tab" onclick="showTab('pipelines')">&#x1F504; Pipelines</div>
-  <div class="tab" onclick="showTab('sandbox')">&#x1F5A5;&#xFE0F; Sandbox</div>
-  <div class="tab" onclick="showTab('kg')">&#x1F578;&#xFE0F; KG</div>
-  <div class="tab" onclick="showTab('tools')">&#x1F527; Tools</div>
-  <div class="tab" onclick="showTab('models')">&#x1F916; Models</div>
+  <div class="tab active" data-tab="overview">&#x1F4CA; Overview</div>
+  <div class="tab" data-tab="chat">&#x1F4AC; Chat</div>
+  <div class="tab" data-tab="compare">&#x2696;&#xFE0F; Compare</div>
+  <div class="tab" data-tab="rag">&#x1F4DA; RAG</div>
+  <div class="tab" data-tab="pipelines">&#x1F504; Pipelines</div>
+  <div class="tab" data-tab="sandbox">&#x1F5A5;&#xFE0F; Sandbox</div>
+  <div class="tab" data-tab="kg">&#x1F578;&#xFE0F; KG</div>
+  <div class="tab" data-tab="tools">&#x1F527; Tools</div>
+  <div class="tab" data-tab="models">&#x1F916; Models</div>
 </div>
 
 <div id="panels">
@@ -140,10 +185,10 @@ a:hover{text-decoration:underline;}
 <!-- OVERVIEW -->
 <div class="panel active" id="p-overview">
   <div class="gX" id="ov-stats"></div>
-  <div style="margin-top:16px;" class="card">
+  <div class="card mt-16">
     <div class="ct">ADR Tanker Job Search — Quick Launch</div>
     <div class="row">
-      <div style="flex:1">
+      <div class="flex-1">
         <label>Export Format</label>
         <select id="ov-job-search-export">
           <option value="html" selected>HTML + JSON</option>
@@ -152,7 +197,7 @@ a:hover{text-decoration:underline;}
           <option value="all">HTML + CSV + JSON</option>
         </select>
       </div>
-      <div style="flex:1">
+      <div class="flex-1">
         <label>Verbose Logging</label>
         <select id="ov-job-search-verbose">
           <option value="false" selected>No</option>
@@ -164,12 +209,12 @@ a:hover{text-decoration:underline;}
       <label>Custom Output Directory (optional)</label>
       <input id="ov-job-search-output-dir" placeholder="data/job_results/manual_runs" />
     </div>
-    <button class="btn btn-g" onclick="runAdrJobSearch('ov-job-search')">&#x25BA; Quick Run ADR Job Search</button>
-    <div id="ov-job-search-status" style="font-size:0.75rem;color:var(--muted);margin-top:8px;">Launches the dedicated ADR tanker search directly from Overview.</div>
-    <div id="ov-job-search-links" style="font-size:0.78rem;margin-top:8px;"></div>
-    <div id="ov-job-search-out" class="out out-sm" style="margin-top:8px;">Ready. This quick-launch card uses the same dedicated OMNI tool as the Pipelines shortcut.</div>
+    <button class="btn btn-g" data-action="run-adr-job-search" data-prefix="ov-job-search">&#x25BA; Quick Run ADR Job Search</button>
+    <div id="ov-job-search-status" class="status-note mt-8">Launches the dedicated ADR tanker search directly from Overview.</div>
+    <div id="ov-job-search-links" class="links-list mt-8"></div>
+    <div id="ov-job-search-out" class="out out-sm mt-8">Ready. This quick-launch card uses the same dedicated OMNI tool as the Pipelines shortcut.</div>
   </div>
-  <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+  <div class="grid-2 mt-16">
     <div class="card">
       <div class="ct">Scheduled Jobs</div>
       <div id="ov-jobs"><span class="spin"></span></div>
@@ -179,9 +224,9 @@ a:hover{text-decoration:underline;}
       <div id="ov-cache"><span class="spin"></span></div>
     </div>
   </div>
-  <div style="margin-top:16px;" class="card">
+  <div class="card mt-16">
     <div class="ct">Audit Log
-      <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadAudit()">Refresh</button>
+      <button class="btn btn-b btn-mini" data-action="load-audit">Refresh</button>
     </div>
     <div id="ov-audit" class="out out-sm">Loading&hellip;</div>
   </div>
@@ -192,35 +237,35 @@ a:hover{text-decoration:underline;}
   <div class="grid2">
     <div>
       <div class="row">
-        <div style="flex:1">
+        <div class="flex-1">
           <label>Model (blank = auto-route)</label>
           <select id="chat-model"><option value="">Auto-route</option></select>
         </div>
-        <div style="flex:1">
+        <div class="flex-1">
           <label>Session ID</label>
           <input id="chat-session" value="demo" />
         </div>
       </div>
       <div id="chat-msgs"></div>
       <div class="row">
-        <input id="chat-inp" placeholder="Message&hellip;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}" style="flex:1" />
-        <button class="btn btn-g" onclick="sendChat()">Send</button>
-        <button class="btn btn-r" onclick="clearChat()">Clear</button>
+        <input id="chat-inp" class="flex-1" data-submit-on-enter="send-chat" placeholder="Message&hellip;" />
+        <button class="btn btn-g" data-action="send-chat">Send</button>
+        <button class="btn btn-r" data-action="clear-chat">Clear</button>
       </div>
-      <div id="chat-routing" style="font-size:0.75rem;color:var(--muted);margin-top:6px;"></div>
+      <div id="chat-routing" class="text-muted fs-75 mt-6"></div>
     </div>
     <div>
       <div class="card">
         <div class="ct">Last Response Metadata</div>
         <div id="chat-meta" class="out out-sm">&mdash;</div>
       </div>
-      <div class="card" style="margin-top:12px;">
+      <div class="card mt-12">
         <div class="ct">History</div>
-        <div class="row" style="margin-top:8px;">
-          <button class="btn btn-b" onclick="loadHistory()">Load History</button>
-          <button class="btn btn-y" onclick="clearHistory()">Clear History</button>
+        <div class="row mt-8">
+          <button class="btn btn-b" data-action="load-history">Load History</button>
+          <button class="btn btn-y" data-action="clear-history">Clear History</button>
         </div>
-        <div id="chat-hist" class="out out-sm" style="margin-top:8px;">&mdash;</div>
+        <div id="chat-hist" class="out out-sm mt-8">&mdash;</div>
       </div>
     </div>
   </div>
@@ -228,29 +273,29 @@ a:hover{text-decoration:underline;}
 
 <!-- COMPARE -->
 <div class="panel" id="p-compare">
-  <div class="card" style="margin-bottom:14px;">
+  <div class="card mb-14">
     <div class="ct">Compare Models in Parallel</div>
     <div class="row">
-      <div style="flex:2">
+      <div class="flex-2">
         <label>Prompt</label>
         <textarea id="cmp-prompt" class="ta-lg" placeholder="Enter prompt to compare across models&hellip;"></textarea>
       </div>
-      <div style="flex:1">
+      <div class="flex-1">
         <label>Models (one per line)</label>
-        <textarea id="cmp-models" style="min-height:80px;" placeholder="llama3.2:cloud&#10;mistral:cloud&#10;gemma:cloud"></textarea>
-        <div style="margin-top:8px;">
-          <button class="btn btn-g" onclick="runCompare()">&#x25BA; Run Compare</button>
+        <textarea id="cmp-models" class="minh-80" placeholder="llama3.2:cloud&#10;mistral:cloud&#10;gemma:cloud"></textarea>
+        <div class="mt-8">
+          <button class="btn btn-g" data-action="run-compare">&#x25BA; Run Compare</button>
         </div>
-        <div id="cmp-status" style="font-size:0.75rem;color:var(--muted);margin-top:6px;"></div>
+        <div id="cmp-status" class="text-muted fs-75 mt-6"></div>
       </div>
     </div>
   </div>
-  <div id="cmp-results" style="display:flex;gap:12px;flex-wrap:wrap;"></div>
+  <div id="cmp-results" class="flow-wrap"></div>
 </div>
 
 <!-- RAG -->
 <div class="panel" id="p-rag">
-  <div class="grid2" style="margin-bottom:14px;">
+  <div class="grid2 mb-14">
     <div class="card">
       <div class="ct">Ingest Document</div>
       <div class="row col">
@@ -258,11 +303,11 @@ a:hover{text-decoration:underline;}
         <textarea id="rag-text" class="ta-lg" placeholder="Paste text to ingest&hellip;"></textarea>
       </div>
       <div class="row">
-        <div style="flex:1"><label>Doc ID</label><input id="rag-docid" placeholder="doc-001" /></div>
-        <div style="flex:1"><label>Source</label><input id="rag-src" placeholder="manual" /></div>
+        <div class="flex-1"><label>Doc ID</label><input id="rag-docid" placeholder="doc-001" /></div>
+        <div class="flex-1"><label>Source</label><input id="rag-src" placeholder="manual" /></div>
       </div>
-      <button class="btn btn-g" onclick="ragIngest()">Ingest</button>
-      <div id="rag-ingest-out" class="out out-sm" style="margin-top:8px;"></div>
+      <button class="btn btn-g" data-action="rag-ingest">Ingest</button>
+      <div id="rag-ingest-out" class="out out-sm mt-8"></div>
     </div>
     <div class="card">
       <div class="ct">Semantic Query</div>
@@ -271,16 +316,16 @@ a:hover{text-decoration:underline;}
         <input id="rag-query" placeholder="What is&hellip;?" />
       </div>
       <div class="row">
-        <div style="flex:1"><label>Top-K</label><input id="rag-topk" value="5" type="number" min="1" max="20" /></div>
-        <div style="flex:1"><label>Doc ID filter (opt)</label><input id="rag-filter" placeholder="" /></div>
+        <div class="flex-1"><label>Top-K</label><input id="rag-topk" value="5" type="number" min="1" max="20" /></div>
+        <div class="flex-1"><label>Doc ID filter (opt)</label><input id="rag-filter" placeholder="" /></div>
       </div>
-      <button class="btn btn-b" onclick="ragQuery()">Query</button>
-      <div id="rag-query-out" class="out" style="margin-top:8px;"></div>
+      <button class="btn btn-b" data-action="rag-query">Query</button>
+      <div id="rag-query-out" class="out mt-8"></div>
     </div>
   </div>
   <div class="card">
     <div class="ct">Document Store
-      <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadRagDocs()">Refresh</button>
+      <button class="btn btn-b btn-mini" data-action="load-rag-docs">Refresh</button>
     </div>
     <div id="rag-docs"><span class="spin"></span></div>
   </div>
@@ -290,31 +335,31 @@ a:hover{text-decoration:underline;}
 <div class="panel" id="p-pipelines">
   <div class="grid2">
     <div>
-      <div class="card" style="margin-bottom:12px;">
+      <div class="card mb-12">
         <div class="ct">Pipelines
-          <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadPipelines()">Refresh</button>
+          <button class="btn btn-b btn-mini" data-action="load-pipelines">Refresh</button>
         </div>
         <div id="pipe-list"><span class="spin"></span></div>
       </div>
       <div class="card">
         <div class="ct">Run Pipeline</div>
-        <div class="row"><div style="flex:1"><label>Pipeline ID</label><input id="pipe-id" placeholder="research" /></div></div>
+        <div class="row"><div class="flex-1"><label>Pipeline ID</label><input id="pipe-id" placeholder="research" /></div></div>
         <div class="row col"><label>Initial Context (JSON)</label><textarea id="pipe-ctx">{"query": "hello world"}</textarea></div>
-        <button class="btn btn-g" onclick="runPipeline()">&#x25BA; Execute</button>
-        <div id="pipe-out" class="out" style="margin-top:8px;"></div>
+        <button class="btn btn-g" data-action="run-pipeline">&#x25BA; Execute</button>
+        <div id="pipe-out" class="out mt-8"></div>
       </div>
     </div>
     <div>
-      <div class="card" style="margin-bottom:12px;">
+      <div class="card mb-12">
         <div class="ct">Workflows
-          <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadWorkflows()">Refresh</button>
+          <button class="btn btn-b btn-mini" data-action="load-workflows">Refresh</button>
         </div>
         <div id="wf-list"><span class="spin"></span></div>
       </div>
-      <div class="card" style="margin-bottom:12px;">
+      <div class="card mb-12">
         <div class="ct">ADR Tanker Job Search</div>
         <div class="row">
-          <div style="flex:1">
+          <div class="flex-1">
             <label>Export Format</label>
             <select id="job-search-export">
               <option value="html" selected>HTML + JSON</option>
@@ -323,7 +368,7 @@ a:hover{text-decoration:underline;}
               <option value="all">HTML + CSV + JSON</option>
             </select>
           </div>
-          <div style="flex:1">
+          <div class="flex-1">
             <label>Verbose Logging</label>
             <select id="job-search-verbose">
               <option value="false" selected>No</option>
@@ -335,17 +380,17 @@ a:hover{text-decoration:underline;}
           <label>Custom Output Directory (optional)</label>
           <input id="job-search-output-dir" placeholder="data/job_results/manual_runs" />
         </div>
-        <button class="btn btn-g" onclick="runAdrJobSearch('job-search')">&#x25BA; Run ADR Job Search</button>
-        <div id="job-search-status" style="font-size:0.75rem;color:var(--muted);margin-top:8px;">One click launches `run_job_search_tank_adr_improved`.</div>
-        <div id="job-search-links" style="font-size:0.78rem;margin-top:8px;"></div>
-        <div id="job-search-out" class="out out-sm" style="margin-top:8px;">Ready. This shortcut uses the dedicated OMNI tool and returns the latest report paths automatically.</div>
+        <button class="btn btn-g" data-action="run-adr-job-search" data-prefix="job-search">&#x25BA; Run ADR Job Search</button>
+        <div id="job-search-status" class="status-note mt-8">One click launches `run_job_search_tank_adr_improved`.</div>
+        <div id="job-search-links" class="links-list mt-8"></div>
+        <div id="job-search-out" class="out out-sm mt-8">Ready. This shortcut uses the dedicated OMNI tool and returns the latest report paths automatically.</div>
       </div>
       <div class="card">
         <div class="ct">Structured Output Parser</div>
         <div class="row col"><label>Prompt</label><textarea id="so-prompt" placeholder="Extract name, age and city from: John, 30, New York"></textarea></div>
         <div class="row col"><label>JSON Schema</label><textarea id="so-schema">{"type":"object","properties":{"name":{"type":"string"},"age":{"type":"integer"},"city":{"type":"string"}}}</textarea></div>
-        <button class="btn btn-b" onclick="runStructured()">&#x25BA; Parse</button>
-        <div id="so-out" class="out out-sm" style="margin-top:8px;"></div>
+        <button class="btn btn-b" data-action="run-structured">&#x25BA; Parse</button>
+        <div id="so-out" class="out out-sm mt-8"></div>
       </div>
     </div>
   </div>
@@ -357,7 +402,7 @@ a:hover{text-decoration:underline;}
     <div class="card">
       <div class="ct">Code Execution</div>
       <div class="row">
-        <div style="flex:1">
+        <div class="flex-1">
           <label>Language</label>
           <select id="sb-lang">
             <option value="python">Python</option>
@@ -365,18 +410,18 @@ a:hover{text-decoration:underline;}
             <option value="bash">Bash</option>
           </select>
         </div>
-        <div style="flex:1"><label>Timeout (s)</label><input id="sb-timeout" value="10" type="number" /></div>
+        <div class="flex-1"><label>Timeout (s)</label><input id="sb-timeout" value="10" type="number" /></div>
       </div>
       <div class="row col">
         <label>Code</label>
         <textarea id="sb-code" class="ta-lg" placeholder="print('hello world')"></textarea>
       </div>
-      <button class="btn btn-g" onclick="runSandbox()">&#x25BA; Execute</button>
-      <div id="sb-out" class="out" style="margin-top:8px;"></div>
+      <button class="btn btn-g" data-action="run-sandbox">&#x25BA; Execute</button>
+      <div id="sb-out" class="out mt-8"></div>
     </div>
     <div class="card">
       <div class="ct">Execution History
-        <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadSandboxHistory()">Refresh</button>
+        <button class="btn btn-b btn-mini" data-action="load-sandbox-history">Refresh</button>
       </div>
       <div id="sb-hist"><span class="spin"></span></div>
     </div>
@@ -385,31 +430,31 @@ a:hover{text-decoration:underline;}
 
 <!-- KG -->
 <div class="panel" id="p-kg">
-  <div class="grid2" style="margin-bottom:14px;">
+  <div class="grid2 mb-14">
     <div class="card">
       <div class="ct">Extract Entities &amp; Relations</div>
       <div class="row col"><label>Text</label><textarea id="kg-text" class="ta-lg" placeholder="Alice works at Acme Corp. Bob is Alice's manager."></textarea></div>
-      <button class="btn btn-g" onclick="kgExtract()">Extract</button>
-      <div id="kg-extract-out" class="out out-sm" style="margin-top:8px;"></div>
+      <button class="btn btn-g" data-action="kg-extract">Extract</button>
+      <div id="kg-extract-out" class="out out-sm mt-8"></div>
     </div>
     <div class="card">
       <div class="ct">Search &amp; Path</div>
       <div class="row col"><label>Search Query</label><input id="kg-search" placeholder="Alice" /></div>
       <div class="row">
-        <div style="flex:1"><label>From Node</label><input id="kg-from" placeholder="Alice" /></div>
-        <div style="flex:1"><label>To Node</label><input id="kg-to" placeholder="Acme Corp" /></div>
+        <div class="flex-1"><label>From Node</label><input id="kg-from" placeholder="Alice" /></div>
+        <div class="flex-1"><label>To Node</label><input id="kg-to" placeholder="Acme Corp" /></div>
       </div>
-      <div class="row" style="gap:8px;">
-        <button class="btn btn-b" onclick="kgSearch()">Search</button>
-        <button class="btn btn-y" onclick="kgPath()">Find Path</button>
-        <button class="btn btn-b" onclick="kgStats()">Stats</button>
+      <div class="row gap-8">
+        <button class="btn btn-b" data-action="kg-search">Search</button>
+        <button class="btn btn-y" data-action="kg-path">Find Path</button>
+        <button class="btn btn-b" data-action="kg-stats">Stats</button>
       </div>
-      <div id="kg-search-out" class="out out-sm" style="margin-top:8px;"></div>
+      <div id="kg-search-out" class="out out-sm mt-8"></div>
     </div>
   </div>
   <div class="card">
     <div class="ct">Export
-      <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="kgExport()">Export JSON</button>
+      <button class="btn btn-b btn-mini" data-action="kg-export">Export JSON</button>
     </div>
     <div id="kg-export-out" class="out out-sm">Click "Export JSON" to dump the full graph.</div>
   </div>
@@ -417,24 +462,24 @@ a:hover{text-decoration:underline;}
 
 <!-- TOOLS -->
 <div class="panel" id="p-tools">
-  <div class="grid2" style="margin-bottom:14px;">
+  <div class="grid2 mb-14">
     <div class="card">
       <div class="ct">Tool Registry
-        <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadTools()">Refresh</button>
+        <button class="btn btn-b btn-mini" data-action="load-tools">Refresh</button>
       </div>
       <div id="tools-list"><span class="spin"></span></div>
-      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
-        <button class="btn btn-y" onclick="loadToolSchema('openai')">OpenAI Schema</button>
-        <button class="btn btn-y" onclick="loadToolSchema('anthropic')">Anthropic Schema</button>
+      <div class="action-wrap mt-10">
+        <button class="btn btn-y" data-action="load-tool-schema" data-format="openai">OpenAI Schema</button>
+        <button class="btn btn-y" data-action="load-tool-schema" data-format="anthropic">Anthropic Schema</button>
       </div>
-      <div id="tools-schema-out" class="out out-sm" style="margin-top:8px;"></div>
+      <div id="tools-schema-out" class="out out-sm mt-8"></div>
     </div>
     <div class="card">
       <div class="ct">Call Tool</div>
       <div class="row col"><label>Tool Name</label><input id="tool-name" placeholder="search" /></div>
       <div class="row col"><label>Parameters (JSON)</label><textarea id="tool-params">{"query": "test"}</textarea></div>
-      <button class="btn btn-g" onclick="callTool()">&#x25BA; Call</button>
-      <div id="tool-call-out" class="out out-sm" style="margin-top:8px;"></div>
+      <button class="btn btn-g" data-action="call-tool">&#x25BA; Call</button>
+      <div id="tool-call-out" class="out out-sm mt-8"></div>
     </div>
   </div>
   <div class="grid2">
@@ -442,12 +487,12 @@ a:hover{text-decoration:underline;}
       <div class="ct">Vision Analysis</div>
       <div class="row col"><label>Image URL or base64</label><input id="vis-url" placeholder="https://&hellip;/image.jpg" /></div>
       <div class="row col"><label>Prompt</label><input id="vis-prompt" value="Describe this image" /></div>
-      <button class="btn btn-b" onclick="runVision()">Analyze</button>
-      <div id="vis-out" class="out out-sm" style="margin-top:8px;"></div>
+      <button class="btn btn-b" data-action="run-vision">Analyze</button>
+      <div id="vis-out" class="out out-sm mt-8"></div>
     </div>
     <div class="card">
       <div class="ct">Distributed Tracing
-        <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadTracing()">Refresh</button>
+        <button class="btn btn-b btn-mini" data-action="load-tracing">Refresh</button>
       </div>
       <div id="trace-out"><span class="spin"></span></div>
     </div>
@@ -456,9 +501,9 @@ a:hover{text-decoration:underline;}
 
 <!-- MODELS -->
 <div class="panel" id="p-models">
-  <div class="card" style="margin-bottom:14px;overflow-x:auto;">
+  <div class="card mb-14 auto-x">
     <div class="ct">Model Catalog
-      <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="fetchModels()">Refresh</button>
+      <button class="btn btn-b btn-mini" data-action="fetch-models">Refresh</button>
     </div>
     <table>
       <thead><tr><th>ID</th><th>Provider</th><th>Tier</th><th>Context</th><th>Best For</th><th>Capabilities</th></tr></thead>
@@ -468,28 +513,28 @@ a:hover{text-decoration:underline;}
   <div class="grid2">
     <div class="card">
       <div class="ct">Personas
-        <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadPersonas()">Refresh</button>
+        <button class="btn btn-b btn-mini" data-action="load-personas">Refresh</button>
       </div>
       <div id="persona-list"><span class="spin"></span></div>
-      <div style="margin-top:10px;">
+      <div class="mt-10">
         <label>Activate Persona</label>
-        <div class="row" style="margin-top:4px;">
-          <input id="persona-set" placeholder="persona id" style="flex:1" />
-          <button class="btn btn-g" onclick="setPersona()">Set</button>
+        <div class="row mt-4">
+          <input id="persona-set" class="flex-1" placeholder="persona id" />
+          <button class="btn btn-g" data-action="set-persona">Set</button>
         </div>
-        <div id="persona-out" class="out out-sm" style="margin-top:6px;"></div>
+        <div id="persona-out" class="out out-sm mt-6"></div>
       </div>
     </div>
     <div>
-      <div class="card" style="margin-bottom:12px;">
+      <div class="card mb-12">
         <div class="ct">Prompt Templates
-          <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadTemplates()">Refresh</button>
+          <button class="btn btn-b btn-mini" data-action="load-templates">Refresh</button>
         </div>
         <div id="tmpl-list"><span class="spin"></span></div>
       </div>
       <div class="card">
         <div class="ct">Stored Memories
-          <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadMemories()">Refresh</button>
+          <button class="btn btn-b btn-mini" data-action="load-memories">Refresh</button>
         </div>
         <div id="mem-list"><span class="spin"></span></div>
       </div>
@@ -503,24 +548,105 @@ a:hover{text-decoration:underline;}
 // ── Auth ──────────────────────────────────────────────────────────
 function saveKey(){
   const v=document.getElementById('key-inp').value.trim();
-  if(v){sessionStorage.setItem('omni_api_key',v);document.getElementById('key-ok').textContent='✓ saved for this tab';}
+  const status=document.getElementById('key-ok');
+  status.textContent='';
+  if(v){
+    sessionStorage.setItem('omni_api_key',v);
+    status.textContent='✓ saved for this tab';
+  }
 }
 function getKey(){return sessionStorage.getItem('omni_api_key')||'';}
-(function(){const k=getKey();if(k)document.getElementById('key-inp').value=k;})();
+function hydrateSavedKey(){
+  const k=getKey();
+  if(k)document.getElementById('key-inp').value=k;
+}
 async function apiFetch(url,opts={}){
   const h=Object.assign({'Content-Type':'application/json'},opts.headers||{});
   const k=getKey();if(k)h['X-API-Key']=k;
   return fetch(url,Object.assign({},opts,{headers:h}));
 }
 
+let dashboardEventsBound=false;
+const CLICK_ACTIONS={
+  'save-key':()=>saveKey(),
+  'send-chat':()=>sendChat(),
+  'clear-chat':()=>clearChat(),
+  'load-history':()=>loadHistory(),
+  'clear-history':()=>clearHistory(),
+  'run-compare':()=>runCompare(),
+  'rag-ingest':()=>ragIngest(),
+  'rag-query':()=>ragQuery(),
+  'load-rag-docs':()=>loadRagDocs(),
+  'load-audit':()=>loadAudit(),
+  'load-pipelines':()=>loadPipelines(),
+  'run-pipeline':()=>runPipeline(),
+  'load-workflows':()=>loadWorkflows(),
+  'run-structured':()=>runStructured(),
+  'run-sandbox':()=>runSandbox(),
+  'load-sandbox-history':()=>loadSandboxHistory(),
+  'kg-extract':()=>kgExtract(),
+  'kg-search':()=>kgSearch(),
+  'kg-path':()=>kgPath(),
+  'kg-stats':()=>kgStats(),
+  'kg-export':()=>kgExport(),
+  'load-tools':()=>loadTools(),
+  'call-tool':()=>callTool(),
+  'run-vision':()=>runVision(),
+  'load-tracing':()=>loadTracing(),
+  'fetch-models':()=>fetchModels(),
+  'load-personas':()=>loadPersonas(),
+  'set-persona':()=>setPersona(),
+  'load-templates':()=>loadTemplates(),
+  'load-memories':()=>loadMemories(),
+  'run-adr-job-search':(_event,el)=>runAdrJobSearch(el.dataset.prefix||'job-search'),
+  'load-tool-schema':(_event,el)=>loadToolSchema(el.dataset.format||'openai'),
+};
+
+function bindDashboardEvents(){
+  if(dashboardEventsBound)return;
+  dashboardEventsBound=true;
+
+  document.addEventListener('click',event=>{
+    const target=event.target instanceof Element?event.target:null;
+    if(!target)return;
+    const tab=target.closest('[data-tab]');
+    if(tab){
+      event.preventDefault();
+      showTab(tab.dataset.tab||'overview');
+      return;
+    }
+    const actionEl=target.closest('[data-action]');
+    if(!actionEl)return;
+    const handler=CLICK_ACTIONS[actionEl.dataset.action||''];
+    if(handler){
+      event.preventDefault();
+      handler(event,actionEl);
+    }
+  });
+
+  document.addEventListener('keydown',event=>{
+    if(event.key!=='Enter'||event.shiftKey)return;
+    const target=event.target instanceof Element?event.target:null;
+    if(!target)return;
+    const actionEl=target.closest('[data-submit-on-enter]');
+    if(!actionEl)return;
+    const handler=CLICK_ACTIONS[actionEl.dataset.submitOnEnter||''];
+    if(handler){
+      event.preventDefault();
+      handler(event,actionEl);
+    }
+  });
+}
+
 // ── Tabs ──────────────────────────────────────────────────────────
 const TAB_NAMES=['overview','chat','compare','rag','pipelines','sandbox','kg','tools','models'];
 function showTab(name){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('[data-tab]').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  const idx=TAB_NAMES.indexOf(name);
-  if(idx>=0)document.querySelectorAll('.tab')[idx].classList.add('active');
-  document.getElementById('p-'+name).classList.add('active');
+  const activeTab=document.querySelector('[data-tab="'+name+'"]');
+  if(activeTab)activeTab.classList.add('active');
+  const panel=document.getElementById('p-'+name);
+  if(panel)panel.classList.add('active');
   const lazy={
     chat:loadChatModels,
     compare:loadCompareModels,
@@ -534,35 +660,137 @@ function showTab(name){
   if(lazy[name])lazy[name]();
 }
 
+const SENSITIVE_KEY_PATTERN=/(secret|token|password|authorization|api[_-]?key|jwt|cookie|credential)/i;
+function isPlainObject(value){
+  return Object.prototype.toString.call(value)==='[object Object]';
+}
+function isSensitiveKey(key){
+  return SENSITIVE_KEY_PATTERN.test(String(key||''));
+}
+function redactSensitiveValue(value,key=''){
+  if(isSensitiveKey(key))return '[redacted]';
+  if(Array.isArray(value))return value.map(item=>redactSensitiveValue(item));
+  if(isPlainObject(value)){
+    const result={};
+    Object.keys(value).sort().forEach(childKey=>{
+      result[childKey]=redactSensitiveValue(value[childKey],childKey);
+    });
+    return result;
+  }
+  return value;
+}
+function stableStringify(value){
+  return JSON.stringify(redactSensitiveValue(value),null,2);
+}
+function formatArrayValue(values){
+  const items=values.map(value=>{
+    if(value===null||value===undefined||value==='')return '';
+    if(isPlainObject(value)){
+      for(const key of ['name','id','label','title','state','status']){
+        const candidate=value[key];
+        if(candidate!==undefined&&candidate!==null&&!isPlainObject(candidate)&&!Array.isArray(candidate)){
+          return String(candidate);
+        }
+      }
+      return stableStringify(value);
+    }
+    if(Array.isArray(value))return stableStringify(value);
+    return String(value);
+  }).filter(Boolean);
+  return items.join(', ')||'—';
+}
+function formatObjectValue(value){
+  const redacted=redactSensitiveValue(value);
+  if(redacted&&redacted.state!==undefined&&redacted.state!==null&&!isPlainObject(redacted.state)&&!Array.isArray(redacted.state)){
+    return String(redacted.state);
+  }
+  if(redacted&&redacted.status!==undefined&&redacted.status!==null&&!isPlainObject(redacted.status)&&!Array.isArray(redacted.status)){
+    return String(redacted.status);
+  }
+  if(redacted&&typeof redacted.healthy==='boolean'){
+    return redacted.healthy?'healthy':'unhealthy';
+  }
+  return stableStringify(redacted);
+}
+function formatDisplayValue(value){
+  if(value===null||value===undefined||value==='')return '—';
+  if(Array.isArray(value))return formatArrayValue(value);
+  if(isPlainObject(value))return formatObjectValue(value);
+  if(typeof value==='string'||typeof value==='number'||typeof value==='boolean')return String(value);
+  return stableStringify(value);
+}
+function setStatusIndicator(text,tone='ok',glyph='●'){
+  const host=document.getElementById('srv-status');
+  host.textContent='';
+  const marker=document.createElement('span');
+  marker.className=tone;
+  marker.textContent=glyph;
+  host.append(marker,document.createTextNode(' '+text));
+}
+function renderStatCards(cards){
+  const root=document.getElementById('ov-stats');
+  root.textContent='';
+  cards.forEach(card=>{
+    const cardEl=document.createElement('div');
+    cardEl.className='card';
+    const titleEl=document.createElement('div');
+    titleEl.className='ct';
+    titleEl.textContent=card.title;
+    cardEl.appendChild(titleEl);
+    card.stats.forEach(stat=>{
+      const row=document.createElement('div');
+      row.className='stat';
+      const label=document.createElement('span');
+      label.className='sl';
+      label.textContent=stat.l;
+      const value=document.createElement('span');
+      value.className='sv';
+      if(stat.c)value.classList.add(stat.c);
+      value.textContent=formatDisplayValue(stat.v);
+      row.append(label,value);
+      cardEl.appendChild(row);
+    });
+    root.appendChild(cardEl);
+  });
+}
+function renderStatList(containerId,items,emptyText,defaultClass=''){
+  const container=document.getElementById(containerId);
+  if(!items.length){
+    container.innerHTML='<span class="list-empty">'+escHtml(emptyText)+'</span>';
+    return;
+  }
+  container.innerHTML=items.map(item=>{
+    const extraClass=item.valueClass||defaultClass;
+    const classAttr=extraClass?' '+escAttr(extraClass):'';
+    return '<div class="stat"><span class="sl">'+escHtml(item.label)+'</span><span class="sv'+classAttr+'">'+escHtml(formatDisplayValue(item.value))+'</span></div>';
+  }).join('');
+}
+
 // ── Overview ──────────────────────────────────────────────────────
 async function initOverview(){
   try{
     const r=await apiFetch('/status');const d=await r.json();
-    document.getElementById('srv-status').innerHTML='<span class="ok">●</span> '+escHtml(d.status||'running');
+    const router=isPlainObject(d.router)?d.router:{};
+    const health=isPlainObject(d.health)?d.health:{};
+    const statusTone=health.healthy===false?'fail':'ok';
+    const statusGlyph=health.healthy===false?'✗':'●';
+    setStatusIndicator(formatDisplayValue(d.status||'running'),statusTone,statusGlyph);
     const cards=[
-      {title:'Status',stats:[{l:'State',v:d.status,c:'ok'},{l:'Version',v:d.version||'—'},{l:'Mode',v:d.mode||'api'}]},
-      {title:'Agent',stats:[{l:'Models',v:d.models||'—'},{l:'Skills',v:d.skills||'—'},{l:'Pipelines',v:d.pipelines||'—'}]},
-      {title:'Memory',stats:[{l:'Conversations',v:d.conversations||'—'},{l:'Memories',v:d.memories||'—'},{l:'DB',v:d.db||'SQLite',c:'info'}]},
+      {title:'Status',stats:[{l:'State',v:d.status,c:'ok'},{l:'Health',v:d.health,c:health.healthy===false?'fail':'info'},{l:'Mode',v:'api'}]},
+      {title:'Agent',stats:[{l:'Models',v:router.total_models??(Array.isArray(d.model_stats)?d.model_stats.length:'—')},{l:'Skills',v:d.skills||[]},{l:'Jobs',v:Array.isArray(d.jobs)?d.jobs.length:0}]},
+      {title:'Routing',stats:[{l:'Providers',v:router.providers||[]},{l:'Fallbacks',v:router.fallback_chains??'—'},{l:'Overrides',v:router.session_overrides??0,c:'info'}]},
     ];
-    document.getElementById('ov-stats').innerHTML=cards.map(c=>
-      '<div class="card"><div class="ct">'+escHtml(c.title)+'</div>'+
-      c.stats.map(s=>'<div class="stat"><span class="sl">'+escHtml(s.l)+'</span><span class="sv '+(s.c?s.c+'"':'"')+'>'+escHtml(s.v)+'</span></div>').join('')+
-      '</div>'
-    ).join('');
-  }catch(e){document.getElementById('srv-status').innerHTML='<span class="fail">✗ offline</span>';}
+    renderStatCards(cards);
+  }catch(e){setStatusIndicator('offline','fail','✗');}
   try{
     const rj=await apiFetch('/status');const dj=await rj.json();
-    const jobs=dj.jobs||[];
-    document.getElementById('ov-jobs').innerHTML=jobs.length?
-      jobs.map(j=>'<div class="stat"><span class="sl">'+escHtml(j.id||j.name)+'</span><span class="sv info">'+escHtml(j.schedule||j.next_run||j.status||'—')+'</span></div>').join(''):
-      '<span style="color:var(--muted);font-size:0.8rem">No scheduled jobs</span>';
+    const jobs=Array.isArray(dj.jobs)?dj.jobs:[];
+    renderStatList('ov-jobs',jobs.map(j=>({label:j.id||j.name||'job',value:j.schedule||j.next_run||j.status||'—',valueClass:'info'})),'No scheduled jobs');
   }catch(e){document.getElementById('ov-jobs').textContent='unavailable';}
   try{
     const r=await apiFetch('/cache/stats');const d=await r.json();
     const e=d.stats||d;
-    document.getElementById('ov-cache').innerHTML=Object.entries(e).map(([k,v])=>
-      '<div class="stat"><span class="sl">'+escHtml(k)+'</span><span class="sv">'+escHtml(JSON.stringify(v))+'</span></div>'
-    ).join('')||'<span style="color:var(--muted)">No stats</span>';
+    renderStatList('ov-cache',Object.entries(e).map(([k,v])=>({label:k,value:v})),'No stats');
   }catch(e){document.getElementById('ov-cache').textContent='unavailable';}
   loadAudit();
 }
@@ -570,7 +798,7 @@ async function loadAudit(){
   try{
     const r=await apiFetch('/audit?limit=20');const d=await r.json();
     const lines=(d.log||[]).slice().reverse().map(l=>
-      '<div class="log-line"><span style="color:var(--muted)">'+escHtml(l.timestamp||'')+'</span> <span style="color:var(--blue)">'+escHtml(l.action||l.event||'')+'</span> '+escHtml(l.details||l.message||'')+'</div>'
+      '<div class="log-line"><span class="text-muted">'+escHtml(l.timestamp||'')+'</span> <span class="text-blue">'+escHtml(l.action||l.event||'')+'</span> '+escHtml(l.details||l.message||'')+'</div>'
     );
     document.getElementById('ov-audit').innerHTML=lines.join('')||'Empty audit log';
   }catch(e){document.getElementById('ov-audit').textContent='unavailable';}
@@ -611,8 +839,13 @@ async function sendChat(){
 }
 function appendMsg(role,text){
   const div=document.createElement('div');div.className='msg';
-  const colors={user:'var(--blue)',assistant:'var(--green)',error:'var(--red)'};
-  div.innerHTML='<div class="msg-role" style="color:'+(colors[role]||'var(--muted)')+'">'+escHtml(role)+'</div><div class="msg-body">'+escHtml(text)+'</div>';
+  const roleEl=document.createElement('div');
+  roleEl.className='msg-role msg-role-'+role;
+  roleEl.textContent=role;
+  const bodyEl=document.createElement('div');
+  bodyEl.className='msg-body';
+  bodyEl.textContent=text;
+  div.append(roleEl,bodyEl);
   const box=document.getElementById('chat-msgs');
   box.appendChild(div);box.scrollTop=box.scrollHeight;
 }
@@ -651,9 +884,9 @@ async function runCompare(){
     const results=d.results||[];
     document.getElementById('cmp-status').textContent='Done — '+results.length+' responses';
     document.getElementById('cmp-results').innerHTML=results.map(res=>
-      '<div class="card cmp-col" style="min-width:260px;flex:1;">'+
+      '<div class="card cmp-col">'+
       '<div class="cmp-title">'+escHtml(res.model||'?')+'</div>'+
-      '<div style="font-size:0.72rem;color:var(--muted);margin-bottom:6px;">'+escHtml((res.latency_ms||'')+'ms · '+(res.tokens||'')+' tok')+'</div>'+
+      '<div class="cmp-meta">'+escHtml((res.latency_ms||'')+'ms · '+(res.tokens||'')+' tok')+'</div>'+
       '<div class="out out-sm">'+escHtml(res.response||res.error||JSON.stringify(res))+'</div>'+
       '</div>'
     ).join('');
@@ -685,9 +918,9 @@ async function ragQuery(){
     const d=await r.json();
     const chunks=d.results||d.chunks||[];
     document.getElementById('rag-query-out').innerHTML=chunks.map((c,i)=>
-      '<div style="border-bottom:1px solid var(--border);padding:6px 0;">'+
-      '<div style="font-size:0.72rem;color:var(--muted)">['+i+'] score: '+escHtml((c.score||0).toFixed(3))+' · doc: '+escHtml(c.doc_id||'—')+'</div>'+
-      '<div style="font-size:0.83rem;margin-top:2px;">'+escHtml(c.text||c.content||'')+'</div>'+
+      '<div class="item-row">'+
+      '<div class="item-meta">['+i+'] score: '+escHtml((c.score||0).toFixed(3))+' · doc: '+escHtml(c.doc_id||'—')+'</div>'+
+      '<div class="item-body">'+escHtml(c.text||c.content||'')+'</div>'+
       '</div>'
     ).join('')||'No results';
   }catch(e){document.getElementById('rag-query-out').textContent=String(e);}
@@ -700,7 +933,7 @@ async function loadRagDocs(){
       '<table><thead><tr><th>Doc ID</th><th>Source</th><th>Chunks</th><th>Created</th></tr></thead><tbody>'+
       docs.map(doc=>'<tr><td>'+escHtml(doc.doc_id||'')+'</td><td>'+escHtml(doc.source||'')+'</td><td>'+escHtml(doc.chunk_count||'—')+'</td><td>'+escHtml(doc.created_at||'—')+'</td></tr>').join('')+
       '</tbody></table>':
-      '<span style="color:var(--muted);font-size:0.8rem">No documents ingested yet</span>';
+      '<span class="list-empty">No documents ingested yet</span>';
   }catch(e){document.getElementById('rag-docs').textContent='unavailable';}
 }
 
@@ -711,7 +944,7 @@ async function loadPipelines(){
     const pipes=d.pipelines||[];
     document.getElementById('pipe-list').innerHTML=pipes.length?
       pipes.map(p=>'<div class="stat"><span class="sl">'+escHtml(p.id||p.name)+'</span><span class="sv info">'+escHtml((p.steps||'?')+' steps')+'</span></div>').join(''):
-      '<span style="color:var(--muted);font-size:0.8rem">No pipelines</span>';
+      '<span class="list-empty">No pipelines</span>';
   }catch(e){document.getElementById('pipe-list').textContent='unavailable';}
 }
 async function loadWorkflows(){
@@ -720,7 +953,7 @@ async function loadWorkflows(){
     const wfs=d.workflows||[];
     document.getElementById('wf-list').innerHTML=wfs.length?
       wfs.map(w=>'<div class="stat"><span class="sl">'+escHtml(w.name||w.id)+'</span><span class="sv info">'+escHtml((w.steps||'—')+' steps')+'</span></div>').join(''):
-      '<span style="color:var(--muted);font-size:0.8rem">No workflows</span>';
+      '<span class="list-empty">No workflows</span>';
   }catch(e){document.getElementById('wf-list').textContent='unavailable';}
 }
 async function runPipeline(){
@@ -760,7 +993,7 @@ function renderAdrJobSearchSummary(prefix,summary){
     links.push('<a href="'+escAttr(htmlUri)+'" target="_blank" rel="noopener noreferrer">Open HTML report</a>');
   }
   Object.entries(files).forEach(([name,path])=>{
-    links.push('<div><span style="color:var(--muted)">'+escHtml(name.toUpperCase())+':</span> '+escHtml(path)+'</div>');
+    links.push('<div><span class="text-muted">'+escHtml(name.toUpperCase())+':</span> '+escHtml(path)+'</div>');
   });
   adrJobSearchEl(prefix,'links').innerHTML=links.join('');
   adrJobSearchEl(prefix,'out').textContent=JSON.stringify(summary,null,2);
@@ -812,12 +1045,12 @@ async function loadSandboxHistory(){
     const hist=d.history||[];
     document.getElementById('sb-hist').innerHTML=hist.length?
       hist.slice().reverse().map(h=>
-        '<div style="border-bottom:1px solid var(--border);padding:6px 0;">'+
-        '<div style="font-size:0.72rem;color:var(--muted)">'+escHtml(h.timestamp||'')+' · '+escHtml(h.language||'')+' · <span class="'+(h.success?'ok':'fail')+'">'+escHtml(h.success?'ok':'fail')+'</span></div>'+
-        '<div class="out out-sm" style="margin-top:4px;">'+escHtml((h.code||'').substring(0,200))+((h.code||'').length>200?'…':'')+'</div>'+
+        '<div class="item-row">'+
+        '<div class="item-meta">'+escHtml(h.timestamp||'')+' · '+escHtml(h.language||'')+' · <span class="'+(h.success?'ok':'fail')+'">'+escHtml(h.success?'ok':'fail')+'</span></div>'+
+        '<div class="out out-sm mt-4">'+escHtml((h.code||'').substring(0,200))+((h.code||'').length>200?'…':'')+'</div>'+
         '</div>'
       ).join(''):
-      '<span style="color:var(--muted);font-size:0.8rem">No execution history</span>';
+      '<span class="list-empty">No execution history</span>';
   }catch(e){document.getElementById('sb-hist').textContent='unavailable';}
 }
 
@@ -867,9 +1100,9 @@ async function loadTools(){
     const tools=d.tools||[];
     document.getElementById('tools-list').innerHTML=tools.length?
       '<table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody>'+
-      tools.map(t=>'<tr><td style="color:var(--green)">'+escHtml(t.name||t.id)+'</td><td style="color:var(--muted);font-size:0.78rem">'+escHtml(t.description||'')+'</td></tr>').join('')+
+      tools.map(t=>'<tr><td class="text-green">'+escHtml(t.name||t.id)+'</td><td class="text-muted fs-78">'+escHtml(t.description||'')+'</td></tr>').join('')+
       '</tbody></table>':
-      '<span style="color:var(--muted);font-size:0.8rem">No tools registered</span>';
+      '<span class="list-empty">No tools registered</span>';
   }catch(e){document.getElementById('tools-list').textContent='unavailable';}
 }
 async function loadToolSchema(fmt){
@@ -902,7 +1135,7 @@ async function loadTracing(){
     const r=await apiFetch('/tracing/summary');const d=await r.json();
     document.getElementById('trace-out').innerHTML=Object.entries(d).map(([k,v])=>
       '<div class="stat"><span class="sl">'+escHtml(k)+'</span><span class="sv">'+escHtml(JSON.stringify(v))+'</span></div>'
-    ).join('')||'<span style="color:var(--muted)">No tracing data</span>';
+    ).join('')||'<span class="text-muted">No tracing data</span>';
   }catch(e){document.getElementById('trace-out').textContent='unavailable';}
 }
 
@@ -926,19 +1159,19 @@ async function fetchModels(){
         const contextLabel=typeof m.context_k==='number' ? (m.context_k+'k') : '—';
         return (
       '<tr>'+
-      '<td style="color:var(--text)">'+escHtml(m.id)+'</td>'+
-      '<td style="color:var(--muted)">'+escHtml(m.provider)+'</td>'+
+      '<td class="cell-text">'+escHtml(m.id)+'</td>'+
+      '<td class="cell-muted">'+escHtml(m.provider)+'</td>'+
       '<td><span class="bdg '+(tierCol[m.tier]||'bdg-b')+'">'+escHtml(m.tier)+'</span></td>'+
-      '<td style="color:var(--blue);text-align:right">'+escHtml(contextLabel)+'</td>'+
-      '<td style="color:var(--muted);font-size:0.75rem">'+escHtml(bestFor)+'</td>'+
-      '<td style="font-size:0.72rem">'+capabilities.map(c=>'<span class="bdg bdg-p">'+escHtml(c)+'</span>').join(' ')+'</td>'+
+      '<td class="text-blue align-right">'+escHtml(contextLabel)+'</td>'+
+      '<td class="cell-muted-sm">'+escHtml(bestFor)+'</td>'+
+      '<td class="fs-72">'+capabilities.map(c=>'<span class="bdg bdg-p">'+escHtml(c)+'</span>').join(' ')+'</td>'+
       '</tr>'
         );
       }
     ).join('');
-    document.getElementById('models-tbody').innerHTML=rows||'<tr><td colspan="6" style="color:var(--muted)">No models</td></tr>';
+    document.getElementById('models-tbody').innerHTML=rows||'<tr><td colspan="6" class="cell-muted">No models</td></tr>';
   }catch(e){
-    document.getElementById('models-tbody').innerHTML='<tr><td colspan="6" style="color:var(--red)">Failed to load models: '+escHtml(String(e))+'</td></tr>';
+    document.getElementById('models-tbody').innerHTML='<tr><td colspan="6" class="cell-error">Failed to load models: '+escHtml(String(e))+'</td></tr>';
   }
 }
 async function loadPersonas(){
@@ -946,8 +1179,8 @@ async function loadPersonas(){
     const r=await apiFetch('/personas');const d=await r.json();
     const ps=d.personas||[];
     document.getElementById('persona-list').innerHTML=ps.length?
-      ps.map(p=>'<div class="stat"><span class="sl">'+escHtml(p.id||p.name)+'</span><span class="sv" style="color:var(--muted);font-size:0.75rem">'+escHtml((p.description||'').substring(0,50))+'</span></div>').join(''):
-      '<span style="color:var(--muted);font-size:0.8rem">No personas defined</span>';
+      ps.map(p=>'<div class="stat"><span class="sl">'+escHtml(p.id||p.name)+'</span><span class="sv persona-desc">'+escHtml((p.description||'').substring(0,50))+'</span></div>').join(''):
+      '<span class="list-empty">No personas defined</span>';
   }catch(e){document.getElementById('persona-list').textContent='unavailable';}
 }
 async function setPersona(){
@@ -965,7 +1198,7 @@ async function loadTemplates(){
     const ts=d.templates||[];
     document.getElementById('tmpl-list').innerHTML=ts.length?
       ts.map(t=>'<div class="stat"><span class="sl">'+escHtml(t.name||t.id)+'</span><span class="sv info">'+escHtml((t.variables||0)+' vars')+'</span></div>').join(''):
-      '<span style="color:var(--muted);font-size:0.8rem">No templates</span>';
+      '<span class="list-empty">No templates</span>';
   }catch(e){document.getElementById('tmpl-list').textContent='unavailable';}
 }
 async function loadMemories(){
@@ -973,8 +1206,8 @@ async function loadMemories(){
     const r=await apiFetch('/memories');const d=await r.json();
     const ms=d.memories||[];
     document.getElementById('mem-list').innerHTML=ms.length?
-      ms.slice(0,10).map(m=>'<div class="stat"><span class="sl" style="font-size:0.75rem;max-width:200px;overflow:hidden;text-overflow:ellipsis">'+escHtml((m.content||'').substring(0,60))+'</span><span class="sv" style="color:var(--muted);font-size:0.72rem">'+escHtml(m.type||'')+'</span></div>').join(''):
-      '<span style="color:var(--muted);font-size:0.8rem">No memories stored</span>';
+      ms.slice(0,10).map(m=>'<div class="stat"><span class="sl preview-text">'+escHtml((m.content||'').substring(0,60))+'</span><span class="sv memory-type">'+escHtml(m.type||'')+'</span></div>').join(''):
+      '<span class="list-empty">No memories stored</span>';
   }catch(e){document.getElementById('mem-list').textContent='unavailable';}
 }
 
@@ -983,6 +1216,8 @@ function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function escAttr(s){return escHtml(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
 // ── Boot ──────────────────────────────────────────────────────────
+bindDashboardEvents();
+hydrateSavedKey();
 initOverview();
 setInterval(initOverview,20000);
 </script>

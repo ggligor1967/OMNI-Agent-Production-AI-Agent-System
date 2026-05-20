@@ -709,8 +709,59 @@ class AuthManager:
                 )
             return None
 
+        async def _parse_optional_json_object(request):
+            if not request.content_length:
+                return {}, None
+
+            content_type = (request.content_type or "").lower()
+            if not (
+                content_type == "application/json"
+                or content_type == "text/json"
+                or content_type.endswith("+json")
+            ):
+                return None, web.json_response(
+                    {
+                        "error": "invalid_request",
+                        "detail": "Content-Type must be application/json",
+                    },
+                    status=400,
+                )
+
+            try:
+                data = await request.json()
+            except (json.JSONDecodeError, UnicodeDecodeError, ValueError):
+                return None, web.json_response(
+                    {
+                        "error": "invalid_json",
+                        "detail": "Malformed JSON request body",
+                    },
+                    status=400,
+                )
+            except Exception:
+                logger.warning("Rejected malformed JSON payload for /auth/bootstrap")
+                return None, web.json_response(
+                    {
+                        "error": "invalid_json",
+                        "detail": "Malformed JSON request body",
+                    },
+                    status=400,
+                )
+
+            if not isinstance(data, dict):
+                return None, web.json_response(
+                    {
+                        "error": "invalid_request",
+                        "detail": "JSON body must be an object",
+                    },
+                    status=400,
+                )
+
+            return data, None
+
         async def bootstrap(request):
-            data = await request.json() if request.content_length else {}
+            data, error_response = await _parse_optional_json_object(request)
+            if error_response:
+                return error_response
             bootstrap_token = (
                 request.headers.get("X-Bootstrap-Token", "")
                 or data.get("bootstrap_token", "")

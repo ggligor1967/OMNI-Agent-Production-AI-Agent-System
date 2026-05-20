@@ -2,59 +2,49 @@
 
 ## Status
 
-PARTIAL
+PASS (targeted bugfix rerun)
 
-## Public / Safe Runtime Checks
+## Public Runtime Checks Re-run in F.4
 
 | Method | Route | Result | Notes |
 | ------ | ----- | ------ | ----- |
-| `GET` | `/status` | `200 OK` | Confirmed earlier in browser and startup probes. |
-| `GET` | `/health` | `200 OK` | Confirmed earlier in browser and startup probes. |
-| `GET` | `/audit` | `200 OK` | Returned JSON audit feed used by the dashboard overview. |
-| `GET` | `/cache/stats` | `200 OK` | Returned local cache statistics JSON (`backend`, `keys`). |
+| `GET` | `/status` | `200 OK` | Returned structured `status`, `health`, `jobs`, `skills`, `router`, and `model_stats`. |
+| `GET` | `/health` | `200 OK` | Returned healthy loopback runtime state. |
+| `POST` | `/auth/bootstrap` | `400 Bad Request` on malformed JSON | Returned bounded `{"error":"invalid_json","detail":"Malformed JSON request body"}`. |
 
-## Authenticated Read-Only Coverage
+## Authenticated Workflow Checks Re-run in F.4
 
-An in-memory local admin JWT was used for these checks. No token value was printed or written to repo artifacts.
+| Method / Flow | Result | Notes |
+| ------------- | ------ | ----- |
+| Dashboard `Save` API key flow | PASS | Saved a temporary local validation key in session-scoped storage while auth remained enabled. |
+| Dashboard-backed `/models` load | PASS | Chat tab model dropdown populated after saving the validation key. |
+| Dashboard-backed `/chat` send | PASS | Sending `ping` and `enter-send` produced assistant responses in the live runtime. |
 
-| Method | Route | Result | Body Shape Observed |
-| ------ | ----- | ------ | ------------------- |
-| `GET` | `/models` | `200 OK` | `count`, `available_count`, `models` |
-| `GET` | `/tools` | `200 OK` | `tools` |
-| `GET` | `/pipelines` | `200 OK` | `pipelines` |
-| `GET` | `/pipelines/runs` | `200 OK` | `runs` |
-| `GET` | `/workflows` | `200 OK` | `workflows` |
-| `GET` | `/templates` | `200 OK` | `templates` |
-| `GET` | `/personas` | `200 OK` | `personas` |
-| `GET` | `/kg/stats` | `200 OK` | `nodes`, `edges`, `in_memory_nodes`, `in_memory_edges`, `directed` |
-| `GET` | `/sandbox/history` | `200 OK` | `history`, `stats` |
-| `GET` | `/tracing/summary` | `200 OK` | tracing summary and telemetry fields |
-| `GET` | `/memories` | `200 OK` | `memories` |
+## Previously Verified Read-Only Coverage Retained
 
-## Intentionally Deferred Write / Side-Effect Flows
+Earlier local validation already confirmed successful read coverage for:
 
-The following write-capable or potentially non-local/external workloads were **not** exercised in this validation slice:
-
-- `POST /chat` with valid credentials
-- `POST /compare`
-- `POST /rag/ingest`
-- `POST /rag/query`
-- `POST /pipelines/{name}/run`
-- `POST /workflows/{name}/run`
-- `POST /sandbox/run`
-- `POST /vision/analyze`
-- `POST /notifications/send`
-- `POST /config/set`
-- `POST /export/dump`
-
-Reason:
-
-- keep this pass local-only and low-risk
-- avoid destructive mutations or nonessential side effects
-- avoid triggering model/provider execution where that would move beyond the current browser/runtime validation focus
+- `/audit`
+- `/cache/stats`
+- `/models`
+- `/tools`
+- `/pipelines`
+- `/pipelines/runs`
+- `/workflows`
+- `/templates`
+- `/personas`
+- `/kg/stats`
+- `/sandbox/history`
+- `/tracing/summary`
+- `/memories`
 
 ## Assessment
 
-- The local runtime successfully served a broad set of authenticated read endpoints that back the dashboard tabs.
-- Backend availability is better than the current dashboard click-path health suggests; several tab backends are live even though the dashboard UI is currently impaired by CSP issues.
-- Write/execute flows remain to be validated separately if the user wants a deeper non-destructive API pass after the current browser findings are resolved or explicitly approved.
+- The confirmed API-facing regression (`POST /auth/bootstrap` malformed JSON -> `500`) is closed.
+- The dashboard is once again able to drive authenticated API workflows without disabling auth.
+- No deploy, release, or production promotion work was performed as part of this rerun.
+
+## Evidence
+
+- `local-browser-validation/evidence/bugfix-browser/f4_browser_rerun_observations.md`
+- `local-browser-validation/evidence/bugfix-browser/f6_pytest.log`

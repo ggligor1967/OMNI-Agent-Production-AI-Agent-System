@@ -1,7 +1,7 @@
 # OMNI Agent Test Support Matrix
 
 Documentation baseline: phase-2-complete
-Generated: 2026-05-19
+Generated: 2026-05-20
 Active Suite Status: **PASSING** (510/510 tests)
 Model Catalog Contract: **27 cloud models**
 
@@ -31,7 +31,11 @@ Bandit remains a blocking active-path gate in `.github/workflows/ci.yml`, with p
 
 ## Latest Verified Local Evidence
 
-- **510 passed** — `snapshot-phase-3-8/gate_3_8_5_pytest.log`
+- **518 passed** — `local-browser-validation/evidence/bugfix-browser/f6_pytest.log`
+- Post-fix compile check — `local-browser-validation/evidence/bugfix-browser/f6_compile.log`
+- Post-fix Ruff check — `local-browser-validation/evidence/bugfix-browser/f6_ruff.log`
+- Post-fix documentation consistency report — `local-browser-validation/evidence/bugfix-browser/f6_doc_consistency.log`
+- Phase 3.8 historical pytest snapshot — `snapshot-phase-3-8/gate_3_8_5_pytest.log`
 - Phase 3.8 final verification coverage — `snapshot-phase-3-8/gate_3_8_5_coverage.log` (`TOTAL 10462 / 3301 / 68.45%`, `fail_under = 58`)
 - Phase 3.8 ratchet report — `docs/testing/coverage.md` (`agent/ollama_client.py 33.73% → 100.00%`, `agent/streaming.py 41.43% → 90.00%`, `agent/knowledge_graph.py 43.14% → 99.00%`)
 - pip-audit passed in mirrored project venv — `snapshot-phase-3-8/dependency_remediation_pip_audit_ascii.log`
@@ -57,12 +61,15 @@ The blocking suite is `pytest tests/ -q` with discovery controlled by `pytest.in
 
 - `test_advanced_modules.py` — runtime modules
 - `test_auth_bootstrap_cli.py` — auth bootstrap
+- `test_auth_bootstrap_json_errors.py` — bootstrap malformed JSON regression coverage
 - `test_auth_ownership_binding.py` — auth ownership binding
 - `test_chat_tracing.py` — chat-path tracing regression coverage
 - `test_core_init_sanity.py` — core init AST audit
 - `test_coverage_config.py` — coverage floor and baseline contract
 - `test_crypto_utils_quality_ratchet.py` — Phase 3.7 crypto quality ratchet
 - `test_dashboard.py` — dashboard UI
+- `test_dashboard_csp_contract.py` — dashboard CSP-safe interaction contract
+- `test_dashboard_rendering_contract.py` — dashboard structured rendering contract
 - `test_documentation_consistency.py` — documentation contract checker
 - `test_export_api_contracts.py` — export API compatibility
 - `test_http_tracing.py` — HTTP entry tracing regression coverage

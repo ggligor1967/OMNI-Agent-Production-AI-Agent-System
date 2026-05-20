@@ -15,12 +15,13 @@ def test_dashboard_html_contains_dedicated_job_search_button():
 
     assert "ADR Tanker Job Search — Quick Launch" in DASHBOARD_HTML
     assert "Quick Run ADR Job Search" in DASHBOARD_HTML
-    assert "runAdrJobSearch('ov-job-search')" in DASHBOARD_HTML
+    assert 'data-action="run-adr-job-search"' in DASHBOARD_HTML
+    assert 'data-prefix="ov-job-search"' in DASHBOARD_HTML
     assert "ov-job-search-export" in DASHBOARD_HTML
     assert "ov-job-search-out" in DASHBOARD_HTML
     assert "ADR Tanker Job Search" in DASHBOARD_HTML
     assert "Run ADR Job Search" in DASHBOARD_HTML
-    assert "runAdrJobSearch('job-search')" in DASHBOARD_HTML
+    assert 'data-prefix="job-search"' in DASHBOARD_HTML
     assert "run_job_search_tank_adr_improved" in DASHBOARD_HTML
     assert "job-search-export" in DASHBOARD_HTML
     assert "job-search-out" in DASHBOARD_HTML
@@ -31,8 +32,9 @@ def test_dashboard_html_uses_session_storage_and_escaped_innerhtml_sinks():
 
     assert "sessionStorage" in DASHBOARD_HTML
     assert "localStorage" not in DASHBOARD_HTML
-    assert "escHtml(d.status||'running')" in DASHBOARD_HTML
-    assert "escAttr(m.id)" in DASHBOARD_HTML
+    assert "bindDashboardEvents()" in DASHBOARD_HTML
+    assert "redactSensitiveValue" in DASHBOARD_HTML
+    assert "formatDisplayValue" in DASHBOARD_HTML
     assert "escHtml(res.model||'?')" in DASHBOARD_HTML
     assert "escHtml(t.name||t.id)" in DASHBOARD_HTML
 
