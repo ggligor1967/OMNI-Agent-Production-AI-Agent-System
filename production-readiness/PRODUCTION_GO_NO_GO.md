@@ -8,12 +8,14 @@ Default should be `NO-GO` unless all production gates are approved.
 
 ## Summary
 
-The production-readiness execution pass completed the evidence and decision package, but the repository evidence does not approve production deployment. Multiple gates remain at `PENDING DECISION` or `PENDING EXECUTION`, and the GitHub Release draft must remain unpublished without explicit user approval.
+The production-readiness execution pass completed the evidence and decision package, but the repository evidence does not approve production deployment. The follow-on environment and infrastructure ownership decision pass added `production-readiness/ENVIRONMENT_DECISION.md`, `production-readiness/INFRASTRUCTURE_OWNER_DECISION.md`, and `production-readiness/PRODUCTION_DECISION_INPUTS_REQUIRED.md`, and all three confirm that critical production inputs remain unresolved. Multiple gates remain at `PENDING DECISION` or `PENDING EXECUTION`, and the GitHub Release draft must remain unpublished without explicit user approval.
 
 ## Gate Results
 
 | Gate | Status | Reason |
 | ------ | ------ | ------ |
+| Environment decision | PENDING DECISION | A repository-backed default recommendation exists, but no provider, target domain, TLS strategy, reverse proxy, or deployment approver is selected |
+| Infrastructure ownership | PENDING DECISION | Required roles are documented, but no infrastructure, secrets, database, observability, release, or security owner is assigned |
 | Secrets/config approval | PENDING DECISION | Safe defaults exist, but no approved production secret source, TLS strategy, or bind policy is committed |
 | Production DB decision | PENDING DECISION | Postgres is the architectural target, but active runtime migration, backup, and restore approvals are missing |
 | Deployment topology | PENDING DECISION | A recommendation exists, but no target provider or rollback mechanism has been selected |
@@ -25,6 +27,9 @@ The production-readiness execution pass completed the evidence and decision pack
 
 ## Required Before GO
 
+- Approve the target production environment documented in `production-readiness/ENVIRONMENT_DECISION.md`.
+- Assign the required production owners documented in `production-readiness/INFRASTRUCTURE_OWNER_DECISION.md`.
+- Provide the pending fields consolidated in `production-readiness/PRODUCTION_DECISION_INPUTS_REQUIRED.md`.
 - Approve a production secret source, TLS termination model, and non-loopback bind strategy.
 - Approve the production database migration, backup, restore, and export contracts.
 - Select the deployment topology, hosting provider, and rollback mechanism.
@@ -36,4 +41,4 @@ The production-readiness execution pass completed the evidence and decision pack
 
 ## Recommended Next Step
 
-Pick the deployment target and infrastructure owner first; that single decision unlocks the dependent secrets, database, observability, rollback, and load-test approvals.
+Choose the production target environment and assign the infrastructure owner using `production-readiness/PRODUCTION_DECISION_INPUTS_REQUIRED.md` before any deploy work.
