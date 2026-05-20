@@ -1,0 +1,23 @@
+{
+  "admin": {
+    "user_id": "local_exploratory_admin",
+    "role": "admin",
+    "key_id": "253d7163-7a0",
+    "created_now": true,
+    "raw_key": "[redacted]"
+  },
+  "developer": {
+    "user_id": "local_exploratory_developer",
+    "role": "developer",
+    "key_id": "44dd5994-e03",
+    "created_now": true,
+    "raw_key": "[redacted]"
+  },
+  "readonly": {
+    "user_id": "local_exploratory_readonly",
+    "role": "readonly",
+    "key_id": "9c4fde36-018",
+    "created_now": true,
+    "raw_key": "[redacted]"
+  }
+}
