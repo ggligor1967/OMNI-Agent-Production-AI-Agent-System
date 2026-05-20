@@ -29,6 +29,7 @@ KEEP_DRAFT
 - Production environment approval remains `PENDING DECISION` until provider, domain, TLS, reverse proxy, and deployment approver inputs are explicitly supplied.
 - Infrastructure ownership remains `PENDING DECISION` because no repository evidence or user instruction assigns the required owner roles.
 - The exact required production decision inputs are consolidated in `production-readiness/PRODUCTION_DECISION_INPUTS_REQUIRED.md`.
+- The selected next path is `Local-only validation before production decisions`.
 - Production remains `NO-GO`.
 - The GitHub Release remains `KEEP_DRAFT`.
 
@@ -46,4 +47,4 @@ KEEP_DRAFT
 
 ## Recommended Next Action
 
-Choose production target environment and assign infrastructure owner before any deploy work.
+Proceed with local-only validation before revisiting production environment selection or deployment work.

@@ -8,6 +8,7 @@ PASS
 
 - sandbox policy: `local-validation/evidence/l4_sandbox_tests_resolved.log` (`14 passed` across policy and isolation cases)
 - isolation proofs: included in `local-validation/evidence/l4_sandbox_tests_resolved.log`
+- post-fix Windows shell recheck: `local-validation/evidence/l4_sandbox_tests_postfix.log` (`14 passed` after the loopback validation pass applied a Windows-specific bash resolver fix)
 - optional Docker no-network probe: `local-validation/evidence/l4_docker_no_network_probe.log` showed `ROUTE_LINE_COUNT=0` and `NETWORK_DISABLED_EVIDENCE=NO_ROUTES`
 
 ## Behaviors Checked

@@ -8,7 +8,7 @@ Default should be `NO-GO` unless all production gates are approved.
 
 ## Summary
 
-The production-readiness execution pass completed the evidence and decision package, but the repository evidence does not approve production deployment. The follow-on environment and infrastructure ownership decision pass added `production-readiness/ENVIRONMENT_DECISION.md`, `production-readiness/INFRASTRUCTURE_OWNER_DECISION.md`, and `production-readiness/PRODUCTION_DECISION_INPUTS_REQUIRED.md`, and all three confirm that critical production inputs remain unresolved. Multiple gates remain at `PENDING DECISION` or `PENDING EXECUTION`, and the GitHub Release draft must remain unpublished without explicit user approval.
+The production-readiness execution pass completed the evidence and decision package, but the repository evidence does not approve production deployment. The follow-on environment and infrastructure ownership decision pass added `production-readiness/ENVIRONMENT_DECISION.md`, `production-readiness/INFRASTRUCTURE_OWNER_DECISION.md`, and `production-readiness/PRODUCTION_DECISION_INPUTS_REQUIRED.md`, and all three confirm that critical production inputs remain unresolved. The selected next path was `Local-only validation before production decisions`, so runtime validation now proceeds on loopback only rather than toward deployment. Multiple gates remain at `PENDING DECISION` or `PENDING EXECUTION`, and the GitHub Release draft must remain unpublished without explicit user approval.
 
 ## Gate Results
 
@@ -41,4 +41,4 @@ The production-readiness execution pass completed the evidence and decision pack
 
 ## Recommended Next Step
 
-Choose the production target environment and assign the infrastructure owner using `production-readiness/PRODUCTION_DECISION_INPUTS_REQUIRED.md` before any deploy work.
+Selected next path: `Local-only validation before production decisions`.
