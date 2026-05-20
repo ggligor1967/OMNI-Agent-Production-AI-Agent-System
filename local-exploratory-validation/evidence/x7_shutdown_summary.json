@@ -1,0 +1,13 @@
+{
+  "terminal_id": "440ac011-832c-44cd-918e-4771f288c6d7",
+  "shutdown_action": "Ctrl+C sent to active local API terminal session",
+  "terminal_exit_code": 1,
+  "port_open_after_shutdown": false,
+  "process_exists_after_shutdown": false,
+  "clean_shutdown_log_observed": false,
+  "notes": [
+    "The local API process stopped and the loopback port closed.",
+    "No additional explicit application-level 'shut down cleanly' log line was captured in the shutdown tail.",
+    "This phase confirms local shutdown and cleanup at the process/network level without claiming stronger evidence than was observed."
+  ]
+}

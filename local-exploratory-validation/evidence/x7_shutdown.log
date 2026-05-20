@@ -1,0 +1,21 @@
+﻿PORT_OPEN=False
+PROCESS_EXISTS=False
+
+STDOUT_TAIL:
+2026-05-20 20:55:12,583 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:55:12 +0300] "GET /audit?limit=20 HTTP/1.1" 200 4750 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:55:13,002 [INFO] agent.scheduler: Heartbeat: Γ£ô {'memory_db': 'ok', 'ollama': 'ok', 'tracer': 'ok', 'event_bus': 'ok'}
+2026-05-20 20:55:32,481 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:55:32 +0300] "GET /status HTTP/1.1" 200 2045 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:55:32,488 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:55:32 +0300] "GET /status HTTP/1.1" 200 2045 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:55:32,491 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:55:32 +0300] "GET /cache/stats HTTP/1.1" 200 191 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:55:32,496 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:55:32 +0300] "GET /audit?limit=20 HTTP/1.1" 200 4750 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:55:52,496 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:55:52 +0300] "GET /status HTTP/1.1" 200 2045 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:55:52,534 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:55:52 +0300] "GET /status HTTP/1.1" 200 2045 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:55:52,539 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:55:52 +0300] "GET /cache/stats HTTP/1.1" 200 191 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:55:52,544 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:55:52 +0300] "GET /audit?limit=20 HTTP/1.1" 200 4750 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:56:12,476 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:56:12 +0300] "GET /status HTTP/1.1" 200 2045 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:56:12,483 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:56:12 +0300] "GET /status HTTP/1.1" 200 2045 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:56:12,489 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:56:12 +0300] "GET /cache/stats HTTP/1.1" 200 191 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:56:12,502 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:20:56:12 +0300] "GET /audit?limit=20 HTTP/1.1" 200 4750 "http://127.0.0.1:8765/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.120.0 Chrome/142.0.7444.265 Electron/39.8.8 Safari/537.36"
+2026-05-20 20:56:13,252 [INFO] agent.scheduler: Heartbeat: Γ£ô {'memory_db': 'ok', 'ollama': 'ok', 'tracer': 'ok', 'event_bus': 'ok'}
+
+STDERR_TAIL:
