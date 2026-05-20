@@ -2,7 +2,7 @@
 
 ## Status
 
-PARTIAL
+PASS
 
 ## Environment Decision
 
@@ -20,7 +20,7 @@ KEEP_DRAFT remains unchanged.
 
 - L.0 baseline: PASS
 - L.1 startup: PASS
-- L.2 API: PARTIAL
+- L.2 API: PASS
 - L.3 auth: PASS
 - L.4 sandbox: PASS
 - L.5 observability: PASS
@@ -30,22 +30,23 @@ KEEP_DRAFT remains unchanged.
 
 - documentation consistency: PASS
 - compile: PASS
-- pytest: PASS (`510 passed, 5 warnings`)
+- pytest: PASS (`511 passed, 5 warnings`)
 - Ruff: PASS
-- coverage: PASS (`68.45%`)
+- coverage: PASS (`68.47%`)
 - active-path Bandit: PASS
 - pip-audit: PASS
 
 ## Confirmed Bugs
 
-- `LV-API-001` — local API contract mismatch: `/health` is treated as a public path in route/auth evidence, but local runtime probing returned `HTTP/1.1 404 Not Found`.
+No open confirmed local-validation bugs remain.
+
+`LV-API-001` was resolved in this scoped pass by implementing the missing public `GET /health` route in `main.py`, adding `tests/test_health_endpoint_contract.py`, and rerunning the loopback probes under `local-validation/evidence/lv-api-001/`.
 
 ## Required Fixes Before Production
 
-- Resolve the `/health` endpoint mismatch so declared public-path behavior matches the live API surface.
-- Re-run local API validation after the `/health` mismatch is corrected.
-- Keep production status at `NO-GO` until local validation defects are addressed and the separate production decisions remain approved by evidence.
+- No remaining local-validation defects block the local-only operational validation result.
+- Keep production status at `NO-GO` until the separate production-readiness evidence and owner decisions change.
 
 ## Next Recommended Action
 
-`Fix confirmed local validation bugs in a separate scoped pass.`
+`Retain local validation as PASS and continue only with separately approved production-decision work; do not deploy from this pass.`

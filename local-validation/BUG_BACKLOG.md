@@ -2,13 +2,17 @@
 
 ## Status
 
-OPEN
+RESOLVED
 
 ## Confirmed Bugs
 
-| ID | Severity | Area | Evidence | Recommended Fix |
-| -- | -------- | ---- | -------- | --------------- |
-| LV-API-001 | Medium | Local API health endpoint | `local-validation/evidence/l2_route_scan.log` shows `/health` is listed in auth public paths, while `local-validation/evidence/l2_health_curl.log` shows `HTTP/1.1 404 Not Found` | Implement a real `GET /health` route or remove `/health` from the declared public-path set and related documentation/tests so route declarations match runtime behavior |
+No open confirmed local-validation bugs remain.
+
+## Resolved Bugs
+
+| ID | Severity | Area | Resolution Evidence | Outcome |
+| -- | -------- | ---- | ------------------- | ------- |
+| LV-API-001 | Medium | Local API health endpoint | `local-validation/evidence/lv-api-001/HEALTH_ENDPOINT_CONTRACT_ANALYSIS.md`, `local-validation/evidence/lv-api-001/server_stdout.log`, `local-validation/evidence/lv-api-001/server_shutdown_check.log`, `tests/test_health_endpoint_contract.py` | RESOLVED — `main.py` now registers `GET /health`, loopback probing returned `HTTP/1.1 200 OK` for both `/status` and `/health`, and protected `/` still returned `HTTP/1.1 401 Unauthorized` |
 
 ## Observations / Follow-Ups
 

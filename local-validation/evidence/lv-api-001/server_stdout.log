@@ -1,0 +1,37 @@
+2026-05-20 16:14:58,399 [INFO] main: Starting OMNI Agent in mode: api
+2026-05-20 16:14:59,313 [INFO] agent.memory: Memory DB initialized at data/omni_agent.db
+2026-05-20 16:14:59,317 [INFO] agent.prompt_templates: Loaded 10 built-in templates
+2026-05-20 16:14:59,319 [INFO] agent.workflow: Workflow registered: 'research' (4 steps)
+2026-05-20 16:14:59,320 [INFO] agent.workflow: Workflow registered: 'analyze_text' (3 steps)
+2026-05-20 16:14:59,320 [INFO] agent.workflow: Workflow registered: 'code_review' (2 steps)
+2026-05-20 16:14:59,331 [INFO] agent.notifications: Notification channel added: console (console)
+2026-05-20 16:14:59,341 [INFO] agent.scheduler: Job registered: 'memory_cleanup' [0 3 * * *]
+2026-05-20 16:14:59,342 [INFO] agent.scheduler: Job registered: 'health_report' [*/15 * * * *]
+2026-05-20 16:14:59,342 [INFO] agent.core: OMNI Agent starting...
+2026-05-20 16:14:59,345 [INFO] agent.skills_manager: Skill registered: summarize v1.0.0
+2026-05-20 16:14:59,345 [INFO] agent.skills_manager: Skill registered: word_count v1.0.0
+2026-05-20 16:14:59,345 [INFO] agent.skills_manager: Skill registered: reverse_text v1.0.0
+2026-05-20 16:14:59,345 [INFO] agent.skills_manager: Skill registered: translate_mock v1.0.0
+2026-05-20 16:14:59,346 [INFO] agent.skills_manager: Loaded skill module: example_skills.py
+2026-05-20 16:14:59,686 [INFO] agent.scheduler: Scheduler started.
+2026-05-20 16:14:59,687 [INFO] agent.scheduler: Heartbeat started (interval=60s)
+2026-05-20 16:15:01,010 [INFO] agent.scheduler: Heartbeat: ✓ {'memory_db': 'ok', 'ollama': 'ok', 'tracer': 'ok', 'event_bus': 'ok'}
+2026-05-20 16:15:01,687 [WARNING] agent.cache: Cache: Redis unavailable (Timeout connecting to server); falling back to in-memory store
+2026-05-20 16:15:01,688 [INFO] agent.core: Cache backend: memory
+2026-05-20 16:15:01,688 [INFO] agent.pipeline: Pipeline registered: 'research' (4 steps)
+2026-05-20 16:15:01,689 [INFO] agent.pipeline: Pipeline registered: 'code_gen' (5 steps)
+2026-05-20 16:15:01,689 [INFO] agent.pipeline: Pipeline registered: 'job_search_tank_adr_improved' (1 steps)
+2026-05-20 16:15:01,690 [INFO] agent.core: OMNI Agent ready.
+2026-05-20 16:15:01,823 [INFO] agent.config_manager: Config manager API at /config/
+2026-05-20 16:15:01,824 [INFO] agent.auth: Auth routes registered at /auth/*
+2026-05-20 16:15:01,824 [INFO] agent.export: Export routes registered at /export/*
+2026-05-20 16:15:01,825 [INFO] agent.streaming: Streaming SSE routes registered: /stream/chat, /stream/events, /stream/traces, /stream/stats
+2026-05-20 16:15:01,825 [INFO] agent.dashboard: Dashboard registered at /dashboard
+2026-05-20 16:15:01,827 [INFO] agent.config_manager: Config hot-reloaded from .env
+2026-05-20 16:15:01,827 [INFO] __main__: API server running on http://127.0.0.1:8765
+
+🚀 OMNI Agent running in 'api' mode at http://127.0.0.1:8765/dashboard. Press Ctrl+C to stop.
+
+2026-05-20 16:15:02,153 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:16:15:02 +0300] "GET /status HTTP/1.1" 200 1723 "-" "curl/8.19.0"
+2026-05-20 16:15:02,217 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:16:15:02 +0300] "GET /health HTTP/1.1" 200 1723 "-" "curl/8.19.0"
+2026-05-20 16:15:02,302 [INFO] aiohttp.access: 127.0.0.1 [20/May/2026:16:15:02 +0300] "GET / HTTP/1.1" 401 231 "-" "curl/8.19.0"

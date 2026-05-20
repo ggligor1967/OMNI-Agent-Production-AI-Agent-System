@@ -267,6 +267,16 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
     from agent.auth import auth_context_from_request, effective_user_id, scoped_session_id
     from agent.security_audit import build_memory_audit_callback
 
+    def _status_payload() -> dict[str, Any]:
+        return {
+            "status": agent.memory.get_state("agent_status"),
+            "health": agent.heartbeat.last_status,
+            "jobs": agent.scheduler.list_jobs(),
+            "skills": agent.skills.list_skills(),
+            "router": agent.llm.get_router_summary(),
+            "model_stats": agent.llm.get_stats(),
+        }
+
     async def chat_endpoint(request: web.Request) -> web.Response:
         data = await request.json()
         ctx = auth_context_from_request(request)
@@ -306,14 +316,10 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
         })
 
     async def status_endpoint(request: web.Request) -> web.Response:
-        return web.json_response({
-            "status": agent.memory.get_state("agent_status"),
-            "health": agent.heartbeat.last_status,
-            "jobs": agent.scheduler.list_jobs(),
-            "skills": agent.skills.list_skills(),
-            "router": agent.llm.get_router_summary(),
-            "model_stats": agent.llm.get_stats(),
-        })
+        return web.json_response(_status_payload())
+
+    async def health_endpoint(request: web.Request) -> web.Response:
+        return web.json_response(_status_payload())
 
     async def memories_endpoint(request: web.Request) -> web.Response:
         query = request.rel_url.query.get("q", "")
@@ -639,6 +645,7 @@ async def run_api(agent: 'OmniAgent') -> tuple['web.AppRunner', int]:
     # Core
     app.router.add_post("/chat", chat_endpoint)
     app.router.add_get("/status", status_endpoint)
+    app.router.add_get("/health", health_endpoint)
     app.router.add_get("/memories", memories_endpoint)
     app.router.add_get("/audit", audit_endpoint)
     # Models
