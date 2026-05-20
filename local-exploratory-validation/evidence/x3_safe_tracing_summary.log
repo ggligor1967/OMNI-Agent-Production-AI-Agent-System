@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 715
+Date: Wed, 20 May 2026 17:43:45 GMT
+Server: Python/3.13 aiohttp/3.13.5
+Connection: close
+
+{"total_spans": 173, "completed_spans": 172, "error_spans": 0, "error_rate": 0.0, "llm_calls": 3, "total_cost_usd": 3.8e-05, "total_input_tokens": 14, "total_output_tokens": 8, "p50_latency_ms": 1.9, "p95_latency_ms": 86.3, "by_model": {"qwen3-vl:235b-instruct-cloud": {"calls": 2, "cost_usd": 3.8e-05, "total_tokens": 22, "p50_ms": 1361.2, "p95_ms": 1361.2, "avg_ms": 1339.8}, "unknown": {"calls": 1, "cost_usd": 0.0, "total_tokens": 0, "p50_ms": 1319.4, "p95_ms": 1319.4, "avg_ms": 1319.4}}, "telemetry": {"enabled": false, "service_name": "omni-agent", "exporter": "none", "endpoint": "", "sample_rate": 1.0, "provider": "noop", "active": false, "reason": "OpenTelemetry export disabled via OTEL_ENABLED=false"}}

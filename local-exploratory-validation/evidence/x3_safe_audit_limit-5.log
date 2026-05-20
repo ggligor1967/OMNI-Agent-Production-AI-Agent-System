@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 1068
+Date: Wed, 20 May 2026 17:43:43 GMT
+Server: Python/3.13 aiohttp/3.13.5
+Connection: close
+
+{"log": [{"action": "security.auth_failure", "actor": "anonymous", "details": "{\"path\": \"/chat\", \"auth_method\": \"jwt\", \"reason\": \"Invalid or expired JWT\", \"remote\": \"127.0.0.1\"}", "ts": 1779299023.322}, {"action": "security.auth_failure", "actor": "anonymous", "details": "{\"path\": \"/chat\", \"auth_method\": \"anonymous\", \"reason\": \"No credentials provided\", \"remote\": \"127.0.0.1\"}", "ts": 1779299023.302}, {"action": "security.auth_failure", "actor": "anonymous", "details": "{\"path\": \"/models\", \"auth_method\": \"api_key\", \"reason\": \"Invalid API key\", \"remote\": \"127.0.0.1\"}", "ts": 1779298610.508}, {"action": "security.auth_failure", "actor": "anonymous", "details": "{\"path\": \"/memories\", \"auth_method\": \"api_key\", \"reason\": \"Invalid API key\", \"remote\": \"127.0.0.1\"}", "ts": 1779298604.853}, {"action": "security.auth_failure", "actor": "anonymous", "details": "{\"path\": \"/templates\", \"auth_method\": \"api_key\", \"reason\": \"Invalid API key\", \"remote\": \"127.0.0.1\"}", "ts": 1779298604.825}]}

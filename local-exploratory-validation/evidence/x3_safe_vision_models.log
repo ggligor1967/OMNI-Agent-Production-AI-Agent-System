@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 221
+Date: Wed, 20 May 2026 17:43:45 GMT
+Server: Python/3.13 aiohttp/3.13.5
+Connection: close
+
+{"models": ["bakllava:7b", "claude-3.7-sonnet:cloud", "gemini-1.5-pro:cloud", "gemini-2.0-flash-exp:cloud", "gpt-4.1-vision:cloud", "llava:13b", "llava:34b", "qwen3-vl:235b-instruct-cloud", "qwen3-vl:70b-instruct-cloud"]}

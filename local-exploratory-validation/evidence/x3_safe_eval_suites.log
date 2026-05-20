@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 294
+Date: Wed, 20 May 2026 17:43:45 GMT
+Server: Python/3.13 aiohttp/3.13.5
+Connection: close
+
+{"suites": [{"name": "basic_capabilities", "description": "Core language understanding", "cases": 5}, {"name": "code_generation", "description": "Code quality and correctness", "cases": 2}, {"name": "instruction_following", "description": "Following explicit format instructions", "cases": 3}]}

@@ -1,0 +1,114 @@
+[
+  {
+    "endpoint": "/cache/stats",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"backend\": \"memory\", \"keys\": 1}"
+  },
+  {
+    "endpoint": "/audit?limit=5",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"log\": [{\"action\": \"security.auth_failure\", \"actor\": \"anonymous\", \"details\": \"{\\\"path\\\": \\\"/chat\\\", \\\"auth_method\\\": \\\"jwt\\\", \\\"reason\\\": \\\"Invalid or expired JWT\\\", \\\"remote\\\": \\\"127.0.0.1\\\"}\", \"ts\": 1779299023.322}, {"
+  },
+  {
+    "endpoint": "/models",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"count\": 37, \"available_count\": 27, \"models\": [{\"id\": \"cogito-2.1:671b-cloud\", \"display_name\": \"Cogito 2.1 671B\", \"provider\": \"Cogito\", \"context_k\": 131, \"tier\": \"flagship\", \"capabilities\": [\"reasoning\", \"math\", \"long_c"
+  },
+  {
+    "endpoint": "/pipelines",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"pipelines\": [{\"name\": \"research\", \"description\": \"Web research with auto-summarization\", \"steps\": 4}, {\"name\": \"code_gen\", \"description\": \"Generate, review, and test code\", \"steps\": 5}, {\"name\": \"job_search_tank_adr_im"
+  },
+  {
+    "endpoint": "/workflows",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"workflows\": [{\"name\": \"research\", \"description\": \"Web research with summarization\", \"steps\": 4, \"model_hint\": \"qwen3-next:80b-cloud\", \"actions\": [\"memory\", \"llm\", \"tool\", \"structured\"]}, {\"name\": \"analyze_text\", \"descr"
+  },
+  {
+    "endpoint": "/templates",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"templates\": [{\"name\": \"agent_plan\", \"description\": \"Generate a step-by-step plan for an agentic task\", \"version\": \"1.0.0\", \"tags\": [\"agents\", \"planning\"], \"few_shot_count\": 0, \"system_prompt\": false, \"model_hint\": \"dev"
+  },
+  {
+    "endpoint": "/tools",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"tools\": [{\"name\": \"analyze_text\", \"description\": \"Analyze text for sentiment, keywords, and entities\", \"category\": \"analysis\", \"params\": [\"text\"], \"enabled\": true, \"call_count\": 0, \"error_count\": 0, \"avg_latency_ms\": 0"
+  },
+  {
+    "endpoint": "/personas",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"personas\": [{\"name\": \"assistant\", \"display_name\": \"General Assistant\", \"description\": \"Balanced, helpful general-purpose assistant\", \"response_style\": \"conversational\", \"formality\": 0.5, \"expertise_level\": \"intermediat"
+  },
+  {
+    "endpoint": "/tracing/summary",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"total_spans\": 173, \"completed_spans\": 172, \"error_spans\": 0, \"error_rate\": 0.0, \"llm_calls\": 3, \"total_cost_usd\": 3.8e-05, \"total_input_tokens\": 14, \"total_output_tokens\": 8, \"p50_latency_ms\": 1.9, \"p95_latency_ms\": 86"
+  },
+  {
+    "endpoint": "/sandbox/history",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"history\": [], \"stats\": {\"total\": 0, \"success_rate\": 0.0, \"avg_duration_ms\": 0.0}}"
+  },
+  {
+    "endpoint": "/vision/models",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"models\": [\"bakllava:7b\", \"claude-3.7-sonnet:cloud\", \"gemini-1.5-pro:cloud\", \"gemini-2.0-flash-exp:cloud\", \"gpt-4.1-vision:cloud\", \"llava:13b\", \"llava:34b\", \"qwen3-vl:235b-instruct-cloud\", \"qwen3-vl:70b-instruct-cloud\"]"
+  },
+  {
+    "endpoint": "/kg/stats",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"nodes\": 0, \"edges\": 0, \"in_memory_nodes\": 0, \"in_memory_edges\": 0, \"directed\": true}"
+  },
+  {
+    "endpoint": "/eval/suites",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"suites\": [{\"name\": \"basic_capabilities\", \"description\": \"Core language understanding\", \"cases\": 5}, {\"name\": \"code_generation\", \"description\": \"Code quality and correctness\", \"cases\": 2}, {\"name\": \"instruction_followin"
+  },
+  {
+    "endpoint": "/notifications/channels",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"channels\": [{\"name\": \"console\", \"type\": \"console\", \"enabled\": true, \"max_per_minute\": 1000}]}"
+  },
+  {
+    "endpoint": "/notifications/stats",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"stats\": {\"total\": 0, \"by_status\": {}, \"by_channel\": {}}, \"recent\": []}"
+  },
+  {
+    "endpoint": "/memories",
+    "method": "GET",
+    "status": 200,
+    "reason": "OK",
+    "body_preview": "{\"memories\": []}"
+  }
+]
