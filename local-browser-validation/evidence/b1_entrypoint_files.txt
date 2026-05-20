@@ -1,0 +1,4 @@
+README.md
+docker-compose.yml
+docs/adr/README.md
+main.py

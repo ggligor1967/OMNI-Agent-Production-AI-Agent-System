@@ -1,0 +1,1620 @@
+main.py:66:        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+main.py:186:            "No usable API ports configured. Adjust API_PORT/API_FALLBACK_PORTS so they do not overlap SEARXNG_URL."
+main.py:208:    formatter = resource_info.get("formatter") if isinstance(resource_info, dict) else None
+main.py:209:    if formatter:
+main.py:210:        return formatter
+main.py:342:        # Add Ollama models that are NOT in the static registry
+main.py:389:        decision = agent.llm.router.route(text, session_id=session_id,
+main.py:547:        fmt = request.rel_url.query.get("format", "list")
+main.py:631:    from agent.dashboard import register_dashboard
+main.py:641:            public_paths=["/status", "/health", "/auth/bootstrap", "/dashboard", "/favicon.ico", "/cache/stats", "/audit"],
+main.py:646:    app.router.add_post("/chat", chat_endpoint)
+main.py:647:    app.router.add_get("/status", status_endpoint)
+main.py:648:    app.router.add_get("/health", health_endpoint)
+main.py:873:    register_dashboard(app, agent)
+main.py:968:            dashboard_url = f"http://{_display_host(CONFIG.API_HOST)}:{api_port}/dashboard"
+main.py:970:                f"\n🚀 OMNI Agent running in '{args.mode}' mode at {dashboard_url}. "
+agent/_legacy/agent_memory_v2.py:145:    @staticmethod
+agent/_legacy/agent_memory_v2.py:330:        Returns number of consolidations performed.
+agent/_legacy/audit_logger_v2.py:34:    actor_id: str = ""          # user/service performing action
+agent/_legacy/batch_processor_v2.py:320:    @staticmethod
+agent/_legacy/batch_processor_v3.py:83:    - Submit items individually or in bulk
+agent/_legacy/batch_processor_v3.py:91:    - Transform pipeline per item before processing
+agent/_legacy/batch_processor_v3.py:109:        self._transforms:       List[Callable] = []
+agent/_legacy/batch_processor_v3.py:144:    # ── HOOKS & TRANSFORMS ───────────────────────────────────────────
+agent/_legacy/batch_processor_v3.py:150:    def add_transform(self, fn: Callable):   self._transforms.append(fn)
+agent/_legacy/batch_processor_v3.py:243:        # Apply transforms
+agent/_legacy/batch_processor_v3.py:245:        for t in self._transforms:
+agent/_legacy/config_manager_v2.py:10:class ConfigFormat(str, Enum):
+agent/_legacy/context_composer_v2.py:127:    @staticmethod
+agent/_legacy/data_pipeline_v2.py:3:transform chains, fan-out, fan-in, branching, and lineage tracking.
+agent/_legacy/data_pipeline_v2.py:8:- Transforms: map, filter, flatmap, rename_fields, add_field,
+agent/_legacy/data_pipeline_v2.py:12:- Pipeline: named sequence of source → [transforms] → sink
+agent/_legacy/data_pipeline_v2.py:16:- Lineage: each transform appends its name to record.lineage
+agent/_legacy/data_pipeline_v2.py:17:- Error handling: SKIP / DEAD_LETTER / RAISE per transform
+agent/_legacy/data_pipeline_v2.py:75:# ── Transform builders ─────────────────────────────────────────────────────────
+agent/_legacy/data_pipeline_v2.py:78:    def _transform(rec: Record) -> Optional[Record]:
+agent/_legacy/data_pipeline_v2.py:80:    _transform.__name__ = name; return _transform
+agent/_legacy/data_pipeline_v2.py:83:    def _transform(rec: Record) -> Optional[Record]:
+agent/_legacy/data_pipeline_v2.py:87:    _transform.__name__ = name; return _transform
+agent/_legacy/data_pipeline_v2.py:91:    def _transform(rec: Record) -> List[Record]:
+agent/_legacy/data_pipeline_v2.py:97:    _transform.__name__ = name; return _transform
+agent/_legacy/data_pipeline_v2.py:100:    def _transform(rec: Record) -> Optional[Record]:
+agent/_legacy/data_pipeline_v2.py:105:    _transform.__name__ = name; return _transform
+agent/_legacy/data_pipeline_v2.py:109:    def _transform(rec: Record) -> Optional[Record]:
+agent/_legacy/data_pipeline_v2.py:112:    _transform.__name__ = name; return _transform
+agent/_legacy/data_pipeline_v2.py:115:    def _transform(rec: Record) -> Optional[Record]:
+agent/_legacy/data_pipeline_v2.py:118:    _transform.__name__ = name; return _transform
+agent/_legacy/data_pipeline_v2.py:121:    def _transform(rec: Record) -> Optional[Record]:
+agent/_legacy/data_pipeline_v2.py:128:    _transform.__name__ = name; return _transform
+agent/_legacy/data_pipeline_v2.py:132:    def _transform(rec: Record) -> Optional[Record]:
+agent/_legacy/data_pipeline_v2.py:137:    _transform.__name__ = name; return _transform
+agent/_legacy/data_pipeline_v2.py:140:    def _transform(rec: Record) -> Optional[Record]:
+agent/_legacy/data_pipeline_v2.py:142:    _transform.__name__ = name; return _transform
+agent/_legacy/data_pipeline_v2.py:147:    def _transform(rec: Record) -> Optional[Record]:
+agent/_legacy/data_pipeline_v2.py:154:    _transform.__name__ = name; return _transform
+agent/_legacy/data_pipeline_v2.py:241:    Composable ETL pipeline with transforms, branching, and lineage.
+agent/_legacy/data_pipeline_v2.py:248:            transforms=[
+agent/_legacy/data_pipeline_v2.py:270:                  transforms: List[Callable] = None,
+agent/_legacy/data_pipeline_v2.py:275:            "source": source, "transforms": list(transforms or []),
+agent/_legacy/data_pipeline_v2.py:279:    def _apply_transform(self, tf: Callable, rec: Record,
+agent/_legacy/data_pipeline_v2.py:311:        for tf in cfg["transforms"]:
+agent/_legacy/data_pipeline_v2.py:319:            # Apply transforms
+agent/_legacy/data_pipeline_v2.py:320:            for tf in cfg["transforms"]:
+agent/_legacy/data_pipeline_v2.py:325:                        self._apply_transform(tf, rec, stats,
+agent/_legacy/data_pipeline_v2.py:354:                 transforms: List[Callable],
+agent/_legacy/data_pipeline_v2.py:356:        """Broadcast each record to all sinks after transforms."""
+agent/_legacy/data_pipeline_v2.py:359:        self.register(name, source, transforms, multi_sink)
+agent/_legacy/data_pipeline_v3.py:1:"""OMNI Agent — Data Pipeline V3: streaming ETL with transforms, sinks, and backpressure."""
+agent/_legacy/data_pipeline_v3.py:75:class TransformError(Exception):
+agent/_legacy/data_pipeline_v3.py:80:    """Raise in transform to drop a record without error."""
+agent/_legacy/data_pipeline_v3.py:89:    batch_size: int = 1    # >1 = batch transform
+agent/_legacy/data_pipeline_v3.py:100:    - Ordered transform stages
+agent/_legacy/data_pipeline_v3.py:103:    - Batch transforms
+agent/_legacy/data_pipeline_v3.py:174:        """Convenience: wrap a data-only transform."""
+agent/_legacy/data_validator_v2.py:1:"""OMNI Agent — Data Validator V2: schema validation, rules, transforms, reporting."""
+agent/_legacy/data_validator_v2.py:42:    transform_fn: Optional[Callable[[Any], Any]] = None
+agent/_legacy/data_validator_v2.py:70:    transformed_data: Optional[Dict[str, Any]] = None
+agent/_legacy/data_validator_v2.py:131:    - Built-in format validators: email, url, uuid, date
+agent/_legacy/data_validator_v2.py:134:    - Transform functions applied after validation
+agent/_legacy/data_validator_v2.py:184:                   transform_fn: Optional[Callable] = None,
+agent/_legacy/data_validator_v2.py:195:            transform_fn=transform_fn,
+agent/_legacy/data_validator_v2.py:275:            # Format validators
+agent/_legacy/data_validator_v2.py:276:            fmt_err = self._check_format(raw, fd)
+agent/_legacy/data_validator_v2.py:281:                    severity=fd.severity, rule="format"))
+agent/_legacy/data_validator_v2.py:317:            # Transform
+agent/_legacy/data_validator_v2.py:318:            if fd.transform_fn and res.valid:
+agent/_legacy/data_validator_v2.py:320:                    out[fname] = fd.transform_fn(raw)
+agent/_legacy/data_validator_v2.py:323:                        field=fname, message=f"Transform failed: {exc}",
+agent/_legacy/data_validator_v2.py:324:                        value=raw, severity=Severity.ERROR, rule="transform"))
+agent/_legacy/data_validator_v2.py:344:        res.transformed_data = out
+agent/_legacy/data_validator_v2.py:361:    def _check_format(self, val: Any, fd: FieldDef) -> Optional[str]:
+agent/_legacy/event_bus_v2.py:97:    - Middleware chain (pre-publish transforms)
+agent/_legacy/experiment_tracker_v2.py:122:    - Run search by tag/status/metric range
+agent/_legacy/load_balancer_v2.py:224:    def route(self, handler: Callable[[Backend], Any],
+agent/_legacy/model_router_v2.py:119:    Tracks live performance, supports fallback chains, and adapts routing.
+agent/_legacy/model_router_v2.py:201:    def route(self, required_capabilities: Optional[Set[str]] = None,
+agent/_legacy/model_router_v2.py:238:        return await loop.run_in_executor(None, lambda: self.route(**kwargs))
+agent/_legacy/model_router_v2.py:244:        decision = self.route(required_capabilities, min_context)
+agent/_legacy/output_validator_v2.py:198:    """Validates text against semantic rules (length, format, banned patterns)."""
+agent/_legacy/permission_manager_v2.py:17:    STATIC = "static" # Hardcoded allow/deny
+agent/_legacy/permission_manager_v2.py:126:    - Policy definitions: RBAC (role-based), ABAC (condition fn), static
+agent/_legacy/persona_engine_v2.py:10:    COMMUNICATION = "communication"   # formal/casual/technical
+agent/_legacy/persona_engine_v2.py:310:        formal     = p.get_trait_value("formal")
+agent/_legacy/persona_engine_v2.py:312:        if formal > 0.8 and casual > 0.8:
+agent/_legacy/persona_engine_v2.py:313:            issues.append("Conflict: both 'formal' and 'casual' are high")
+agent/_legacy/pipeline_registry_v2.py:17:    TRANSFORM  = "transform"
+agent/_legacy/pipeline_registry_v2.py:31:    step_type: StepType = StepType.TRANSFORM
+agent/_legacy/pipeline_registry_v2.py:239:                  step_type: StepType = StepType.TRANSFORM,
+agent/_legacy/prompt_chain_v2.py:14:    TRANSFORM = "transform"
+agent/_legacy/prompt_chain_v2.py:18:class OutputFormat(str, Enum):
+agent/_legacy/prompt_chain_v2.py:32:    output_format: OutputFormat = OutputFormat.TEXT
+agent/_legacy/prompt_chain_v2.py:35:    transform_fn: Optional[Callable[[Any, Dict], Any]] = None
+agent/_legacy/prompt_chain_v2.py:54:            "output_format": self.output_format.value,
+agent/_legacy/prompt_chain_v2.py:112:    - Node types: PROMPT / BRANCH / MEMORY / PARSER / TRANSFORM / STOP
+agent/_legacy/prompt_chain_v2.py:167:                  output_format: OutputFormat = OutputFormat.TEXT,
+agent/_legacy/prompt_chain_v2.py:170:                  transform_fn: Optional[Callable] = None,
+agent/_legacy/prompt_chain_v2.py:183:            output_format=output_format,
+agent/_legacy/prompt_chain_v2.py:185:            branch_fn=branch_fn, transform_fn=transform_fn,
+agent/_legacy/prompt_chain_v2.py:281:        if node.node_type == ChainNodeType.TRANSFORM:
+agent/_legacy/prompt_chain_v2.py:282:            if node.transform_fn:
+agent/_legacy/prompt_chain_v2.py:283:                return node.transform_fn(prev_output, vars_ctx)
+agent/_legacy/prompt_chain_v2.py:289:            return self._parse_output(str(prev_output), node.output_format)
+agent/_legacy/prompt_chain_v2.py:307:        output = self._parse_output(str(raw), node.output_format)
+agent/_legacy/prompt_chain_v2.py:313:    def _parse_output(self, raw: str, fmt: OutputFormat) -> Any:
+agent/_legacy/prompt_chain_v2.py:314:        if fmt == OutputFormat.TEXT:
+agent/_legacy/prompt_chain_v2.py:316:        if fmt == OutputFormat.JSON:
+agent/_legacy/prompt_chain_v2.py:322:        if fmt == OutputFormat.LIST:
+agent/_legacy/prompt_chain_v2.py:325:        if fmt == OutputFormat.BOOL:
+agent/_legacy/prompt_chain_v2.py:327:        if fmt == OutputFormat.NUMBER:
+agent/_legacy/prompt_optimizer_v2.py:290:    @staticmethod
+agent/_legacy/query_planner_v2.py:314:            hints.append("HINT: LIMIT applied late — index could improve performance")
+agent/_legacy/query_planner_v2.py:378:            lines.extend(self._format_node(plan.root, indent=4))
+agent/_legacy/query_planner_v2.py:381:    def _format_node(self, node: PlanNode, indent: int) -> List[str]:
+agent/_legacy/query_planner_v2.py:388:            lines.extend(self._format_node(child, indent + 2))
+agent/_legacy/rate_limiter_v2.py:70:    @staticmethod
+agent/_legacy/rate_limiter_v2.py:90:    @staticmethod
+agent/_legacy/rate_limiter_v2.py:105:    @staticmethod
+agent/_legacy/rate_limiter_v2.py:119:    @staticmethod
+agent/_legacy/response_streamer_v2.py:1:"""OMNI Agent — Response Streamer V2: token streaming with buffering, transforms and SSE."""
+agent/_legacy/response_streamer_v2.py:40:        """Format as Server-Sent Event string."""
+agent/_legacy/response_streamer_v2.py:96:    - SSE (Server-Sent Events) formatting
+agent/_legacy/response_streamer_v2.py:97:    - Per-chunk transforms (filter, map, redact)
+agent/_legacy/response_streamer_v2.py:117:        self._transforms: List[Callable[[StreamChunk], Optional[StreamChunk]]] = []
+agent/_legacy/response_streamer_v2.py:122:    # ── TRANSFORMS ────────────────────────────────────────────────────
+agent/_legacy/response_streamer_v2.py:124:    def add_transform(self, fn: Callable[[StreamChunk],
+agent/_legacy/response_streamer_v2.py:126:        """Add a chunk transform. Return None to drop the chunk."""
+agent/_legacy/response_streamer_v2.py:127:        self._transforms.append(fn)
+agent/_legacy/response_streamer_v2.py:136:        self.add_transform(_filter)
+agent/_legacy/response_streamer_v2.py:139:        """Transform token text."""
+agent/_legacy/response_streamer_v2.py:144:        self.add_transform(_map)
+agent/_legacy/response_streamer_v2.py:157:        self.add_transform(_redact)
+agent/_legacy/response_streamer_v2.py:159:    def _apply_transforms(self, chunk: StreamChunk) -> Optional[StreamChunk]:
+agent/_legacy/response_streamer_v2.py:160:        for fn in self._transforms:
+agent/_legacy/response_streamer_v2.py:192:                chunk = self._apply_transforms(chunk)
+agent/_legacy/response_streamer_v2.py:223:        """Stream as SSE formatted strings."""
+agent/_legacy/response_streamer_v2.py:231:        """Stream a static string word by word or by chunk_size chars."""
+agent/_legacy/response_streamer_v2.py:267:                chunk = self._apply_transforms(chunk)
+agent/_legacy/response_streamer_v2.py:323:            "transforms": len(self._transforms),
+agent/_legacy/retry_manager_v2.py:128:    - Per-call jitter (uniform range)
+agent/_legacy/retry_manager_v2.py:217:                        self._rng.uniform(b, prev_delay * 3 or b * 3))
+agent/_legacy/retry_manager_v2.py:227:            delay = delay * (1 + self._rng.uniform(-r, r))
+agent/_legacy/secrets_manager_v2.py:284:    @staticmethod
+agent/_legacy/secrets_manager_v2.py:288:    @staticmethod
+agent/_legacy/secrets_manager_v2.py:297:    @staticmethod
+agent/_legacy/stream_aggregator_v2.py:101:        self._transforms: List[Callable] = []
+agent/_legacy/stream_aggregator_v2.py:109:        # Apply transforms
+agent/_legacy/stream_aggregator_v2.py:110:        for t in self._transforms:
+agent/_legacy/stream_aggregator_v2.py:126:    def transform(self, fn: Callable[[StreamEvent], StreamEvent]) -> "Stream":
+agent/_legacy/stream_aggregator_v2.py:127:        self._transforms.append(fn)
+agent/_legacy/task_scheduler_v2.py:25:- REST API: submit dag, status, cancel, history, stats
+agent/_legacy/task_scheduler_v3.py:239:        jitter = random.uniform(0, spec.jitter_s) if spec.jitter_s > 0 else 0.0
+agent/ab_router.py:216:        decision = router.route(exp.id, user_id="user_123")
+agent/ab_router.py:375:    def route(self, exp_id: str, user_id: str = "",
+agent/ab_router.py:555:            decision = self.route(exp_id, user_id=data.get("user_id", ""))
+agent/ab_testing.py:212:        exp = ab.create_experiment("checkout_button",
+agent/ab_testing.py:217:        variant = ab.assign("checkout_button", user_id="u123")
+agent/ab_testing.py:220:        ab.convert("checkout_button", user_id="u123",
+agent/ab_testing.py:223:        results = ab.results("checkout_button", metric="purchase")
+agent/access_control.py:21:- Caching: decision cache with TTL for hot-path performance
+agent/agent_builder.py:4:Wires all platform modules (session, search, cache, governance, federation,
+agent/agent_builder.py:486:    @staticmethod
+agent/agent_builder.py:497:    @staticmethod
+agent/agent_builder.py:501:    @staticmethod
+agent/agent_monitor.py:2:Real-time health monitoring, alerting, and performance tracking for
+agent/agent_monitor.py:14:- Aggregation: per-minute rollup stored for dashboards
+agent/agent_monitor.py:330:        app.router.add_get(f"{p}/health", health_ep)
+agent/agent_supervisor.py:12:- Health monitor: periodic ping, mark degraded/down/healthy
+agent/alert_manager.py:286:            msg   = rule.message_template.format(
+agent/api_gateway.py:3:request/response transformation, and upstream proxying.
+agent/api_gateway.py:9:- Built-in middleware: auth, rate_limit, logging, cors, timeout, transform
+agent/api_gateway.py:12:- Request transformation: rewrite headers, body, path before forwarding
+agent/api_gateway.py:13:- Response transformation: rewrite headers, body after handler returns
+agent/api_gateway.py:20:- Mock responses: return static response without calling handler
+agent/api_gateway.py:50:    req_transform: Optional[Callable] = None
+agent/api_gateway.py:51:    resp_transform: Optional[Callable] = None
+agent/api_gateway.py:173:        @gw.route("GET", "/api/users/{id}", auth=AuthStrategy.APIKEY)
+agent/api_gateway.py:179:        req = GatewayRequest("GET", "/api/users/42",
+agent/api_gateway.py:208:    def route(self, method: str, pattern: str,
+agent/api_gateway.py:214:            self.register_route(method, pattern, handler=fn,
+agent/api_gateway.py:221:    def register_route(self, method: str, pattern: str,
+agent/api_gateway.py:228:                        req_transform: Callable = None,
+agent/api_gateway.py:229:                        resp_transform: Callable = None) -> RouteConfig:
+agent/api_gateway.py:235:            req_transform=req_transform, resp_transform=resp_transform)
+agent/api_gateway.py:239:    def _find_route(self, method: str, path: str
+agent/api_gateway.py:304:        match = self._find_route(req.method, req.path)
+agent/api_gateway.py:318:        # Request transform
+agent/api_gateway.py:319:        if rc.req_transform:
+agent/api_gateway.py:320:            try: req = rc.req_transform(req)
+agent/api_gateway.py:347:        # Response transform
+agent/api_gateway.py:348:        if rc.resp_transform:
+agent/api_gateway.py:349:            try: resp = rc.resp_transform(resp)
+agent/audit_logger.py:16:- Export: JSONL, CSV formats for compliance tools
+agent/audit_logger.py:190:        audit.log("alice", "login",  resource="/api/v1",  outcome=Outcome.SUCCESS)
+agent/audit_logger.py:348:            fmt = req.rel_url.query.get("format","jsonl")
+agent/auth.py:58:        "chat", "status", "memories", "stream/chat", "stream/events",
+agent/auth.py:421:        app.middlewares.append(auth.middleware(public_paths=["/status"]))
+agent/auth.py:607:        _public = set(public_paths or ["/status", "/health"])
+agent/bloom_filter.py:26:- Error formula: ±1.04/√m
+agent/cache.py:215:    @staticmethod
+agent/chain_executor.py:6:- Step types: PROMPT, TRANSFORM, BRANCH, LOOP, PARALLEL, WAIT
+agent/chain_executor.py:29:    TRANSFORM = "transform"
+agent/chain_executor.py:58:    fn: Optional[Callable] = None  # transform/branch fn(context) -> output
+agent/chain_of_thought.py:15:- Format rendering: compact text trace or structured JSON
+agent/chain_of_thought.py:143:            "hypothesis": "Form a hypothesis, test it, then form a conclusion.",
+agent/circuit_breaker.py:346:        app.router.add_get( f"{p}/status",      status_ep)
+agent/cli.py:9:- Stats dashboard
+agent/cli.py:163:  /status                System status and stats
+agent/cli.py:282:            "/status":     self._cmd_status,
+agent/cli.py:345:    async def _cmd_route(self, text: str, *_):
+agent/cli.py:351:        decision = self.agent.llm.router.route(text)
+agent/collaboration.py:38:    @staticmethod
+agent/consensus.py:460:        app.router.add_get( f"{p}/status",  status_ep)
+agent/content_moderator.py:16:    MISINFORMATION  = "misinformation"
+agent/context_composer.py:3:composition, importance-weighted pruning, token budgeting, and format rendering.
+agent/context_composer.py:12:- Format templates: chat (role/content), XML, markdown, plain
+agent/context_composer.py:78:    Slot-based LLM context builder with token budgeting and format rendering.
+agent/context_composer.py:89:    def __init__(self, token_budget: int = 4096, format: str = "chat"):
+agent/context_composer.py:91:        self.default_format = format
+agent/context_composer.py:195:    def render(self, format: Optional[str] = None) -> str:
+agent/context_composer.py:196:        fmt = format or self.default_format
+agent/context_composer.py:302:                format=d.get("format", "chat"))
+agent/context_composer.py:321:            fmt = req.rel_url.query.get("format", ctx.default_format)
+agent/context_window.py:94:    # 4 overhead tokens per message (role + formatting)
+agent/context_window_manager.py:341:            "packs_performed": self._pack_count,
+agent/conversation_manager.py:302:        """Return messages formatted for LLM API call."""
+agent/conversation_router.py:178:        decision, response = await router.route("Hello there!", session_id="sess1")
+agent/conversation_router.py:281:    async def route(self, message: str,
+agent/conversation_router.py:378:        decision, response = await self.route(message, session_id)
+agent/conversation_router.py:395:            decision, response = await self.route(d["message"], d.get("session_id"))
+agent/conversation_state.py:76:    - Export to OpenAI format
+agent/core.py:68:- Use tools when you need current information or computation
+agent/core.py:71:- If you invoke a tool, format it as: [TOOL: tool_name(args)]
+agent/core.py:123:        # Formal tool registry
+agent/core.py:209:    @staticmethod
+agent/core.py:558:    @staticmethod
+agent/core.py:571:    @staticmethod
+agent/crypto_utils.py:184:    if len(parts) != 3: raise ValueError("Invalid JWT format")
+agent/dashboard.py:2:OMNI AGENT - Web Dashboard
+agent/dashboard.py:3:Real-time HTML dashboard served over aiohttp.
+agent/dashboard.py:4:Accessible at http://localhost:8000/dashboard
+agent/dashboard.py:17:CSP_NONCE_PLACEHOLDER = "__OMNI_DASHBOARD_CSP_NONCE__"
+agent/dashboard.py:20:def _dashboard_csp(nonce: str) -> str:
+agent/dashboard.py:30:    "form-action 'self'",
+agent/dashboard.py:33:DASHBOARD_HTML = r"""<!DOCTYPE html>
+agent/dashboard.py:39:<style nonce="__OMNI_DASHBOARD_CSP_NONCE__">
+agent/dashboard.py:63:.ct{color:var(--blue);font-size:0.72rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+agent/dashboard.py:104:@keyframes spin{to{transform:rotate(360deg);}}
+agent/dashboard.py:121:    <button class="btn btn-g" onclick="saveKey()">Save</button>
+agent/dashboard.py:127:  <div class="tab active" onclick="showTab('overview')">&#x1F4CA; Overview</div>
+agent/dashboard.py:128:  <div class="tab" onclick="showTab('chat')">&#x1F4AC; Chat</div>
+agent/dashboard.py:129:  <div class="tab" onclick="showTab('compare')">&#x2696;&#xFE0F; Compare</div>
+agent/dashboard.py:130:  <div class="tab" onclick="showTab('rag')">&#x1F4DA; RAG</div>
+agent/dashboard.py:131:  <div class="tab" onclick="showTab('pipelines')">&#x1F504; Pipelines</div>
+agent/dashboard.py:132:  <div class="tab" onclick="showTab('sandbox')">&#x1F5A5;&#xFE0F; Sandbox</div>
+agent/dashboard.py:133:  <div class="tab" onclick="showTab('kg')">&#x1F578;&#xFE0F; KG</div>
+agent/dashboard.py:134:  <div class="tab" onclick="showTab('tools')">&#x1F527; Tools</div>
+agent/dashboard.py:135:  <div class="tab" onclick="showTab('models')">&#x1F916; Models</div>
+agent/dashboard.py:147:        <label>Export Format</label>
+agent/dashboard.py:167:    <button class="btn btn-g" onclick="runAdrJobSearch('ov-job-search')">&#x25BA; Quick Run ADR Job Search</button>
+agent/dashboard.py:184:      <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadAudit()">Refresh</button>
+agent/dashboard.py:207:        <button class="btn btn-g" onclick="sendChat()">Send</button>
+agent/dashboard.py:208:        <button class="btn btn-r" onclick="clearChat()">Clear</button>
+agent/dashboard.py:220:          <button class="btn btn-b" onclick="loadHistory()">Load History</button>
+agent/dashboard.py:221:          <button class="btn btn-y" onclick="clearHistory()">Clear History</button>
+agent/dashboard.py:242:          <button class="btn btn-g" onclick="runCompare()">&#x25BA; Run Compare</button>
+agent/dashboard.py:264:      <button class="btn btn-g" onclick="ragIngest()">Ingest</button>
+agent/dashboard.py:277:      <button class="btn btn-b" onclick="ragQuery()">Query</button>
+agent/dashboard.py:283:      <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadRagDocs()">Refresh</button>
+agent/dashboard.py:295:          <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadPipelines()">Refresh</button>
+agent/dashboard.py:303:        <button class="btn btn-g" onclick="runPipeline()">&#x25BA; Execute</button>
+agent/dashboard.py:310:          <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadWorkflows()">Refresh</button>
+agent/dashboard.py:318:            <label>Export Format</label>
+agent/dashboard.py:338:        <button class="btn btn-g" onclick="runAdrJobSearch('job-search')">&#x25BA; Run ADR Job Search</button>
+agent/dashboard.py:347:        <button class="btn btn-b" onclick="runStructured()">&#x25BA; Parse</button>
+agent/dashboard.py:374:      <button class="btn btn-g" onclick="runSandbox()">&#x25BA; Execute</button>
+agent/dashboard.py:379:        <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadSandboxHistory()">Refresh</button>
+agent/dashboard.py:392:      <button class="btn btn-g" onclick="kgExtract()">Extract</button>
+agent/dashboard.py:403:        <button class="btn btn-b" onclick="kgSearch()">Search</button>
+agent/dashboard.py:404:        <button class="btn btn-y" onclick="kgPath()">Find Path</button>
+agent/dashboard.py:405:        <button class="btn btn-b" onclick="kgStats()">Stats</button>
+agent/dashboard.py:412:      <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="kgExport()">Export JSON</button>
+agent/dashboard.py:423:        <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadTools()">Refresh</button>
+agent/dashboard.py:427:        <button class="btn btn-y" onclick="loadToolSchema('openai')">OpenAI Schema</button>
+agent/dashboard.py:428:        <button class="btn btn-y" onclick="loadToolSchema('anthropic')">Anthropic Schema</button>
+agent/dashboard.py:436:      <button class="btn btn-g" onclick="callTool()">&#x25BA; Call</button>
+agent/dashboard.py:445:      <button class="btn btn-b" onclick="runVision()">Analyze</button>
+agent/dashboard.py:450:        <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadTracing()">Refresh</button>
+agent/dashboard.py:461:      <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="fetchModels()">Refresh</button>
+agent/dashboard.py:471:        <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadPersonas()">Refresh</button>
+agent/dashboard.py:478:          <button class="btn btn-g" onclick="setPersona()">Set</button>
+agent/dashboard.py:486:          <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadTemplates()">Refresh</button>
+agent/dashboard.py:492:          <button class="btn btn-b" style="float:right;padding:2px 8px;font-size:0.72rem" onclick="loadMemories()">Refresh</button>
+agent/dashboard.py:502:<script nonce="__OMNI_DASHBOARD_CSP_NONCE__">
+agent/dashboard.py:510:async function apiFetch(url,opts={}){
+agent/dashboard.py:513:  return fetch(url,Object.assign({},opts,{headers:h}));
+agent/dashboard.py:540:    const r=await apiFetch('/status');const d=await r.json();
+agent/dashboard.py:554:    const rj=await apiFetch('/status');const dj=await rj.json();
+agent/dashboard.py:561:    const r=await apiFetch('/cache/stats');const d=await r.json();
+agent/dashboard.py:571:    const r=await apiFetch('/audit?limit=20');const d=await r.json();
+agent/dashboard.py:582:    const r=await apiFetch('/models');const d=await r.json();
+agent/dashboard.py:602:    const r=await apiFetch('/chat',{method:'POST',body:JSON.stringify(body)});
+agent/dashboard.py:623:    const r=await apiFetch('/memories?q=session:'+encodeURIComponent(sid));const d=await r.json();
+agent/dashboard.py:634:    const r=await apiFetch('/models');const d=await r.json();
+agent/dashboard.py:649:    const r=await apiFetch('/compare',{method:'POST',body:JSON.stringify(body)});
+agent/dashboard.py:672:    const r=await apiFetch('/rag/ingest',{method:'POST',body:JSON.stringify({text,doc_id,source})});
+agent/dashboard.py:684:    const r=await apiFetch('/rag/query',{method:'POST',body:JSON.stringify(body)});
+agent/dashboard.py:697:    const r=await apiFetch('/rag/docs');const d=await r.json();
+agent/dashboard.py:710:    const r=await apiFetch('/pipelines');const d=await r.json();
+agent/dashboard.py:719:    const r=await apiFetch('/workflows');const d=await r.json();
+agent/dashboard.py:731:    const r=await apiFetch('/pipelines/'+id+'/run',{method:'POST',body:JSON.stringify({context:ctx})});
+agent/dashboard.py:740:  const exportFormat=adrJobSearchEl(prefix,'export').value||'html';
+agent/dashboard.py:743:  const args={export_format:exportFormat,verbose};
+agent/dashboard.py:774:    const r=await apiFetch('/tools/call',{method:'POST',body:JSON.stringify({tool:'run_job_search_tank_adr_improved',arguments:args})});
+agent/dashboard.py:789:    const r=await apiFetch('/structured',{method:'POST',body:JSON.stringify({prompt,schema})});
+agent/dashboard.py:802:    const r=await apiFetch('/sandbox/run',{method:'POST',body:JSON.stringify({code,language})});
+agent/dashboard.py:811:    const r=await apiFetch('/sandbox/history');const d=await r.json();
+agent/dashboard.py:828:    const r=await apiFetch('/kg/extract',{method:'POST',body:JSON.stringify({text})});
+agent/dashboard.py:836:    const r=await apiFetch('/kg/search?name='+encodeURIComponent(q));
+agent/dashboard.py:845:    const r=await apiFetch('/kg/path?from='+encodeURIComponent(from)+'&to='+encodeURIComponent(to));
+agent/dashboard.py:852:    const r=await apiFetch('/kg/stats');const d=await r.json();
+agent/dashboard.py:858:    const r=await apiFetch('/kg/export');const d=await r.json();
+agent/dashboard.py:866:    const r=await apiFetch('/tools');const d=await r.json();
+agent/dashboard.py:877:    const r=await apiFetch('/tools?format='+fmt);const d=await r.json();
+agent/dashboard.py:885:    const r=await apiFetch('/tools/call',{method:'POST',body:JSON.stringify({tool:name,arguments:params})});
+agent/dashboard.py:895:    const r=await apiFetch('/vision/analyze',{method:'POST',body:JSON.stringify({source:image,task:prompt})});
+agent/dashboard.py:902:    const r=await apiFetch('/tracing/summary');const d=await r.json();
+agent/dashboard.py:912:    const r=await apiFetch('/models');
+agent/dashboard.py:946:    const r=await apiFetch('/personas');const d=await r.json();
+agent/dashboard.py:957:    const r=await apiFetch('/personas/session/'+encodeURIComponent(sid),{method:'POST',body:JSON.stringify({persona:id})});
+agent/dashboard.py:964:    const r=await apiFetch('/templates');const d=await r.json();
+agent/dashboard.py:973:    const r=await apiFetch('/memories');const d=await r.json();
+agent/dashboard.py:993:def register_dashboard(app: web.Application, agent: "OmniAgent"):
+agent/dashboard.py:994:    """Register dashboard routes on an existing aiohttp app."""
+agent/dashboard.py:996:    async def dashboard(request):
+agent/dashboard.py:998:        html = DASHBOARD_HTML.replace(CSP_NONCE_PLACEHOLDER, nonce)
+agent/dashboard.py:1004:                "Content-Security-Policy": _dashboard_csp(nonce),
+agent/dashboard.py:1013:    app.router.add_get("/dashboard", dashboard)
+agent/dashboard.py:1014:    app.router.add_get("/", dashboard)
+agent/dashboard.py:1016:    logger.info("Dashboard registered at /dashboard")
+agent/data_augmentor.py:1:"""OMNI Agent — Data Augmentor: training data augmentation with transforms and sampling."""
+agent/data_lineage.py:1:"""OMNI Agent — Data Lineage: provenance tracking for data transformations."""
+agent/data_lineage.py:11:    TRANSFORM   = "transform"
+agent/data_lineage.py:43:    transform: str = ""
+agent/data_lineage.py:52:            "transform": self.transform,
+agent/data_lineage.py:77:                transform TEXT, created_at REAL, metadata TEXT
+agent/data_lineage.py:135:                 transform: str = "",
+agent/data_lineage.py:145:            transform=transform, metadata=metadata or {})
+agent/data_lineage.py:151:            (eid, source_id, target_id, transform, edge.created_at,
+agent/data_pipeline.py:2:ETL pipeline: source → transform stages → sink with batch sizing,
+agent/data_pipeline.py:7:- Transform stage: fn(record) → record | None (None = filter out)
+agent/data_pipeline.py:13:- Lineage: track record id through all stage transformations
+agent/data_pipeline.py:157:    ETL pipeline with staged transforms, batching, and checkpointing.
+agent/data_validator.py:20:- Error format: [{field, code, message, value}]
+agent/data_validator.py:64:# ── Format validators ──────────────────────────────────────────────────────────
+agent/data_validator.py:71:def _check_format(value: Any, type_name: str) -> Optional[str]:
+agent/data_validator.py:140:            fmt_err = _check_format(value, self.type)
+agent/data_validator.py:142:                errors.append(FieldError(path, "format_error", fmt_err, value))
+agent/database.py:160:            rows = await conn.fetch(sql, *params)
+agent/database.py:168:    @staticmethod
+agent/doc_generator.py:132:    def generate_api_docs(self, output_path: str = "docs/API.md") -> str:
+agent/document_parser.py:226:    Multi-format document parser with configurable chunking strategies.
+agent/embedding_pipeline.py:203:    @staticmethod
+agent/evaluation.py:528:        instruct = EvalSuite("instruction_following", "Following explicit format instructions")
+agent/evaluation.py:532:            category="formatting",
+agent/evaluation.py:661:        """Format A/B test results as a Markdown table."""
+agent/export.py:31:class ExportFormat(str, Enum):
+agent/export.py:285:        """Export as Graphviz DOT format."""
+agent/export.py:392:        md = exp.export_conversation("session_123", fmt=ExportFormat.MARKDOWN)
+agent/export.py:393:        html = exp.export_traces(fmt=ExportFormat.HTML)
+agent/export.py:394:        dot = exp.export_kg(fmt=ExportFormat.DOT)
+agent/export.py:408:                             fmt: ExportFormat = ExportFormat.MARKDOWN) -> str:
+agent/export.py:419:        if fmt == ExportFormat.MARKDOWN:
+agent/export.py:421:        if fmt == ExportFormat.JSON:
+agent/export.py:423:        if fmt == ExportFormat.HTML:
+agent/export.py:425:        if fmt == ExportFormat.CSV:
+agent/export.py:431:    def export_memories(self, fmt: ExportFormat = ExportFormat.JSON,
+agent/export.py:440:        if fmt == ExportFormat.JSON:
+agent/export.py:442:        if fmt == ExportFormat.CSV:
+agent/export.py:444:        if fmt == ExportFormat.MARKDOWN:
+agent/export.py:450:    def export_traces(self, fmt: ExportFormat = ExportFormat.JSON,
+agent/export.py:462:        if fmt == ExportFormat.JSON:
+agent/export.py:464:        if fmt == ExportFormat.CSV:
+agent/export.py:466:        if fmt == ExportFormat.MARKDOWN:
+agent/export.py:468:        if fmt == ExportFormat.HTML:
+agent/export.py:474:    def export_kg(self, fmt: ExportFormat = ExportFormat.JSON) -> str:
+agent/export.py:482:        if fmt == ExportFormat.JSON:
+agent/export.py:484:        if fmt == ExportFormat.DOT:
+agent/export.py:486:        if fmt == ExportFormat.CYPHER:
+agent/export.py:488:        if fmt == ExportFormat.HTML:
+agent/export.py:505:                        self.export_memories(ExportFormat.JSON))
+agent/export.py:507:                        self.export_memories(ExportFormat.CSV))
+agent/export.py:509:                        self.export_memories(ExportFormat.MARKDOWN))
+agent/export.py:513:                        self.export_traces(ExportFormat.JSON))
+agent/export.py:515:                        self.export_traces(ExportFormat.CSV))
+agent/export.py:517:                        self.export_traces(ExportFormat.HTML))
+agent/export.py:521:                        self.export_kg(ExportFormat.JSON))
+agent/export.py:523:                        self.export_kg(ExportFormat.DOT))
+agent/export.py:525:                        self.export_kg(ExportFormat.CYPHER))
+agent/export.py:533:                            self.export_conversation(sid, ExportFormat.MARKDOWN))
+agent/export.py:535:                            self.export_conversation(sid, ExportFormat.JSON))
+agent/export.py:540:                "format_version": "1.0",
+agent/export.py:576:            fmt_str = request.rel_url.query.get("format", "markdown")
+agent/export.py:578:                fmt = ExportFormat(fmt_str)
+agent/export.py:580:                fmt = ExportFormat.MARKDOWN
+agent/export.py:586:            fmt_str = request.rel_url.query.get("format", "json")
+agent/export.py:588:                fmt = ExportFormat(fmt_str)
+agent/export.py:590:                fmt = ExportFormat.JSON
+agent/export.py:595:            fmt_str = request.rel_url.query.get("format", "json")
+agent/export.py:598:                fmt = ExportFormat(fmt_str)
+agent/export.py:600:                fmt = ExportFormat.JSON
+agent/export.py:605:            fmt_str = request.rel_url.query.get("format", "json")
+agent/export.py:607:                fmt = ExportFormat(fmt_str)
+agent/export.py:609:                fmt = ExportFormat.JSON
+agent/export.py:667:def _content_type(fmt: ExportFormat) -> str:
+agent/export.py:669:        ExportFormat.JSON:     "application/json",
+agent/export.py:670:        ExportFormat.MARKDOWN: "text/markdown",
+agent/export.py:671:        ExportFormat.CSV:      "text/csv",
+agent/export.py:672:        ExportFormat.HTML:     "text/html",
+agent/export.py:673:        ExportFormat.DOT:      "text/plain",
+agent/export.py:674:        ExportFormat.CYPHER:   "text/plain",
+agent/feature_store.py:35:    transform: Optional[Callable] = None
+agent/feature_store.py:96:    - Feature definitions (typed, versioned, with transforms)
+agent/feature_store.py:141:                          transform: Optional[Callable] = None,
+agent/feature_store.py:149:            default_value=default_value, transform=transform,
+agent/feature_store.py:194:        # Apply transforms
+agent/feature_store.py:195:        transformed = {}
+agent/feature_store.py:199:            if feat and feat.transform:
+agent/feature_store.py:200:                try: v = feat.transform(v)
+agent/feature_store.py:202:            transformed[k] = v
+agent/feature_store.py:207:        self._online[entity_id].update(transformed)
+agent/feature_store.py:214:            (entity_id, feature_group, json.dumps(transformed, default=str), now))
+agent/feature_store.py:218:        self._update_stats(transformed)
+agent/feature_store.py:220:        return FeatureVector(entity_id=entity_id, features=transformed,
+agent/feedback_analyzer.py:15:    ANNOTATION  = "annotation"    # free-form label
+agent/feedback_analyzer.py:101:    # ── SUBMIT ────────────────────────────────────────────────────────
+agent/feedback_analyzer.py:103:    def submit(self, response_id: str,
+agent/feedback_analyzer.py:136:    def submit_thumbs(self, response_id: str, positive: bool,
+agent/feedback_analyzer.py:138:        return self.submit(response_id,
+agent/feedback_analyzer.py:142:    def submit_rating(self, response_id: str, rating: float, **kwargs) -> FeedbackEntry:
+agent/feedback_analyzer.py:144:        return self.submit(response_id, FeedbackType.RATING, rating, **kwargs)
+agent/feedback_analyzer.py:146:    def submit_correction(self, response_id: str, correct_text: str,
+agent/feedback_analyzer.py:148:        return self.submit(response_id, FeedbackType.CORRECTION,
+agent/feedback_collector.py:16:- REST API: submit, aggregate, trends, export, stats
+agent/feedback_collector.py:199:        # Submit feedback
+agent/feedback_collector.py:200:        fc.submit("resp-42", FeedbackType.RATING, rating=4.0, user_id="alice")
+agent/feedback_collector.py:201:        fc.submit("resp-42", FeedbackType.THUMBS, thumbs=True, user_id="bob")
+agent/feedback_collector.py:202:        fc.submit("resp-42", FeedbackType.TEXT, text="Very helpful!", user_id="carol")
+agent/feedback_collector.py:219:    def submit(self, item_id: str,
+agent/feedback_collector.py:310:        async def submit_ep(req):
+agent/feedback_collector.py:312:            fb = self.submit(d["item_id"],
+agent/feedback_collector.py:331:        app.router.add_post(f"{p}/submit",              submit_ep)
+agent/gateway.py:14:- Health check bypass: /health and /ready skip auth
+agent/gateway.py:143:        PUBLIC_PREFIXES = ["/health", "/ready", "/metrics", "/favicon"]
+agent/gateway.py:175:                 api_prefix: str = "/api/v1",
+agent/gateway.py:364:        app.router.add_get("/health", self._health_handler)
+agent/gateway.py:439:        module.add_route("GET", "/ping", lambda req: web.Response(text="pong"))
+agent/gateway.py:446:    def add_route(self, method: str, path: str, handler: Callable):
+agent/gateway.py:452:            app.router.add_route(method, f"{prefix}{path}", handler)
+agent/governance.py:72:     "Credit card number (Luhn-format)"),
+agent/governance.py:528:        "analytics":     "Usage analytics and performance monitoring",
+agent/graph_engine.py:23:- Export: adjacency dict, edge list, DOT format
+agent/health_dashboard.py:1:"""OMNI AGENT - Health Dashboard
+agent/health_dashboard.py:201:class HealthDashboard:
+agent/health_dashboard.py:206:        dashboard = HealthDashboard()
+agent/health_dashboard.py:214:        dashboard.register("postgres", check_db,
+agent/health_dashboard.py:218:        await dashboard.start()
+agent/health_dashboard.py:219:        status = dashboard.get_status()
+agent/health_dashboard.py:222:    def __init__(self, db_path: str = "data/health.db",
+agent/health_dashboard.py:337:            # Normalise HealthStatus/HealthState values
+agent/health_dashboard.py:416:        p = f"{prefix}/health"
+agent/health_dashboard.py:417:        app.router.add_get( f"{p}/status",    status_ep)
+agent/health_dashboard.py:422:        logger.info(f"Health dashboard API at {prefix}/health/")
+agent/health_monitor.py:148:                                  url="http://localhost:8080/health"))
+agent/health_monitor.py:156:    def __init__(self, db_path: str = "data/health.db"):
+agent/health_monitor.py:381:        p = f"{prefix}/health"
+agent/health_monitor.py:382:        app.router.add_get( f"{p}/status",  status_ep)
+agent/health_monitor.py:386:        logger.info(f"Health monitor API at {prefix}/health/")
+agent/job_scheduler.py:141:            self.next_run += random.uniform(0, self.jitter_s)
+agent/jobs.py:16:- REST API: submit, cancel, get status, list, DLQ inspection
+agent/jobs.py:379:        # Submit jobs
+agent/jobs.py:380:        job_id = await queue.submit("send_email",
+agent/jobs.py:418:    async def submit(self, job_type: str, payload: Dict[str, Any],
+agent/jobs.py:425:        """Submit a job to the queue. Returns job ID."""
+agent/jobs.py:438:        logger.info(f"Job submitted: id={job.id} type={job_type} "
+agent/jobs.py:605:        async def submit_job(request):
+agent/jobs.py:607:            job_id = await self.submit(
+agent/jobs.py:645:        app.router.add_post(f"{prefix}/jobs",             submit_job)
+agent/llm_cache.py:9:- Multiple embedding backends: sentence-transformers, OpenAI, or simple TF-IDF
+agent/llm_cache.py:56:    Good enough for caching; use sentence-transformers for higher quality.
+agent/llm_cache.py:87:class SentenceTransformerEmbedder:
+agent/llm_cache.py:89:    sentence-transformers backend (requires: pip install sentence-transformers).
+agent/llm_cache.py:97:            from sentence_transformers import SentenceTransformer
+agent/llm_cache.py:98:            self._model = SentenceTransformer(model_name)
+agent/llm_cache.py:99:            logger.info(f"SentenceTransformer loaded: {model_name}")
+agent/llm_cache.py:101:            logger.info("sentence-transformers not installed, using TF-IDF fallback")
+agent/llm_judge.py:10:- Leaderboard: track model/prompt performance over time
+agent/llm_router.py:202:        response = await router.route(RouteRequest(messages=[...]))
+agent/llm_router.py:266:    async def route(self, req: RouteRequest,
+agent/llm_router.py:380:            resp = await self.route(rr, d.get("provider"))
+agent/log_aggregator.py:195:                  fields={"method":"GET","path":"/health"})
+agent/log_aggregator.py:310:    def export(self, format: str = "jsonl", **kwargs) -> str:
+agent/log_aggregator.py:311:        if format == "csv": return self._store.export_csv(**kwargs)
+agent/memory_compressor.py:191:    @staticmethod
+agent/metrics_collector.py:13:- Prometheus text format export: # HELP, # TYPE, metric{labels} value
+agent/metrics_collector.py:172:        mc.observe("response_time", 0.042, labels={"endpoint": "/api"})
+agent/model_registry.py:269:        description="Qwen3-Next for balanced performance.",
+agent/model_registry.py:340:        description="Gemma3 12B for balanced performance.",
+agent/model_registry.py:488:            pass  # Always healthy in static registry
+agent/model_router.py:16:- Scoring formula: BALANCED uses weighted sum of quality/cost/latency ranks
+agent/model_router.py:107:            r'\b(equation|formula|inequality|expression|polynomial|matrix|vector|tensor|determinant)\b',
+agent/model_router.py:133:            r'\b(api|endpoint|rest|graphql|websocket|http|json|xml|yaml|csv|sql|database|orm|migration)\b',
+agent/model_router.py:406:    def route(self, text: str = "", session_id: str = "",
+agent/model_router.py:667:        result = self.route(**{k: v for k, v in kwargs.items() if k != 'kwargs'})
+agent/multi_model_client.py:228:                decision = self.router.route(
+agent/multi_model_client.py:380:        decision = self.router.route(user_text, session_id=session_id)
+agent/multimodal.py:13:  - Automatic format detection and MIME type inference
+agent/multimodal.py:16:  - Structured extraction from images (forms, tables, receipts)
+agent/multimodal.py:56:class ImageFormat(str, Enum):
+agent/multimodal.py:67:    ImageFormat.JPEG:  "image/jpeg",
+agent/multimodal.py:68:    ImageFormat.PNG:   "image/png",
+agent/multimodal.py:69:    ImageFormat.GIF:   "image/gif",
+agent/multimodal.py:70:    ImageFormat.WEBP:  "image/webp",
+agent/multimodal.py:71:    ImageFormat.BMP:   "image/bmp",
+agent/multimodal.py:72:    ImageFormat.TIFF:  "image/tiff",
+agent/multimodal.py:76:    ".jpg": ImageFormat.JPEG, ".jpeg": ImageFormat.JPEG,
+agent/multimodal.py:77:    ".png": ImageFormat.PNG, ".gif": ImageFormat.GIF,
+agent/multimodal.py:78:    ".webp": ImageFormat.WEBP, ".bmp": ImageFormat.BMP,
+agent/multimodal.py:79:    ".tiff": ImageFormat.TIFF, ".tif": ImageFormat.TIFF,
+agent/multimodal.py:89:    fmt: ImageFormat
+agent/multimodal.py:106:        """Format as an Anthropic content block for image input."""
+agent/multimodal.py:117:        """Format as an OpenAI vision content block."""
+agent/multimodal.py:127:            "format": self.fmt.value,
+agent/multimodal.py:213:        if mime and img.fmt == ImageFormat.UNKNOWN:
+agent/multimodal.py:224:        # Override format from extension if detected as unknown
+agent/multimodal.py:234:            raise ValueError("Invalid data URI format")
+agent/multimodal.py:245:        fmt = self._detect_format(raw)
+agent/multimodal.py:259:    def _detect_format(self, data: bytes) -> ImageFormat:
+agent/multimodal.py:260:        """Detect image format from magic bytes."""
+agent/multimodal.py:262:            return ImageFormat.JPEG
+agent/multimodal.py:264:            return ImageFormat.PNG
+agent/multimodal.py:266:            return ImageFormat.GIF
+agent/multimodal.py:268:            return ImageFormat.WEBP
+agent/multimodal.py:270:            return ImageFormat.BMP
+agent/multimodal.py:271:        return ImageFormat.UNKNOWN
+agent/multimodal.py:302:    def _mime_to_fmt(self, mime: str) -> ImageFormat:
+agent/multimodal.py:308:            return ImageFormat.JPEG
+agent/multimodal.py:310:            return ImageFormat.PNG
+agent/multimodal.py:311:        return ImageFormat.UNKNOWN
+agent/multimodal.py:322:    "ocr":       "Extract all text visible in this image. Format it clearly, preserving structure where possible.",
+agent/multimodal.py:325:    "extract":   "Extract all structured information from this image (forms, tables, labels, prices, dates, etc.) as JSON.",
+agent/multimodal.py:483:    @staticmethod
+agent/multimodal.py:487:    @staticmethod
+agent/notifications.py:146:    # Slack-style message format
+agent/notifications.py:147:    if channel.config.get("format") == "slack":
+agent/notifications.py:403:            config={"url": "https://hooks.slack.com/...", "format": "slack"},
+agent/observability/__init__.py:12:- /metrics → Prometheus text format (OpenMetrics-compatible)
+agent/observability/__init__.py:13:- /health  → JSON health report
+agent/observability/__init__.py:542:        """Render all metrics as Prometheus text format."""
+agent/observability/__init__.py:674:        app.router.add_get(f"{prefix}/health",          health_endpoint)
+agent/observability/__init__.py:678:        logger.info(f"Observability routes registered at {prefix}/metrics, /health, /ready")
+agent/observability/dashboard.py:3:from .. import dashboard as _legacy_module
+agent/observability/dashboard.py:4:from ..dashboard import *  # noqa: F403
+agent/ollama_client.py:39:            async with session.get(f"{self.base_url}/api/tags") as resp:
+agent/ollama_client.py:47:        async with session.get(f"{self.base_url}/api/tags") as resp:
+agent/ollama_client.py:54:            f"{self.base_url}/api/pull",
+agent/ollama_client.py:86:            f"{self.base_url}/api/chat", json=payload
+agent/ollama_client.py:123:            f"{self.base_url}/api/chat", json=payload
+agent/ollama_client.py:145:        async with session.post(f"{self.base_url}/api/generate", json=payload) as resp:
+agent/ollama_client.py:155:        async with session.post(f"{self.base_url}/api/embed", json=payload) as resp:
+agent/optimizer.py:4:track performance history, and promote winning prompts automatically.
+agent/output_formatter.py:1:"""OMNI AGENT - Output Formatter
+agent/output_formatter.py:3:Markdown rendering, table/code/list builders, and multi-format export.
+agent/output_formatter.py:7:- Auto-repair: attempt to fix truncated or malformed JSON
+agent/output_formatter.py:13:- Multi-format export: plain text, HTML, Markdown, JSON, CSV
+agent/output_formatter.py:16:- REST API: format, validate, render, convert
+agent/output_formatter.py:128:class FormatResult:
+agent/output_formatter.py:129:    original: Any; formatted: str; format_used: str
+agent/output_formatter.py:133:        return {"formatted": self.formatted[:2000], "format_used": self.format_used,
+agent/output_formatter.py:136:class OutputFormatter:
+agent/output_formatter.py:138:    Structure, validate, and render LLM outputs in multiple formats.
+agent/output_formatter.py:141:        fmt = OutputFormatter()
+agent/output_formatter.py:145:        result = fmt.format_json('{"name":"Alice","email":"alice@x.com"}', schema="user")
+agent/output_formatter.py:156:    # ── JSON formatting ───────────────────────────────────────────────────────
+agent/output_formatter.py:158:    def format_json(self, text: Union[str, Any], schema: str = None,
+agent/output_formatter.py:159:                     indent: int = 2, repair: bool = True) -> FormatResult:
+agent/output_formatter.py:172:                        return FormatResult(original=text, formatted=str(text),
+agent/output_formatter.py:173:                                             format_used="json", valid=False,
+agent/output_formatter.py:176:                    return FormatResult(original=text, formatted=str(text),
+agent/output_formatter.py:177:                                         format_used="json", valid=False,
+agent/output_formatter.py:181:        formatted = json.dumps(data, indent=indent, ensure_ascii=False)
+agent/output_formatter.py:182:        return FormatResult(original=text, formatted=formatted, format_used="json",
+agent/output_formatter.py:208:    # ── Multi-format conversion ───────────────────────────────────────────────
+agent/output_formatter.py:251:        async def format_ep(req):
+agent/output_formatter.py:253:            result = self.format_json(d.get("text",""), d.get("schema"), repair=bool(d.get("repair",True)))
+agent/output_formatter.py:257:            t = self.table(d.get("rows",[]), d.get("format","markdown"))
+agent/output_formatter.py:267:        p = f"{prefix}/format"
+agent/output_formatter.py:268:        app.router.add_post(f"{p}/json", format_ep)
+agent/output_formatter.py:272:        logger.info(f"Output formatter API at {prefix}/format/")
+agent/output_parser.py:3:lists, key-value blocks, regex patterns, and auto-repair malformed output.
+agent/output_validator.py:2:Validate and auto-repair LLM outputs: schema checks, format
+agent/output_validator.py:151:        validator.add_rule("json_format", RuleType.JSON_VALID,
+agent/persona.py:40:        formality:      0.0 (very casual) → 1.0 (very formal)
+agent/persona.py:54:    formality: float = 0.5                   # 0.0=casual, 1.0=formal
+agent/persona.py:85:        # Formality
+agent/persona.py:86:        if self.formality >= 0.8:
+agent/persona.py:87:            parts.append("Use formal, professional language. Avoid contractions and colloquialisms.")
+agent/persona.py:88:        elif self.formality <= 0.2:
+agent/persona.py:89:            parts.append("Use casual, relaxed language. Contractions and informal expressions are fine.")
+agent/persona.py:125:            "formality": self.formality,
+agent/persona.py:156:                formality=0.5,
+agent/persona.py:171:                formality=0.4,
+agent/persona.py:194:                formality=0.5,
+agent/persona.py:211:                formality=0.8,
+agent/persona.py:228:                formality=0.2,
+agent/persona.py:240:                    "Always consider edge cases, error handling, and performance. "
+agent/persona.py:246:                formality=0.6,
+agent/persona.py:262:                formality=0.5,
+agent/persona.py:297:        blended_formality = a.formality * weight_a + b.formality * weight_b
+agent/persona.py:308:            formality=blended_formality,
+agent/persona.py:326:                          "report", "dashboard", "forecast", "numbers"]),
+agent/persona.py:504:            "formality": persona.formality if persona else 0.5,
+agent/persona_engine.py:10:- Tone constraints: formal|casual|technical|empathetic|concise
+agent/persona_engine.py:26:TONES = {"formal", "casual", "technical", "empathetic", "concise", "playful"}
+agent/persona_engine.py:176:        persona = engine.route("Can you explain quantum entanglement?")
+agent/persona_engine.py:246:    def route(self, query: str, fallback: str = None) -> Optional[Persona]:
+agent/persona_engine.py:340:            p = self.route(d["query"], d.get("fallback"))
+agent/pipeline.py:373:        page = await agent.scraper.fetch(url)
+agent/pipeline.py:476:    - export_format: json | csv | html | all (default: html)
+agent/pipeline.py:488:        export_format = str(ctx.get("export_format", "html") or "html").strip().lower()
+agent/pipeline.py:489:        if export_format not in {"json", "csv", "html", "all"}:
+agent/pipeline.py:491:                "export_format must be one of: json, csv, html, all"
+agent/pipeline.py:497:            export_format=export_format,
+agent/plugin_loader.py:285:            setup = staticmethod(setup_fn)
+agent/plugin_loader.py:287:                teardown = staticmethod(teardown_fn)
+agent/plugin_loader.py:355:            plugin.error = traceback.format_exc()[:500]
+agent/plugin_manager.py:367:        app.router.add_get( f"{p}/health",     health_ep)
+agent/prompt_optimizer.py:11:- System prompt builder: role + constraints + format instructions
+agent/prompt_optimizer.py:357:                             output_format: str = "",
+agent/prompt_optimizer.py:363:        if output_format:
+agent/prompt_optimizer.py:364:            parts.append(f"Output format: {output_format}")
+agent/prompt_registry.py:94:    model_hint: str = ""     # suggested model (informational)
+agent/prompt_templates.py:169:                    "Extract key information and present it clearly."
+agent/prompt_templates.py:184:                    "Focus on: {{focus:bugs, performance, readability}}.\n\n"
+agent/prompt_templates.py:254:                    "If the context doesn't contain enough information, say so.\n\n"
+agent/prompt_templates.py:260:                    "Never add information not found in the context."
+agent/prompt_templates.py:282:                        "assistant": "**Step 1:** Identify the formula.\nDistance = Speed × Time\n\n**Step 2:** Substitute values.\nDistance = 60 mph × 2.5 hours\n\n**Step 3:** Calculate.\nDistance = 150 miles\n\n**Answer:** The train travels **150 miles**."
+agent/rag.py:9:Supported ingestion formats: .txt .md .py .json .csv  (+ raw strings)
+agent/rag.py:163:    """Parses different file formats into raw text."""
+agent/rag.py:192:                raise ValueError(f"Unsupported file format: {suffix}")
+agent/rag.py:316:    @staticmethod
+agent/rag.py:405:      generate_context() → formatted context string for LLM prompt
+agent/rag.py:502:        """Format retrieval results into a context block for the LLM."""
+agent/rate_limiter_advanced.py:8:- Per-actor quotas: independent limits for each actor/API key
+agent/replay.py:203:    @staticmethod
+agent/replay.py:211:    @staticmethod
+agent/replay.py:218:    @staticmethod
+agent/replay.py:226:    @staticmethod
+agent/replay.py:233:    @staticmethod
+agent/replay.py:240:    @staticmethod
+agent/replay.py:248:    @staticmethod
+agent/replay_buffer.py:10:    UNIFORM     = "uniform"
+agent/replay_buffer.py:46:    - Uniform, Prioritized (PER), Recency, and Reward-weighted sampling
+agent/replay_buffer.py:56:        strategy: SamplingStrategy = SamplingStrategy.UNIFORM,
+agent/replay_buffer.py:123:        if self.strategy == SamplingStrategy.UNIFORM:
+agent/response_ranker.py:12:- Format bonus: reward JSON, code blocks, lists as structural quality
+agent/response_ranker.py:87:def _format_bonus(text: str) -> float:
+agent/response_ranker.py:88:    """Bonus for structural formatting cues."""
+agent/response_ranker.py:105:    format:     float = 0.10
+agent/response_ranker.py:117:    format_bonus: float = 0.0
+agent/response_ranker.py:128:                "format_bonus": round(self.format_bonus, 4),
+agent/response_ranker.py:212:        fmt  = _format_bonus(text)
+agent/response_ranker.py:215:                 + w.richness * rich - w.toxicity * tox + w.format * fmt)
+agent/response_ranker.py:231:                               format_bonus=fmt, final_score=final)
+agent/response_ranker.py:275:                              format_bonus=fmt, final_score=final)
+agent/response_streamer.py:3:injection, progress callbacks, format-aware flushing, and stream multiplexing.
+agent/response_streamer.py:16:- Format detection: auto-detect markdown, JSON, code blocks mid-stream
+agent/response_streamer.py:242:    def detect_format(self, text: str) -> str:
+agent/retry_manager.py:7:- Jitter: NONE, FULL (uniform 0..delay), DECORRELATED (AWS-style)
+agent/retry_manager.py:60:        d = random.uniform(0, d)
+agent/retry_manager.py:62:        d = random.uniform(base_s, max(base_s, _prev_delay * 3))
+agent/role_manager.py:238:        """Evaluate whether actor can perform action on resource."""
+agent/sandbox_executor.py:73:    "dir", "divmod", "enumerate", "filter", "float", "format",
+agent/sandbox_executor.py:79:    "staticmethod", "str", "sum", "super", "tuple", "type",
+agent/schema_registry.py:119:        if "format" in schema:
+agent/schema_registry.py:120:            fmt = schema["format"]
+agent/schema_registry.py:122:                errors.append(f"{path}: invalid email format")
+agent/schema_registry.py:125:                except ValueError: errors.append(f"{path}: invalid UUID format")
+agent/schema_validator.py:7:- String: minLength, maxLength, pattern (regex), format (email, uri, date, uuid)
+agent/schema_validator.py:31:# ── Format validators ──────────────────────────────────────────────────────────
+agent/schema_validator.py:39:_FORMATS = {
+agent/schema_validator.py:134:                "email": {"type": "string", "format": "email"},
+agent/schema_validator.py:220:        fmt = schema.get("format")
+agent/schema_validator.py:221:        if fmt and fmt in _FORMATS and not _FORMATS[fmt](data):
+agent/schema_validator.py:222:            errors.append(ValidationError(path, f"Invalid format: {fmt}", data))
+agent/search.py:461:        search.index_document("doc_1", "user_1", "API Docs", "The /chat endpoint...")
+agent/semantic_router.py:134:    def add_route(self, name: str, handler: Callable,
+agent/semantic_router.py:146:        route = Route(
+agent/semantic_router.py:163:    def remove_route(self, route_id: str):
+agent/semantic_router.py:171:    def route(self, query: str) -> RoutingDecision:
+agent/semantic_router.py:285:        decision = self.route(query)
+agent/service_mesh.py:299:            r = random.uniform(0, total); cum = 0
+agent/service_mesh.py:386:        app.router.add_get( f"{p}/{{service}}/health", health_ep)
+agent/session.py:51:    @staticmethod
+agent/session.py:95:        """Return messages formatted for LLM API calls."""
+agent/skill_router.py:98:                         description="Search the web for information",
+agent/skill_router.py:101:        decision = await router.route("What's 2 + 2?")
+agent/skill_router.py:198:    async def route(self, query: str, strategy: str = None,
+agent/skill_router.py:248:            return await asyncio.gather(*[self.route(query, context=context) for _ in skill_names])
+agent/skill_router.py:281:            dec = await self.route(d["query"], d.get("strategy"), d.get("context"))
+agent/social.py:3:Multi-platform conversational adapter: Telegram, CLI, REST, Discord-ready.
+agent/social.py:129:            "I'm doing what I love — processing information and helping out! What's on your mind?",
+agent/social.py:135:    def format_response(self, text: str, intent: Intent = None) -> str:
+agent/social.py:136:        """Shape response to fit platform and persona constraints."""
+agent/social.py:177:    platform: str = "unknown"
+agent/social.py:208:                      platform: str = "unknown") -> ConversationState:
+agent/social.py:213:                platform=platform,
+agent/social.py:218:                text: str, platform: str = "unknown") -> Dict[str, Any]:
+agent/social.py:224:        state = self.get_or_create(session_id, user_id, platform)
+agent/social.py:279:                "platform": s.platform,
+agent/state_machine.py:241:        app.router.add_get(f"{p}/status",status_ep)
+agent/stream_processor.py:12:- Transform stage: fn(record) -> record (map)
+agent/stream_processor.py:16:- Dead-letter stream: malformed/filtered records sink
+agent/stream_processor.py:17:- Pipeline: compose Filter → Transform → Window → Aggregate → Fanout
+agent/stream_processor.py:266:        self._transforms: Dict[str, List[Callable]] = defaultdict(list)
+agent/stream_processor.py:291:    def add_transform(self, stream: str, fn: Callable):
+agent/stream_processor.py:292:        self._transforms[stream].append(fn)
+agent/stream_processor.py:317:        # Apply transforms
+agent/stream_processor.py:318:        for fn in self._transforms[stream]:
+agent/streaming.py:3:Real-time token streaming for the REST API, live dashboard push,
+agent/streaming.py:7:  GET /stream/chat        SSE — stream tokens from a chat prompt
+agent/streaming.py:31:def sse_format(data: Any, event: str = "message", id: str = None) -> str:
+agent/streaming.py:32:    """Format a payload as an SSE frame."""
+agent/streaming.py:75:        return sse_format(
+agent/streaming.py:179:    Yields raw SSE-formatted strings.
+agent/streaming.py:212:            yield sse_format(
+agent/streaming.py:220:        yield sse_format(
+agent/streaming.py:233:        yield sse_format({"error": str(e)}, event="error")
+agent/streaming.py:254:        GET /stream/chat?prompt=...&session_id=...&model=...
+agent/streaming.py:285:            logger.error(f"/stream/chat error: {e}")
+agent/streaming.py:371:                frame = sse_format(span.to_dict(), event="span")
+agent/streaming.py:381:                frame = sse_format(msg.data, event="span")
+agent/streaming.py:401:    app.router.add_get("/stream/chat",   stream_chat)
+agent/streaming.py:406:    logger.info("Streaming SSE routes registered: /stream/chat, /stream/events, "
+agent/streaming_aggregator.py:3:buffer, deduplicate, transform, and broadcast token streams.
+agent/streaming_aggregator.py:13:- Transform: apply per-token or per-chunk transform functions
+agent/streaming_aggregator.py:122:async def transform_stream(gen: AsyncGenerator,
+agent/streaming_aggregator.py:124:    """Apply a sync or async transform function to each token."""
+agent/streaming_aggregator.py:204:    High-level streaming aggregator: merge, concat, fan-out, and transform.
+agent/streaming_aggregator.py:221:                                        "fan_out": 0, "transforms": 0}
+agent/streaming_aggregator.py:247:    def transform(self, gen: AsyncGenerator, fn: Callable) -> AsyncGenerator:
+agent/streaming_aggregator.py:248:        self._stats["transforms"] += 1
+agent/streaming_aggregator.py:249:        return transform_stream(gen, fn)
+agent/structured_output.py:353:        Parse LLM output into a validated dict conforming to schema.
+agent/summarizer.py:186:    @staticmethod
+agent/task_queue.py:380:        app.router.add_get(   f"{p}/{{id}}/status", status_ep)
+agent/telegram_bot.py:8:from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+agent/telegram_bot.py:75:            "/status — Agent system status\n"
+agent/telegram_bot.py:220:    async def cmd_route(self, update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+agent/telegram_bot.py:234:        decision = router.route(text)
+agent/telegram_bot.py:259:            "platform": "telegram", "user_id": user.id,
+agent/telegram_bot.py:270:                "platform": "telegram", "session_id": session_id
+agent/telemetry.py:10:    W3C traceparent format: "00-{trace_id}-{span_id}-{flags}"
+agent/tool_composer.py:9:    TOOL="tool"; TRANSFORM="transform"; FILTER="filter"; PARALLEL="parallel"; BRANCH="branch"
+agent/tool_composer.py:18:    transform_fn: Optional[Callable] = None; filter_fn: Optional[Callable] = None
+agent/tool_composer.py:55:    """Dynamic tool pipeline composition with chain, parallel, branch, transform, and filter steps."""
+agent/tool_composer.py:72:    def transform(self, name, fn):
+agent/tool_composer.py:73:        return StepDef(id=str(uuid.uuid4())[:8],name=name,step_type=StepType.TRANSFORM,transform_fn=fn)
+agent/tool_composer.py:128:            if s.step_type==StepType.TRANSFORM:
+agent/tool_composer.py:129:                fn=s.transform_fn; out=await fn(inp) if asyncio.iscoroutinefunction(fn) else fn(inp)
+agent/tool_executor.py:111:                           description="Search the web for information",
+agent/tool_registry.py:133:        """Return OpenAI function-calling format."""
+agent/tools/__init__.py:45:    async def fetch(self, url: str) -> Dict[str, Any]:
+agent/tools/__init__.py:108:        params = {"q": query, "format": "json", "engines": "google,bing,duckduckgo"}
+agent/tools/__init__.py:288:    # Simple keyword-based sentiment (upgrade with transformers/Ollama)
+agent/tools_registry.py:3:Formal function-calling system with OpenAI-compatible schemas.
+agent/tools_registry.py:107:        """Format as a tool_result message for the LLM."""
+agent/tools_registry.py:151:        """Anthropic tool_use format."""
+agent/tools_registry.py:704:    async def web_fetch(url: str, extract_links: bool = False) -> Dict:
+agent/tools_registry.py:705:        result = await agent.scraper.fetch(url)
+agent/tools_registry.py:822:                "export_format",
+agent/tools_registry.py:824:                "Export format",
+agent/tools_registry.py:851:        export_format: str = "html",
+agent/tools_registry.py:857:        export_format = (export_format or "html").strip().lower()
+agent/tools_registry.py:858:        if export_format not in {"json", "csv", "html", "all"}:
+agent/tools_registry.py:859:            raise ValueError("export_format must be one of: json, csv, html, all")
+agent/tools_registry.py:862:            export_format=export_format,
+agent/vector_store.py:124:    def fetch(self, namespace: str, vec_id: str) -> Optional[VectorEntry]:
+agent/vector_store.py:287:    def fetch(self, namespace: str, vec_id: str) -> Optional[VectorEntry]:
+agent/vector_store.py:333:            e = self.fetch(ns, vid)
+agent/vector_store_advanced.py:2:High-performance approximate nearest-neighbour vector store: HNSW-style
+agent/webhooks.py:473:    @staticmethod
+agent/webhooks.py:478:        Expected format: 'sha256=<hex>'
+agent/workflow.py:6:Workflow YAML format:
+agent/workflow.py:39:Supported actions: tool | llm | memory | structured | pipeline | echo | transform
+agent/workflow.py:108:SAFE_TRANSFORM_FUNCTIONS: Dict[str, Callable[..., Any]] = {
+agent/workflow.py:128:SAFE_TRANSFORM_METHODS: Dict[type, set[str]] = {
+agent/workflow.py:147:class _SafeTransformEvaluator(ast.NodeVisitor):
+agent/workflow.py:148:    """Evaluate a tightly-scoped expression language for workflow transforms."""
+agent/workflow.py:161:        if node.id in SAFE_TRANSFORM_FUNCTIONS:
+agent/workflow.py:162:            return SAFE_TRANSFORM_FUNCTIONS[node.id]
+agent/workflow.py:203:            func = SAFE_TRANSFORM_FUNCTIONS.get(node.func.id)
+agent/workflow.py:316:        for value_type, names in SAFE_TRANSFORM_METHODS.items():
+agent/workflow.py:332:def _safe_eval_transform(expr: str, context: Dict[str, Any]) -> Any:
+agent/workflow.py:334:        return _SafeTransformEvaluator(context).evaluate(expr)
+agent/workflow.py:336:        raise ValueError(f"Invalid transform expression '{expr}': {exc.msg}") from exc
+agent/workflow.py:347:    action: str                           # tool|llm|memory|structured|pipeline|echo|transform
+agent/workflow.py:363:    transform_expr: str = ""              # for action=transform (Python expr)
+agent/workflow.py:404:                transform_expr=s.get("transform", ""),
+agent/workflow.py:554:        elif spec.action == "transform":
+agent/workflow.py:555:            async def transform_handler(ctx: Dict) -> Any:
+agent/workflow.py:556:                expr = _render_template(spec.transform_expr, ctx)
+agent/workflow.py:558:                    return _safe_eval_transform(expr, ctx)
+agent/workflow.py:560:                    raise ValueError(f"Transform '{expr}' failed: {e}")
+agent/workflow.py:561:            return transform_handler
+agent/workflow_engine.py:398:        app.router.add_get( f"{p}/{{id}}/status",  status_ep)
+tests/_archive/legacy/test_v10_modules.py:57:    def test_register_and_get_route(self):
+tests/_archive/legacy/test_v10_modules.py:58:        route = self.RouteConfig(path="/api/v1/chat", method="POST",
+tests/_archive/legacy/test_v10_modules.py:61:        got = self.reg.get("POST", "/api/v1/chat")
+tests/_archive/legacy/test_v10_modules.py:63:        self.assertEqual(got.path, "/api/v1/chat")
+tests/_archive/legacy/test_v10_modules.py:69:        self.assertTrue(self.reg.is_public("/health"))
+tests/_archive/legacy/test_v10_modules.py:74:        self.assertFalse(self.reg.is_public("/api/v1/chat"))
+tests/_archive/legacy/test_v10_modules.py:131:        m.add_route("GET", "/test", handler)
+tests/_archive/legacy/test_v10_modules.py:607:    def test_to_otlp_format(self):
+tests/_archive/legacy/test_v11_modules.py:928:            {"role": "assistant", "content": "Java is a statically typed language."},
+tests/_archive/legacy/test_v12_modules.py:3:Tests: FeatureFlags, CostTracker, PluginLoader, HealthDashboard
+tests/_archive/legacy/test_v12_modules.py:711:# HEALTH DASHBOARD
+tests/_archive/legacy/test_v12_modules.py:714:class TestHealthDashboard(unittest.TestCase):
+tests/_archive/legacy/test_v12_modules.py:716:        from agent.health_dashboard import HealthDashboard
+tests/_archive/legacy/test_v12_modules.py:717:        self.dash = HealthDashboard(app_name="Test Agent")
+tests/_archive/legacy/test_v12_modules.py:730:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:737:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:744:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:752:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:759:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:766:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:774:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:784:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:791:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:798:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:814:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:826:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:849:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:873:        from agent.health_dashboard import HealthDashboard
+tests/_archive/legacy/test_v12_modules.py:874:        dash = HealthDashboard(history_size=3)
+tests/_archive/legacy/test_v12_modules.py:897:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:905:        from agent.health_dashboard import HealthStatus
+tests/_archive/legacy/test_v12_modules.py:932:        from agent.health_dashboard import _aggregate_status, HealthStatus
+tests/_archive/legacy/test_v12_modules.py:937:        from agent.health_dashboard import _aggregate_status, HealthStatus
+tests/_archive/legacy/test_v12_modules.py:943:        from agent.health_dashboard import _aggregate_status, HealthStatus
+tests/_archive/legacy/test_v13_modules.py:588:        decision = self.router.route("Can you debug this Python code?")
+tests/_archive/legacy/test_v13_modules.py:594:        decision = self.router.route("help with code")
+tests/_archive/legacy/test_v13_modules.py:600:        decision = self.router.route("I love sunny weather today!")
+tests/_archive/legacy/test_v13_modules.py:606:        decision = self.router.route("debug my python code please")
+tests/_archive/legacy/test_v13_modules.py:618:        decision = self.router.route("write a story for me")
+tests/_archive/legacy/test_v13_modules.py:624:        decision = self.router.route("debug this python code")
+tests/_archive/legacy/test_v13_modules.py:627:        decision2 = self.router.route("debug this python code")
+tests/_archive/legacy/test_v13_modules.py:651:        decision = router.route("totally random query xyz")
+tests/_archive/legacy/test_v13_modules.py:678:        self.router.route("debug code")
+tests/_archive/legacy/test_v13_modules.py:685:            self.router.route("debug code")
+tests/_archive/legacy/test_v13_modules.py:691:        self.router.route("debug python code")
+tests/_archive/legacy/test_v13_modules.py:700:        self.router.route("debug code")
+tests/_archive/legacy/test_v13_modules.py:701:        self.router.route("write a poem")
+tests/_archive/legacy/test_v13_modules.py:717:        decision = self.router.route("debug my code")
+tests/_archive/legacy/test_v13_modules.py:732:        decision = self.router.route("compute the derivative of x squared")
+tests/_archive/legacy/test_v14_modules.py:299:    def test_transform(self):
+tests/_archive/legacy/test_v14_modules.py:301:        tx=self.c.transform("up",lambda x: str(x).upper())
+tests/_archive/legacy/test_v16_modules.py:360:        eid = self.al.log("login","alice",resource="dashboard")
+tests/_archive/legacy/test_v16_modules.py:429:        self.al.track_lineage(lid, 2, "transform","parsed_df",       "cleaned_df")
+tests/_archive/legacy/test_v17_modules.py:41:    def test_render_chat_format(self):
+tests/_archive/legacy/test_v17_modules.py:197:    def test_detect_format_json(self):
+tests/_archive/legacy/test_v17_modules.py:198:        self.assertEqual(self.rs.detect_format('{"key":"value"}'), "json")
+tests/_archive/legacy/test_v17_modules.py:200:    def test_detect_format_code(self):
+tests/_archive/legacy/test_v17_modules.py:201:        self.assertEqual(self.rs.detect_format("```python\ncode\n```"), "code")
+tests/_archive/legacy/test_v17_modules.py:203:    def test_detect_format_markdown(self):
+tests/_archive/legacy/test_v17_modules.py:204:        self.assertEqual(self.rs.detect_format("## Title\nContent"), "markdown")
+tests/_archive/legacy/test_v17_modules.py:206:    def test_detect_format_plain(self):
+tests/_archive/legacy/test_v17_modules.py:207:        self.assertEqual(self.rs.detect_format("just plain text here"), "plain")
+tests/_archive/legacy/test_v18_modules.py:15:    def test_submit_returns_item(self):
+tests/_archive/legacy/test_v18_modules.py:16:        fb = self.fc.submit(session_id="s1", rating=5)
+tests/_archive/legacy/test_v18_modules.py:19:    def test_submit_star_rating(self):
+tests/_archive/legacy/test_v18_modules.py:20:        fb = self.fc.submit(rating=4)
+tests/_archive/legacy/test_v18_modules.py:23:    def test_submit_thumbs_up(self):
+tests/_archive/legacy/test_v18_modules.py:24:        fb = self.fc.submit(thumbs="up")
+tests/_archive/legacy/test_v18_modules.py:27:    def test_submit_thumbs_down(self):
+tests/_archive/legacy/test_v18_modules.py:28:        fb = self.fc.submit(thumbs="down")
+tests/_archive/legacy/test_v18_modules.py:31:    def test_submit_comment(self):
+tests/_archive/legacy/test_v18_modules.py:32:        fb = self.fc.submit(comment="Great response, very helpful!")
+tests/_archive/legacy/test_v18_modules.py:36:        fb = self.fc.submit(comment="Great excellent helpful amazing response!")
+tests/_archive/legacy/test_v18_modules.py:40:        fb = self.fc.submit(comment="Terrible wrong useless awful response")
+tests/_archive/legacy/test_v18_modules.py:44:        fb = self.fc.submit(comment="The response was provided.")
+tests/_archive/legacy/test_v18_modules.py:48:        self.fc.submit(session_id="sess_abc", rating=3)
+tests/_archive/legacy/test_v18_modules.py:49:        self.fc.submit(session_id="sess_abc", rating=5)
+tests/_archive/legacy/test_v18_modules.py:54:        self.fc.submit(model="gpt4", rating=4)
+tests/_archive/legacy/test_v18_modules.py:55:        self.fc.submit(model="claude", rating=5)
+tests/_archive/legacy/test_v18_modules.py:60:        self.fc.submit(rating=4, thumbs="up")
+tests/_archive/legacy/test_v18_modules.py:61:        self.fc.submit(rating=2, thumbs="down")
+tests/_archive/legacy/test_v18_modules.py:66:        self.fc.submit(rating=4); self.fc.submit(rating=2)
+tests/_archive/legacy/test_v18_modules.py:71:        self.fc.submit(thumbs="up"); self.fc.submit(thumbs="up"); self.fc.submit(thumbs="down")
+tests/_archive/legacy/test_v18_modules.py:76:        self.fc.submit(rating=4)
+tests/_archive/legacy/test_v18_modules.py:81:        self.fc.submit(rating=5, comment="Perfect")
+tests/_archive/legacy/test_v18_modules.py:86:        fb = self.fc.submit(rating=4, comment="Good")
+tests/_archive/legacy/test_v18_modules.py:92:        fb = self.fc.submit(categories=["helpfulness", "accuracy"])
+tests/_archive/legacy/test_v18_modules.py:96:        for _ in range(3): self.fc.submit(rating=5)
+tests/_archive/legacy/test_v18_modules.py:105:        fc1.submit(session_id="persist", rating=5)
+tests/_archive/legacy/test_v19_modules.py:1:"""OMNI AGENT v19 Tests: RoleManager, OutputFormatter, ConversationSummariser, CacheWarmer"""
+tests/_archive/legacy/test_v19_modules.py:146:# OUTPUT FORMATTER
+tests/_archive/legacy/test_v19_modules.py:148:class TestOutputFormatter(unittest.TestCase):
+tests/_archive/legacy/test_v19_modules.py:150:        from agent.output_formatter import OutputFormatter
+tests/_archive/legacy/test_v19_modules.py:151:        self.fmt = OutputFormatter()
+tests/_archive/legacy/test_v19_modules.py:153:    def test_format_json_valid(self):
+tests/_archive/legacy/test_v19_modules.py:154:        result = self.fmt.format_json('{"name":"Alice","age":30}')
+tests/_archive/legacy/test_v19_modules.py:157:    def test_format_json_dict(self):
+tests/_archive/legacy/test_v19_modules.py:158:        result = self.fmt.format_json({"name": "Bob", "score": 95})
+tests/_archive/legacy/test_v19_modules.py:161:    def test_format_json_invalid_repaired(self):
+tests/_archive/legacy/test_v19_modules.py:162:        result = self.fmt.format_json('{"key":"val",}')   # trailing comma
+tests/_archive/legacy/test_v19_modules.py:165:    def test_format_json_irreparable(self):
+tests/_archive/legacy/test_v19_modules.py:166:        result = self.fmt.format_json("not json at all %%##")
+tests/_archive/legacy/test_v19_modules.py:173:        result = self.fmt.format_json({"name": "Alice", "age": 30}, schema="person")
+tests/_archive/legacy/test_v19_modules.py:178:        result = self.fmt.format_json({"age": 30}, schema="p2")
+tests/_archive/legacy/test_v19_modules.py:183:        result = self.fmt.format_json(42, schema="typed")
+tests/_archive/legacy/test_v19_modules.py:256:        result = self.fmt.format_json({"x": 1})
+tests/_archive/legacy/test_v19_modules.py:258:        for k in ["formatted","format_used","valid","errors","repaired"]: self.assertIn(k,d)
+tests/_archive/legacy/test_v19_modules.py:262:        result = self.fmt.format_json(text, repair=True)
+tests/_archive/legacy/test_v20_modules.py:164:        p.add_stage("transform", StageType.TRANSFORM, lambda d: [x*2 for x in d])
+tests/_archive/legacy/test_v20_modules.py:193:        p.add_stage("fail", StageType.TRANSFORM, lambda d: 1/0, critical=True)
+tests/_archive/legacy/test_v20_modules.py:203:        p.add_stage("bad",     StageType.TRANSFORM, lambda d: 1/0,
+tests/_archive/legacy/test_v20_modules.py:217:        p.add_stage("retry_stage", StageType.TRANSFORM, flaky,
+tests/_archive/legacy/test_v20_modules.py:226:        p.add_stage("bad", StageType.TRANSFORM, lambda d: 1/0,
+tests/_archive/legacy/test_v20_modules.py:243:        p.add_stage("skipped", StageType.TRANSFORM, lambda d: [99],
+tests/_archive/legacy/test_v20_modules.py:262:        p.add_stage("async",   StageType.TRANSFORM, async_fn)
+tests/_archive/legacy/test_v20_modules.py:516:        def llm(p): return "Databases have performance issues under load."
+tests/_archive/legacy/test_v21_modules.py:139:                              description="search web find lookup information",
+tests/_archive/legacy/test_v21_modules.py:140:                              keywords=["search","find","lookup","information"])
+tests/_archive/legacy/test_v21_modules.py:148:        d = _run(self.router.route("calculate 2+2"))
+tests/_archive/legacy/test_v21_modules.py:153:        d = _run(self.router.route("calculate the sum of numbers", strategy="best_match"))
+tests/_archive/legacy/test_v21_modules.py:158:        d = _run(self.router.route("calculate 2+2"))
+tests/_archive/legacy/test_v21_modules.py:163:        d = _run(self.router.route("weather forecast tomorrow"))
+tests/_archive/legacy/test_v21_modules.py:169:        d = _run(self.router.route("math problem"))
+tests/_archive/legacy/test_v21_modules.py:178:        for _ in range(4): _run(router.route("test", strategy="round_robin"))
+tests/_archive/legacy/test_v21_modules.py:183:        _run(self.router.route("math calc calc calc", strategy="best_match"))
+tests/_archive/legacy/test_v21_modules.py:184:        d = _run(self.router.route("anything", strategy="least_used"))
+tests/_archive/legacy/test_v21_modules.py:190:            d = _run(self.router.route("query", strategy="weighted_random"))
+tests/_archive/legacy/test_v21_modules.py:198:        d = _run(router.route("xyzzy magic words abcdef"))
+tests/_archive/legacy/test_v21_modules.py:204:        d = _run(self.router.route("calculate 2+2"))
+tests/_archive/legacy/test_v21_modules.py:221:        _run(self.router.route("test query"))
+tests/_archive/legacy/test_v21_modules.py:228:        _run(self.router.route("test query"))
+tests/_archive/legacy/test_v21_modules.py:234:        d = _run(self.router.route("async test", strategy="best_match"))
+tests/_archive/legacy/test_v21_modules.py:244:        _run(self.router.route("math test"))
+tests/_archive/legacy/test_v21_modules.py:250:        _run(self.router.route("q1")); _run(self.router.route("q2"))
+tests/_archive/legacy/test_v21_modules.py:255:        d = _run(self.router.route("math query"))
+tests/_archive/legacy/test_v21_modules.py:261:        _run(self.router.route("calculate", strategy="best_match"))
+tests/_archive/legacy/test_v21_modules.py:322:        r = self.suite.evaluate("This is a well-formed sentence with reasonable length.")
+tests/_archive/legacy/test_v22_modules.py:449:    def test_transform(self):
+tests/_archive/legacy/test_v22_modules.py:451:        tokens = _run(self.agg.collect(self.agg.transform(gen, lambda x: x * 2)))
+tests/_archive/legacy/test_v22_modules.py:454:    def test_async_transform(self):
+tests/_archive/legacy/test_v22_modules.py:457:        tokens = _run(self.agg.collect(self.agg.transform(gen, double)))
+tests/_archive/legacy/test_v22_modules.py:499:    def test_transform_filter_none(self):
+tests/_archive/legacy/test_v22_modules.py:503:            self.agg.transform(gen, lambda x: x if x % 2 == 0 else None)))
+tests/_archive/legacy/test_v24_modules.py:73:        p = self.pe.route("Can you explain the theory of relativity?")
+tests/_archive/legacy/test_v24_modules.py:79:        p = self.pe.route("Quick help with something fun!")
+tests/_archive/legacy/test_v24_modules.py:85:        p = self.pe.route("xyzzy completely unknown query", fallback="buddy")
+tests/_archive/legacy/test_v24_modules.py:161:        pe1.create("persist_p", system_prompt="Persist me", tone="formal")
+tests/_archive/legacy/test_v26_modules.py:1:"""OMNI AGENT v26: PromptOptimizer, DataPipeline, ConversationRouter, HealthDashboard"""
+tests/_archive/legacy/test_v26_modules.py:57:    def test_generate_variant_output_format(self):
+tests/_archive/legacy/test_v26_modules.py:59:        v = self.opt.generate_variant("no_fmt", strategy="output_format")
+tests/_archive/legacy/test_v26_modules.py:176:        pl.transform("upper", lambda ctx: None)
+tests/_archive/legacy/test_v26_modules.py:186:    def test_transform_modifies_records(self):
+tests/_archive/legacy/test_v26_modules.py:187:        def upper_transform(ctx):
+tests/_archive/legacy/test_v26_modules.py:190:        pl = self.dp.define("transform_test")
+tests/_archive/legacy/test_v26_modules.py:191:        pl.transform("upper", upper_transform)
+tests/_archive/legacy/test_v26_modules.py:192:        run = _run(self.dp.run("transform_test", initial_data=["hello", "world"]))
+tests/_archive/legacy/test_v26_modules.py:204:        pl.transform("double", add_records)
+tests/_archive/legacy/test_v26_modules.py:214:        pl.transform("async_step", async_stage)
+tests/_archive/legacy/test_v26_modules.py:221:        pl.transform("boom", lambda ctx: 1/0,
+tests/_archive/legacy/test_v26_modules.py:236:        pl.transform("flaky", flaky, max_retries=3, retry_delay=0.01)
+tests/_archive/legacy/test_v26_modules.py:243:        pl.transform("transform_step", lambda ctx: None)
+tests/_archive/legacy/test_v26_modules.py:260:            pl.transform("step", lambda ctx: None)
+tests/_archive/legacy/test_v26_modules.py:309:        s2 = pl.transform("disabled_stage", lambda ctx: (_ for _ in ()).throw(RuntimeError("should not run")))
+tests/_archive/legacy/test_v26_modules.py:347:        decision, response = _run(self.router.route("Hello there!", "s1"))
+tests/_archive/legacy/test_v26_modules.py:352:        decision, response = _run(self.router.route("I need some help please", "s2"))
+tests/_archive/legacy/test_v26_modules.py:357:        _, response = _run(self.router.route("hi", "s3"))
+tests/_archive/legacy/test_v26_modules.py:361:        decision, response = _run(self.router.route("xyzzy unknown query zork", "s4"))
+tests/_archive/legacy/test_v26_modules.py:365:        decision, _ = _run(self.router.route("I need assistance with something", "s5"))
+tests/_archive/legacy/test_v26_modules.py:370:        _run(self.router.route("hello", "sess_new"))
+tests/_archive/legacy/test_v26_modules.py:375:        _run(self.router.route("hello", "hist_sess"))
+tests/_archive/legacy/test_v26_modules.py:376:        _run(self.router.route("help", "hist_sess"))
+tests/_archive/legacy/test_v26_modules.py:381:        _run(self.router.route("hello", "guided_sess"))
+tests/_archive/legacy/test_v26_modules.py:384:        decision, _ = _run(self.router.route("random stuff", "guided_sess"))
+tests/_archive/legacy/test_v26_modules.py:392:        _run(self.router.route("please update context", "ctx_sess"))
+tests/_archive/legacy/test_v26_modules.py:402:        _, response = _run(self.router.route("I want to order a banana", "slot_sess"))
+tests/_archive/legacy/test_v26_modules.py:410:        _run(self.router.route("start the process", "multi_sess"))
+tests/_archive/legacy/test_v26_modules.py:415:        transformed = []
+tests/_archive/legacy/test_v26_modules.py:416:        self.router.add_pre_hook(lambda msg, ctx: transformed.append(msg) or msg)
+tests/_archive/legacy/test_v26_modules.py:417:        _run(self.router.route("hello", "hook_sess"))
+tests/_archive/legacy/test_v26_modules.py:418:        self.assertGreater(len(transformed), 0)
+tests/_archive/legacy/test_v26_modules.py:423:        _run(self.router.route("hello", "post_sess"))
+tests/_archive/legacy/test_v26_modules.py:433:        _, response = _run(self.router.route("async test", "async_sess"))
+tests/_archive/legacy/test_v26_modules.py:456:        decision, _ = _run(self.router.route("hello", "dict_sess"))
+tests/_archive/legacy/test_v26_modules.py:461:        _run(self.router.route("hello", "stat_s"))
+tests/_archive/legacy/test_v26_modules.py:466:# HEALTH DASHBOARD
+tests/_archive/legacy/test_v26_modules.py:468:class TestHealthDashboard(unittest.TestCase):
+tests/_archive/legacy/test_v26_modules.py:471:        from agent.health_dashboard import HealthDashboard
+tests/_archive/legacy/test_v26_modules.py:472:        self.hd = HealthDashboard(db_path=os.path.join(td, "health.db"),
+tests/_archive/legacy/test_v26_modules.py:480:        from agent.health_dashboard import HealthState
+tests/_archive/legacy/test_v26_modules.py:486:        from agent.health_dashboard import HealthState
+tests/_archive/legacy/test_v26_modules.py:493:        from agent.health_dashboard import HealthState
+tests/_archive/legacy/test_v26_modules.py:499:        from agent.health_dashboard import HealthState
+tests/_archive/legacy/test_v26_modules.py:504:        from agent.health_dashboard import HealthState
+tests/_archive/legacy/test_v26_modules.py:511:        from agent.health_dashboard import HealthState
+tests/_archive/legacy/test_v26_modules.py:517:        from agent.health_dashboard import HealthState
+tests/_archive/legacy/test_v26_modules.py:533:        from agent.health_dashboard import HealthState
+tests/_archive/legacy/test_v26_modules.py:571:        from agent.health_dashboard import HealthState
+tests/_archive/legacy/test_v26_modules.py:591:        from agent.health_dashboard import _trend_slope
+tests/_archive/legacy/test_v27_modules.py:28:        resp = _run(self.router.route(req))
+tests/_archive/legacy/test_v27_modules.py:34:        resp = _run(self.router.route(req))
+tests/_archive/legacy/test_v27_modules.py:41:        providers = {_run(self.router.route(req)).provider for _ in range(6)}
+tests/_archive/legacy/test_v27_modules.py:93:        r1 = _run(router.route(req)); r2 = _run(router.route(req))
+tests/_archive/legacy/test_v27_modules.py:107:        _run(self.router.route(req))
+tests/_archive/legacy/test_v27_modules.py:146:        resp = _run(self.router.route(req))
+tests/_archive/legacy/test_v27_modules.py:157:            _run(router.route(req))
+tests/_archive/legacy/test_v28_modules.py:103:        transformed = []
+tests/_archive/legacy/test_v28_modules.py:104:        self.reg.add_pre_hook(lambda n, a: transformed.append(n) or a)
+tests/_archive/legacy/test_v28_modules.py:107:        self.assertIn("hooked", transformed)
+tests/_archive/legacy/test_v28_modules.py:252:    def test_format_bonus_code(self):
+tests/_archive/legacy/test_v28_modules.py:253:        from agent.response_ranker import _format_bonus
+tests/_archive/legacy/test_v28_modules.py:256:        self.assertGreater(_format_bonus(with_code), _format_bonus(no_code))
+tests/_archive/legacy/test_v28_modules.py:258:    def test_format_bonus_json(self):
+tests/_archive/legacy/test_v28_modules.py:259:        from agent.response_ranker import _format_bonus
+tests/_archive/legacy/test_v28_modules.py:260:        self.assertGreater(_format_bonus('{"key": "value"}'), _format_bonus("plain text"))
+tests/_archive/legacy/test_v29_modules.py:292:        self.v.add_rule("warn", self.RT.BLACKLIST, blacklist=["informal"],
+tests/_archive/legacy/test_v29_modules.py:294:        r = self.v.validate("informal language here")
+tests/_archive/legacy/test_v31_modules.py:294:    def test_submit_rating(self):
+tests/_archive/legacy/test_v31_modules.py:295:        fb = self.fc.submit("item1", self.FT.RATING, rating=4.0)
+tests/_archive/legacy/test_v31_modules.py:299:    def test_submit_thumbs_up(self):
+tests/_archive/legacy/test_v31_modules.py:300:        fb = self.fc.submit("item1", self.FT.THUMBS, thumbs=True)
+tests/_archive/legacy/test_v31_modules.py:303:    def test_submit_text(self):
+tests/_archive/legacy/test_v31_modules.py:304:        fb = self.fc.submit("item1", self.FT.TEXT, text="Great response!")
+tests/_archive/legacy/test_v31_modules.py:308:        fb = self.fc.submit("item1", self.FT.RATING, rating=10.0)
+tests/_archive/legacy/test_v31_modules.py:310:        fb2 = self.fc.submit("item1", self.FT.RATING, rating=-1.0)
+tests/_archive/legacy/test_v31_modules.py:314:        self.fc.submit("agg1", self.FT.RATING, rating=4.0)
+tests/_archive/legacy/test_v31_modules.py:315:        self.fc.submit("agg1", self.FT.RATING, rating=2.0)
+tests/_archive/legacy/test_v31_modules.py:320:        self.fc.submit("th1", self.FT.THUMBS, thumbs=True)
+tests/_archive/legacy/test_v31_modules.py:321:        self.fc.submit("th1", self.FT.THUMBS, thumbs=True)
+tests/_archive/legacy/test_v31_modules.py:322:        self.fc.submit("th1", self.FT.THUMBS, thumbs=False)
+tests/_archive/legacy/test_v31_modules.py:332:        fb = self.fc.submit("s1", self.FT.TEXT, text="great excellent helpful")
+tests/_archive/legacy/test_v31_modules.py:336:        fb = self.fc.submit("s2", self.FT.TEXT, text="bad wrong useless")
+tests/_archive/legacy/test_v31_modules.py:339:    def test_dedup_prevents_double_submit(self):
+tests/_archive/legacy/test_v31_modules.py:344:        r1 = fc2.submit("dedup1", self.FT.RATING, rating=4.0, user_id="u1")
+tests/_archive/legacy/test_v31_modules.py:345:        r2 = fc2.submit("dedup1", self.FT.RATING, rating=3.0, user_id="u1")
+tests/_archive/legacy/test_v31_modules.py:350:        r1 = self.fc.submit("multi1", self.FT.RATING, rating=4.0, user_id="u1")
+tests/_archive/legacy/test_v31_modules.py:351:        r2 = self.fc.submit("multi1", self.FT.RATING, rating=3.0, user_id="u1")
+tests/_archive/legacy/test_v31_modules.py:358:        self.fc.submit("lr1", self.FT.RATING, rating=1.0)
+tests/_archive/legacy/test_v31_modules.py:359:        self.fc.submit("lr1", self.FT.RATING, rating=1.5)
+tests/_archive/legacy/test_v31_modules.py:365:        self.fc.submit("hook1", self.FT.RATING, rating=5.0)
+tests/_archive/legacy/test_v31_modules.py:369:        self.fc.submit("rc1", self.FT.RATING, rating=4.0)
+tests/_archive/legacy/test_v31_modules.py:375:        self.fc.submit("tr1", self.FT.RATING, rating=4.0)
+tests/_archive/legacy/test_v31_modules.py:380:        self.fc.submit("td1", self.FT.RATING, rating=4.0)
+tests/_archive/legacy/test_v31_modules.py:387:        fb = self.fc.submit("fb_dict", self.FT.RATING, rating=3.0)
+tests/_archive/legacy/test_v31_modules.py:393:        self.fc.submit("exp1", self.FT.RATING, rating=4.0)
+tests/_archive/legacy/test_v31_modules.py:398:        self.fc.submit("st1", self.FT.RATING, rating=4.0)
+tests/_archive/legacy/test_v31_modules.py:399:        self.fc.submit("st2", self.FT.THUMBS, thumbs=True)
+tests/_archive/legacy/test_v31_modules.py:405:        self.fc.submit("tg1", self.FT.RATING, rating=5.0, tags=["premium"])
+tests/_archive/legacy/test_v31_modules.py:434:        self.opt.add_variant("qa", "formal",
+tests/_archive/legacy/test_v31_modules.py:436:        r = self.opt.render("qa", {"question": "What is AI?"}, variant_label="formal")
+tests/_archive/legacy/test_v31_modules.py:504:            output_format="JSON",
+tests/_archive/legacy/test_v32_modules.py:42:    def test_get_context_format(self):
+tests/_archive/legacy/test_v32_modules.py:293:    def test_openai_schema_format(self):
+tests/_archive/legacy/test_v33_modules.py:324:        r = self.mr.route(strategy=self.RS.CHEAPEST)
+tests/_archive/legacy/test_v33_modules.py:328:        r = self.mr.route(strategy=self.RS.FASTEST)
+tests/_archive/legacy/test_v33_modules.py:332:        r = self.mr.route(strategy=self.RS.BEST_QUALITY)
+tests/_archive/legacy/test_v33_modules.py:336:        r = self.mr.route(strategy=self.RS.BALANCED)
+tests/_archive/legacy/test_v33_modules.py:343:            r = self.mr.route(strategy=self.RS.ROUND_ROBIN)
+tests/_archive/legacy/test_v33_modules.py:350:        r = self.mr.route(required_caps=["vision"])
+tests/_archive/legacy/test_v33_modules.py:354:        r = self.mr.route(required_caps=["quantum_compute"])
+tests/_archive/legacy/test_v33_modules.py:358:        r = self.mr.route(max_cost_per_1k=0.002)
+tests/_archive/legacy/test_v33_modules.py:362:        r = self.mr.route(min_quality=0.90)
+tests/_archive/legacy/test_v33_modules.py:366:        r = self.mr.route(max_latency_ms=300, strategy=self.RS.CHEAPEST)
+tests/_archive/legacy/test_v33_modules.py:372:        r = self.mr.route(min_context=50000)
+tests/_archive/legacy/test_v33_modules.py:377:        r = self.mr.route(strategy=self.RS.CHEAPEST)
+tests/_archive/legacy/test_v33_modules.py:399:        r = self.mr.route(strategy=self.RS.CHEAPEST, estimated_tokens=2000)
+tests/_archive/legacy/test_v33_modules.py:412:        r = self.mr.route()
+tests/_archive/legacy/test_v34_modules.py:60:    def test_transform_modifies_payload(self):
+tests/_archive/legacy/test_v34_modules.py:61:        self.sp.create_stream("xform")
+tests/_archive/legacy/test_v34_modules.py:65:        self.sp.add_transform("xform", double)
+tests/_archive/legacy/test_v34_modules.py:66:        r = self.sp.push("xform", {"v": 5})
+tests/_archive/legacy/test_v35_modules.py:320:                "email": {"type": "string", "format": "email"},
+tests/_archive/legacy/test_v35_modules.py:350:    def test_format_email_valid(self):
+tests/_archive/legacy/test_v35_modules.py:355:    def test_format_email_invalid(self):
+tests/_archive/legacy/test_v39_modules.py:116:        transformed = []
+tests/_archive/legacy/test_v39_modules.py:120:        async def h(ev): transformed.append(ev.headers.get("mw"))
+tests/_archive/legacy/test_v39_modules.py:123:        self.assertIn("yes", transformed)
+tests/_archive/legacy/test_v40_modules.py:77:    def test_shortest_path_no_route(self):
+tests/_archive/legacy/test_v42_modules.py:16:    def test_upsert_and_fetch(self):
+tests/_archive/legacy/test_v42_modules.py:18:        e = self.vs.fetch("test","v1")
+tests/_archive/legacy/test_v42_modules.py:23:        self.assertIsNone(self.vs.fetch("test","nope"))
+tests/_archive/legacy/test_v42_modules.py:53:        e = self.vs.fetch("test","m1")
+tests/_archive/legacy/test_v42_modules.py:70:        e = vs2.fetch("ns","u1")
+tests/_archive/legacy/test_v42_modules.py:80:        e = self.vs.fetch("test","upd")
+tests/_archive/legacy/test_v42_modules.py:88:        self.assertIsNone(self.vs.fetch("test","del1"))
+tests/_archive/legacy/test_v42_modules.py:354:    def test_email_format(self):
+tests/_archive/legacy/test_v42_modules.py:359:    def test_url_format(self):
+tests/_archive/legacy/test_v42_modules.py:364:    def test_uuid_format(self):
+tests/_archive/legacy/test_v44_modules.py:451:        self.gw.register_route("GET","/ping", handler=h)
+tests/_archive/legacy/test_v44_modules.py:464:        self.gw.register_route("GET","/users/{id}", handler=h)
+tests/_archive/legacy/test_v44_modules.py:470:        self.gw.register_route("POST","/only-post", handler=h)
+tests/_archive/legacy/test_v44_modules.py:477:        self.gw.register_route("GET","/secure", handler=h,
+tests/_archive/legacy/test_v44_modules.py:486:        self.gw.register_route("GET","/guarded", handler=h,
+tests/_archive/legacy/test_v44_modules.py:493:        self.gw.register_route("GET","/mock",
+tests/_archive/legacy/test_v44_modules.py:501:        self.gw.register_route("GET","/rl", handler=h,
+tests/_archive/legacy/test_v44_modules.py:514:        self.gw.register_route("GET","/slow", handler=slow, timeout_s=0.05)
+tests/_archive/legacy/test_v44_modules.py:518:    def test_request_transform(self):
+tests/_archive/legacy/test_v44_modules.py:519:        transformed = []
+tests/_archive/legacy/test_v44_modules.py:521:            req.headers["X-Transformed"] = "yes"
+tests/_archive/legacy/test_v44_modules.py:522:            transformed.append(True)
+tests/_archive/legacy/test_v44_modules.py:525:            return self.GResp(body={"h": req.headers.get("X-Transformed")})
+tests/_archive/legacy/test_v44_modules.py:526:        self.gw.register_route("GET","/tf", handler=h,
+tests/_archive/legacy/test_v44_modules.py:527:                                 req_transform=req_tf)
+tests/_archive/legacy/test_v44_modules.py:531:    def test_response_transform(self):
+tests/_archive/legacy/test_v44_modules.py:536:        self.gw.register_route("GET","/rtf", handler=h,
+tests/_archive/legacy/test_v44_modules.py:537:                                 resp_transform=resp_tf)
+tests/_archive/legacy/test_v44_modules.py:543:        self.gw.register_route("GET","/err", handler=bad)
+tests/_archive/legacy/test_v44_modules.py:551:        self.gw.register_route("GET","/hook", handler=h)
+tests/_archive/legacy/test_v44_modules.py:559:        self.gw.register_route("GET","/resp-hook", handler=h)
+tests/_archive/legacy/test_v44_modules.py:565:        self.gw.register_route("GET","/lat", handler=h)
+tests/_archive/legacy/test_v44_modules.py:571:        rc = self.gw.register_route("GET","/sc", handler=h)
+tests/_archive/legacy/test_v44_modules.py:575:    def test_query_param_route(self):
+tests/_archive/legacy/test_v44_modules.py:580:        self.gw.register_route("GET","/qp", handler=h)
+tests/_archive/legacy/test_v45_modules.py:337:    def test_traceparent_format(self):
+tests/_archive/legacy/test_v46_modules.py:307:        e = self.g.add_edge(a.node_id, b.node_id, transform="filter")
+tests/_archive/legacy/test_v46_modules.py:308:        self.assertEqual(e.transform, "filter")
+tests/_archive/legacy/test_v46_modules.py:385:        self.g.add_node("xfm", self.NodeType.TRANSFORM)
+tests/_archive/legacy/test_v48_modules.py:196:        self.kd.add_fact("Cooking is an art form", FactType.FACT)
+tests/_archive/legacy/test_v49_modules.py:498:    def test_stream_transform(self):
+tests/_archive/legacy/test_v49_modules.py:500:        self.s1.transform(lambda e: StreamEvent(source=e.source, value=e.value * 2))
+tests/_archive/legacy/test_v50_modules.py:283:    def test_sample_uniform(self):
+tests/_archive/legacy/test_v51_modules.py:30:        d = self.router.route()
+tests/_archive/legacy/test_v51_modules.py:34:        d = self.router.route(strategy=self.RoutingStrategy.LOWEST_COST)
+tests/_archive/legacy/test_v51_modules.py:38:        d = self.router.route(strategy=self.RoutingStrategy.HIGHEST_QUALITY)
+tests/_archive/legacy/test_v51_modules.py:42:        d = self.router.route(required_capabilities={"code"})
+tests/_archive/legacy/test_v51_modules.py:46:        d = self.router.route(min_context=16000)
+tests/_archive/legacy/test_v51_modules.py:54:        ids = [r.route().model_id for _ in range(4)]
+tests/_archive/legacy/test_v51_modules.py:62:        d = r.route()
+tests/_archive/legacy/test_v51_modules.py:66:        d = self.router.route(strategy=self.RoutingStrategy.LOWEST_COST)
+tests/_archive/legacy/test_v51_modules.py:72:        d = self.router.route(strategy=self.RoutingStrategy.HIGHEST_QUALITY)
+tests/_archive/legacy/test_v51_modules.py:110:        d = self.router.route()
+tests/_archive/legacy/test_v51_modules.py:114:    def test_async_route(self):
+tests/_archive/legacy/test_v51_modules.py:119:        self.router.route()
+tests/_archive/legacy/test_v51_modules.py:120:        self.router.route()
+tests/_archive/legacy/test_v51_modules.py:132:            r.route()
+tests/_archive/legacy/test_v51_modules.py:135:        self.router.route()
+tests/_archive/legacy/test_v51_modules.py:403:    def test_submit_thumbs_up(self):
+tests/_archive/legacy/test_v51_modules.py:404:        e = self.fa.submit_thumbs("resp1", positive=True, model_id="m1")
+tests/_archive/legacy/test_v51_modules.py:407:    def test_submit_thumbs_down(self):
+tests/_archive/legacy/test_v51_modules.py:408:        e = self.fa.submit_thumbs("resp2", positive=False)
+tests/_archive/legacy/test_v51_modules.py:411:    def test_submit_rating(self):
+tests/_archive/legacy/test_v51_modules.py:412:        e = self.fa.submit_rating("resp3", rating=4.0)
+tests/_archive/legacy/test_v51_modules.py:415:    def test_submit_correction(self):
+tests/_archive/legacy/test_v51_modules.py:416:        e = self.fa.submit_correction("resp4", "The correct answer is 42")
+tests/_archive/legacy/test_v51_modules.py:420:        e = self.fa.submit_thumbs("resp5", positive=True)
+tests/_archive/legacy/test_v51_modules.py:425:        self.fa.submit_thumbs("resp6", positive=True)
+tests/_archive/legacy/test_v51_modules.py:426:        self.fa.submit_rating("resp6", rating=3)
+tests/_archive/legacy/test_v51_modules.py:431:        self.fa.submit_thumbs("r1", True, model_id="modelX")
+tests/_archive/legacy/test_v51_modules.py:432:        self.fa.submit_thumbs("r2", False, model_id="modelX")
+tests/_archive/legacy/test_v51_modules.py:437:        self.fa.submit_thumbs("r1", True,  model_id="m2")
+tests/_archive/legacy/test_v51_modules.py:438:        self.fa.submit_thumbs("r2", True,  model_id="m2")
+tests/_archive/legacy/test_v51_modules.py:439:        self.fa.submit_thumbs("r3", False, model_id="m2")
+tests/_archive/legacy/test_v51_modules.py:444:        self.fa.submit_rating("r1", 5.0)
+tests/_archive/legacy/test_v51_modules.py:445:        self.fa.submit_rating("r2", 3.0)
+tests/_archive/legacy/test_v51_modules.py:450:        self.fa.submit_thumbs("r1", True,  model_id="m3")
+tests/_archive/legacy/test_v51_modules.py:451:        self.fa.submit_thumbs("r2", True,  model_id="m3")
+tests/_archive/legacy/test_v51_modules.py:452:        self.fa.submit_thumbs("r3", False, model_id="m3")
+tests/_archive/legacy/test_v51_modules.py:458:        self.fa.submit("r1", FeedbackType.RATING, 4.0,
+tests/_archive/legacy/test_v51_modules.py:466:            self.fa.submit_thumbs(f"r{i}", True, model_id="tm")
+tests/_archive/legacy/test_v51_modules.py:471:        self.fa.submit_thumbs("r1", True,  model_id="ma")
+tests/_archive/legacy/test_v51_modules.py:472:        self.fa.submit_thumbs("r2", False, model_id="mb")
+tests/_archive/legacy/test_v51_modules.py:480:            self.fa.submit_thumbs(f"r{i}", True, model_id="anom")
+tests/_archive/legacy/test_v51_modules.py:481:        self.fa.submit_thumbs("r9", False, model_id="anom")
+tests/_archive/legacy/test_v51_modules.py:488:        self.fa.submit_correction("r1", "Fix this", model_id="mc")
+tests/_archive/legacy/test_v51_modules.py:495:        self.fa.submit_thumbs("rx", True)
+tests/_archive/legacy/test_v51_modules.py:499:        e = self.fa.submit_rating("r1", rating=10.0)  # clipped to 5
+tests/_archive/legacy/test_v51_modules.py:503:        self.fa.submit_thumbs("r1", True)
+tests/_archive/legacy/test_v51_modules.py:504:        self.fa.submit_rating("r2", 3.0)
+tests/_archive/legacy/test_v54_modules.py:313:    def test_to_messages_format(self):
+tests/_archive/legacy/test_v56_modules.py:489:    def test_to_messages_format(self):
+tests/_archive/legacy/test_v56_modules.py:508:        self.assertGreater(s["packs_performed"], 0)
+tests/_archive/legacy/test_v57_modules.py:18:        return self.sr.add_route(name, h, examples=examples,
+tests/_archive/legacy/test_v57_modules.py:21:    def test_add_route(self):
+tests/_archive/legacy/test_v57_modules.py:28:        d = self.sr.route("what's the weather today?")
+tests/_archive/legacy/test_v57_modules.py:35:        d = self.sr.route("exact query text here")
+tests/_archive/legacy/test_v57_modules.py:42:        sr.add_route("r", lambda q: None,
+tests/_archive/legacy/test_v57_modules.py:44:        d = sr.route("something else entirely different")
+tests/_archive/legacy/test_v57_modules.py:48:    def test_fallback_route(self):
+tests/_archive/legacy/test_v57_modules.py:54:        fb = sr2.add_route("fb", lambda q: "fallback",
+tests/_archive/legacy/test_v57_modules.py:57:        d = sr2.route("completely unrelated random gibberish xyz")
+tests/_archive/legacy/test_v57_modules.py:75:    def test_remove_route(self):
+tests/_archive/legacy/test_v57_modules.py:77:        self.sr.remove_route(r.route_id)
+tests/_archive/legacy/test_v57_modules.py:83:        d = self.sr.route("disabled_kw in query")
+tests/_archive/legacy/test_v57_modules.py:90:        d = self.sr.route("same query")
+tests/_archive/legacy/test_v57_modules.py:97:        self.sr.route("logtest query")
+tests/_archive/legacy/test_v57_modules.py:103:        self.sr.route("statq here")
+tests/_archive/legacy/test_v57_modules.py:112:        sr.add_route("r", lambda q: "ok",
+tests/_archive/legacy/test_v57_modules.py:114:        d = sr.route("hello world")
+tests/_archive/legacy/test_v57_modules.py:394:    def test_map_transform(self):
+tests/_archive/legacy/test_v59_modules.py:300:    def test_sse_format(self):
+tests/_archive/legacy/test_v59_modules.py:304:    def test_token_map_transform(self):
+tests/_archive/legacy/test_v59_modules.py:309:    def test_token_filter_transform(self):
+tests/_archive/legacy/test_v59_modules.py:316:    def test_redact_transform(self):
+tests/_archive/legacy/test_v59_modules.py:407:            {"name": "formal", "category": "communication", "value": 0.3}])
+tests/_archive/legacy/test_v59_modules.py:408:        self.pe.set_trait(p.persona_id, "formal", 0.8)
+tests/_archive/legacy/test_v59_modules.py:409:        self.assertAlmostEqual(p.get_trait_value("formal"), 0.8)
+tests/_archive/legacy/test_v59_modules.py:464:            {"name": "formal", "category": "communication",
+tests/_archive/legacy/test_v59_modules.py:465:             "value": 0.8, "prompt_fragment": "Be formal."}])
+tests/_archive/legacy/test_v59_modules.py:467:            {"name": "formal", "category": "communication",
+tests/_archive/legacy/test_v59_modules.py:468:             "value": 0.2, "prompt_fragment": "Be formal."}])
+tests/_archive/legacy/test_v59_modules.py:475:        formal_val = resolved.get_trait_value("formal")
+tests/_archive/legacy/test_v59_modules.py:476:        self.assertAlmostEqual(formal_val, 0.5, places=1)
+tests/_archive/legacy/test_v59_modules.py:488:            {"name": "formal",  "category": "communication", "value": 0.9},
+tests/_archive/legacy/test_v59_modules.py:496:            {"name": "formal", "category": "communication", "value": 0.9},
+tests/_archive/legacy/test_v60_modules.py:76:    def test_transform_on_ingest(self):
+tests/_archive/legacy/test_v60_modules.py:80:                                  transform=lambda x: x.upper())
+tests/_archive/legacy/test_v64_modules.py:84:    def test_middleware_transform(self):
+tests/_archive/legacy/test_v67_modules.py:385:    def test_transform_node(self):
+tests/_archive/legacy/test_v67_modules.py:387:        c  = self.pc.create_chain("transform")
+tests/_archive/legacy/test_v67_modules.py:391:                               node_type=ChainNodeType.TRANSFORM,
+tests/_archive/legacy/test_v67_modules.py:392:                               transform_fn=lambda out, ctx: str(out).upper())
+tests/_archive/legacy/test_v67_modules.py:398:    def test_output_format_bool(self):
+tests/_archive/legacy/test_v67_modules.py:399:        from agent.prompt_chain_v2 import OutputFormat, PromptChainV2
+tests/_archive/legacy/test_v67_modules.py:404:                    output_format=OutputFormat.BOOL)
+tests/_archive/legacy/test_v67_modules.py:408:    def test_output_format_number(self):
+tests/_archive/legacy/test_v67_modules.py:409:        from agent.prompt_chain_v2 import OutputFormat, PromptChainV2
+tests/_archive/legacy/test_v67_modules.py:414:                    output_format=OutputFormat.NUMBER)
+tests/_archive/legacy/test_v67_modules.py:418:    def test_output_format_list(self):
+tests/_archive/legacy/test_v67_modules.py:419:        from agent.prompt_chain_v2 import OutputFormat, PromptChainV2
+tests/_archive/legacy/test_v67_modules.py:425:                    output_format=OutputFormat.LIST)
+tests/_archive/legacy/test_v68_modules.py:154:        self.assertEqual(res.transformed_data["age"], 25)
+tests/_archive/legacy/test_v68_modules.py:163:    def test_email_format(self):
+tests/_archive/legacy/test_v68_modules.py:214:    def test_transform_applied(self):
+tests/_archive/legacy/test_v68_modules.py:218:                           transform_fn=str.upper)
+tests/_archive/legacy/test_v68_modules.py:220:        self.assertEqual(res.transformed_data["name"], "ALICE")
+tests/_archive/legacy/test_v68_modules.py:240:        self.assertEqual(res.transformed_data["role"], "user")
+tests/_archive/legacy/test_v68_modules.py:386:        result, rec = self.lb.route(lambda b: "ok")
+tests/_archive/legacy/test_v68_modules.py:395:            _, rec = self.lb.route(lambda b: b.backend_id)
+tests/_archive/legacy/test_v68_modules.py:409:        result, _ = lb.route(lambda b: b.address)
+tests/_archive/legacy/test_v68_modules.py:420:            res, _ = lb.route(lambda b: b.address)
+tests/_archive/legacy/test_v68_modules.py:429:            self.lb.route(
+tests/_archive/legacy/test_v68_modules.py:436:        result, rec = self.lb.route(lambda b: "ok")
+tests/_archive/legacy/test_v68_modules.py:451:            res, _ = self.lb.route(lambda b: b.address,
+tests/_archive/legacy/test_v68_modules.py:472:        self.lb.route(
+tests/_archive/legacy/test_v68_modules.py:478:        self.lb.route(lambda b: time.sleep(0.001) or "ok")
+tests/_archive/legacy/test_v68_modules.py:483:        self.lb.route(lambda b: "ok")
+tests/_archive/legacy/test_v69_modules.py:192:        self.cm.set("api_url", "${base_url}/api/v1")
+tests/_archive/legacy/test_v69_modules.py:193:        self.assertEqual(self.cm.get("api_url"), "http://localhost/api/v1")
+tests/_archive/legacy/test_v6_modules.py:300:    def test_formality_blend(self):
+tests/_archive/legacy/test_v6_modules.py:302:        self.assertAlmostEqual(b.formality, 0.6*0.7+0.2*0.3, places=2)
+tests/_archive/legacy/test_v70_modules.py:412:    def test_transform_applied(self):
+tests/_archive/legacy/test_v70_modules.py:414:        self.bp.add_transform(lambda x: x * 10)
+tests/_archive/legacy/test_v7_modules.py:100:    def test_invalid_token_format(self):
+tests/_archive/legacy/test_v7_modules.py:261:    def test_headers_format(self):
+tests/_archive/legacy/test_v7_modules.py:360:    def test_sign_format(self):
+tests/_archive/legacy/test_v7_modules.py:661:    def test_submit_returns_id(self):
+tests/_archive/legacy/test_v7_modules.py:662:        job_id = self._run(self.queue.submit("my_job", {"x": 1}))
+tests/_archive/legacy/test_v7_modules.py:666:    def test_submit_and_get(self):
+tests/_archive/legacy/test_v7_modules.py:667:        job_id = self._run(self.queue.submit("my_job", {"data": "test"}))
+tests/_archive/legacy/test_v7_modules.py:672:    def test_submit_with_delay(self):
+tests/_archive/legacy/test_v7_modules.py:673:        job_id = self._run(self.queue.submit("delayed_job", {}, delay_s=100))
+tests/_archive/legacy/test_v7_modules.py:678:        job_id = self._run(self.queue.submit("cancel_me", {}))
+tests/_archive/legacy/test_v7_modules.py:686:            self._run(self.queue.submit("list_test", {}))
+tests/_archive/legacy/test_v7_modules.py:705:            job_id = await self.queue.submit("result_job", {"value": 42})
+tests/_archive/legacy/test_v7_modules.py:725:            job_id = await self.queue.submit("failing_job", {}, max_attempts=2)
+tests/_archive/legacy/test_v7_modules.py:742:        self._run(self.queue.submit("stat_job", {}))
+tests/_archive/legacy/test_v7_modules.py:756:            job_id = await self.queue.submit("progress_job", {})
+tests/_archive/legacy/test_v7_modules.py:772:            job_id = await self.queue.submit("sync_job", {})
+tests/_archive/legacy/test_v8_modules.py:47:    def test_prometheus_format(self):
+tests/_archive/legacy/test_v8_modules.py:75:    def test_prometheus_format(self):
+tests/_archive/legacy/test_v8_modules.py:104:    def test_prometheus_format(self):
+tests/_archive/legacy/test_v8_modules.py:132:    def test_prometheus_format(self):
+tests/_archive/legacy/test_v8_modules.py:682:                                  "Use list comprehensions for better performance"))
+tests/_archive/legacy/test_v8_modules.py:777:                                 "The /chat endpoint accepts POST requests")
+tests/_archive/legacy/test_v9_modules.py:683:        decision = self.router.route(exp.id, user_id="user_1")
+tests/_archive/legacy/test_v9_modules.py:689:        d1 = self.router.route(exp.id, user_id="sticky_user")
+tests/_archive/legacy/test_v9_modules.py:690:        d2 = self.router.route(exp.id, user_id="sticky_user")
+tests/_archive/legacy/test_v9_modules.py:697:            d = self.router.route(exp.id, user_id=f"user_{i}")
+tests/_archive/legacy/test_v9_modules.py:706:            d = self.router.route(exp.id, user_id="pinned_user")
+tests/_archive/legacy/test_v9_modules.py:715:        decision = self.router.route(exp.id, user_id="user_x")
+tests/_archive/legacy/test_v9_modules.py:722:        d = self.router.route(exp.id, user_id="u1")
+tests/_archive/legacy/test_v9_modules.py:729:        d = self.router.route(exp.id, user_id="u2")
+tests/_archive/legacy/test_v9_modules.py:755:        d = self.router.route(exp_updated.id, user_id="u_after_rollback")
+tests/_archive/legacy/test_v9_modules.py:761:        d = self.router.route(exp.id, user_id="dict_user")
+tests/_full_run.txt:92:tests/test_advanced_modules.py::TestEventBus::test_sse_format PASSED     [  1%]
+tests/_full_run.txt:457:tests/test_v10_modules.py::TestSpan::test_to_otlp_format FAILED          [  6%]
+tests/_full_run.txt:709:tests/test_v12_modules.py::TestHealthDashboard::test_aggregate_status_all_ok PASSED [ 11%]
+tests/_full_run.txt:710:tests/test_v12_modules.py::TestHealthDashboard::test_aggregate_status_empty PASSED [ 11%]
+tests/_full_run.txt:711:tests/test_v12_modules.py::TestHealthDashboard::test_aggregate_status_worst_wins PASSED [ 11%]
+tests/_full_run.txt:712:tests/test_v12_modules.py::TestHealthDashboard::test_async_check 
+tests/_full_run.txt:714:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] async_svc: HealthState.UNHEALTHY
+tests/_full_run.txt:716:tests/test_v12_modules.py::TestHealthDashboard::test_bool_return_false_is_down FAILED [ 11%]
+tests/_full_run.txt:717:tests/test_v12_modules.py::TestHealthDashboard::test_bool_return_true_is_ok FAILED [ 11%]
+tests/_full_run.txt:718:tests/test_v12_modules.py::TestHealthDashboard::test_check_all_empty PASSED [ 11%]
+tests/_full_run.txt:719:tests/test_v12_modules.py::TestHealthDashboard::test_check_exception_marked_down 
+tests/_full_run.txt:721:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] exploding_svc: HealthState.UNHEALTHY
+tests/_full_run.txt:723:tests/test_v12_modules.py::TestHealthDashboard::test_degraded_check 
+tests/_full_run.txt:725:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] slow_svc: HealthState.DEGRADED
+tests/_full_run.txt:727:tests/test_v12_modules.py::TestHealthDashboard::test_duration_recorded FAILED [ 11%]
+tests/_full_run.txt:728:tests/test_v12_modules.py::TestHealthDashboard::test_failing_check_returns_down 
+tests/_full_run.txt:730:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] always_down: HealthState.UNHEALTHY
+tests/_full_run.txt:732:tests/test_v12_modules.py::TestHealthDashboard::test_history_appends FAILED [ 11%]
+tests/_full_run.txt:733:tests/test_v12_modules.py::TestHealthDashboard::test_history_bounded FAILED [ 11%]
+tests/_full_run.txt:734:tests/test_v12_modules.py::TestHealthDashboard::test_last_snapshot FAILED [ 11%]
+tests/_full_run.txt:735:tests/test_v12_modules.py::TestHealthDashboard::test_latency_threshold_degraded FAILED [ 11%]
+tests/_full_run.txt:736:tests/test_v12_modules.py::TestHealthDashboard::test_latency_threshold_down FAILED [ 11%]
+tests/_full_run.txt:737:tests/test_v12_modules.py::TestHealthDashboard::test_ok_check_returns_ok FAILED [ 11%]
+tests/_full_run.txt:738:tests/test_v12_modules.py::TestHealthDashboard::test_overall_status_down_if_any_down 
+tests/_full_run.txt:740:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] bad_svc: HealthState.UNHEALTHY
+tests/_full_run.txt:742:tests/test_v12_modules.py::TestHealthDashboard::test_overall_status_ok_all_pass FAILED [ 11%]
+tests/_full_run.txt:743:tests/test_v12_modules.py::TestHealthDashboard::test_register_lambda FAILED [ 11%]
+tests/_full_run.txt:744:tests/test_v12_modules.py::TestHealthDashboard::test_register_module_with_health_check FAILED [ 11%]
+tests/_full_run.txt:745:tests/test_v12_modules.py::TestHealthDashboard::test_register_module_without_health_check FAILED [ 11%]
+tests/_full_run.txt:746:tests/test_v12_modules.py::TestHealthDashboard::test_register_ok_check PASSED [ 11%]
+tests/_full_run.txt:747:tests/test_v12_modules.py::TestHealthDashboard::test_render_html FAILED  [ 11%]
+tests/_full_run.txt:748:tests/test_v12_modules.py::TestHealthDashboard::test_render_html_shows_status_colors 
+tests/_full_run.txt:750:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] failing: HealthState.UNHEALTHY
+tests/_full_run.txt:752:tests/test_v12_modules.py::TestHealthDashboard::test_snapshot_counts 
+tests/_full_run.txt:754:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] deg1: HealthState.DEGRADED
+tests/_full_run.txt:756:tests/test_v12_modules.py::TestHealthDashboard::test_snapshot_to_dict FAILED [ 11%]
+tests/_full_run.txt:757:tests/test_v12_modules.py::TestHealthDashboard::test_stats FAILED        [ 11%]
+tests/_full_run.txt:758:tests/test_v12_modules.py::TestHealthDashboard::test_unregister_check FAILED [ 11%]
+tests/_full_run.txt:759:tests/test_v12_modules.py::TestHealthDashboard::test_unregister_nonexistent FAILED [ 11%]
+tests/_full_run.txt:965:tests/test_v14_modules.py::TestToolComposer::test_transform PASSED       [ 15%]
+tests/_full_run.txt:1143:tests/test_v17_modules.py::TestContextComposer::test_render_chat_format PASSED [ 18%]
+tests/_full_run.txt:1154:tests/test_v17_modules.py::TestResponseStreamer::test_detect_format_code PASSED [ 18%]
+tests/_full_run.txt:1155:tests/test_v17_modules.py::TestResponseStreamer::test_detect_format_json PASSED [ 18%]
+tests/_full_run.txt:1156:tests/test_v17_modules.py::TestResponseStreamer::test_detect_format_markdown PASSED [ 18%]
+tests/_full_run.txt:1157:tests/test_v17_modules.py::TestResponseStreamer::test_detect_format_plain PASSED [ 18%]
+tests/_full_run.txt:1222:tests/test_v18_modules.py::TestFeedbackCollector::test_submit_comment FAILED [ 20%]
+tests/_full_run.txt:1223:tests/test_v18_modules.py::TestFeedbackCollector::test_submit_returns_item FAILED [ 20%]
+tests/_full_run.txt:1224:tests/test_v18_modules.py::TestFeedbackCollector::test_submit_star_rating FAILED [ 20%]
+tests/_full_run.txt:1225:tests/test_v18_modules.py::TestFeedbackCollector::test_submit_thumbs_down FAILED [ 20%]
+tests/_full_run.txt:1226:tests/test_v18_modules.py::TestFeedbackCollector::test_submit_thumbs_up FAILED [ 20%]
+tests/_full_run.txt:1311:tests/test_v19_modules.py::TestOutputFormatter::test_bold_italic PASSED  [ 21%]
+tests/_full_run.txt:1312:tests/test_v19_modules.py::TestOutputFormatter::test_code_block PASSED   [ 21%]
+tests/_full_run.txt:1313:tests/test_v19_modules.py::TestOutputFormatter::test_format_json_dict PASSED [ 21%]
+tests/_full_run.txt:1314:tests/test_v19_modules.py::TestOutputFormatter::test_format_json_invalid_repaired PASSED [ 21%]
+tests/_full_run.txt:1315:tests/test_v19_modules.py::TestOutputFormatter::test_format_json_irreparable PASSED [ 21%]
+tests/_full_run.txt:1316:tests/test_v19_modules.py::TestOutputFormatter::test_format_json_valid PASSED [ 21%]
+tests/_full_run.txt:1317:tests/test_v19_modules.py::TestOutputFormatter::test_list_ordered PASSED [ 21%]
+tests/_full_run.txt:1318:tests/test_v19_modules.py::TestOutputFormatter::test_list_unordered PASSED [ 21%]
+tests/_full_run.txt:1319:tests/test_v19_modules.py::TestOutputFormatter::test_markdown_section PASSED [ 21%]
+tests/_full_run.txt:1320:tests/test_v19_modules.py::TestOutputFormatter::test_render_template PASSED [ 21%]
+tests/_full_run.txt:1321:tests/test_v19_modules.py::TestOutputFormatter::test_repair_from_markdown_block PASSED [ 21%]
+tests/_full_run.txt:1322:tests/test_v19_modules.py::TestOutputFormatter::test_schema_type_mismatch PASSED [ 21%]
+tests/_full_run.txt:1323:tests/test_v19_modules.py::TestOutputFormatter::test_schema_validation_fail_missing PASSED [ 21%]
+tests/_full_run.txt:1324:tests/test_v19_modules.py::TestOutputFormatter::test_schema_validation_pass PASSED [ 21%]
+tests/_full_run.txt:1325:tests/test_v19_modules.py::TestOutputFormatter::test_strip_markdown PASSED [ 21%]
+tests/_full_run.txt:1326:tests/test_v19_modules.py::TestOutputFormatter::test_table_ascii PASSED  [ 21%]
+tests/_full_run.txt:1327:tests/test_v19_modules.py::TestOutputFormatter::test_table_empty PASSED  [ 21%]
+tests/_full_run.txt:1328:tests/test_v19_modules.py::TestOutputFormatter::test_table_markdown PASSED [ 21%]
+tests/_full_run.txt:1329:tests/test_v19_modules.py::TestOutputFormatter::test_to_csv PASSED       [ 21%]
+tests/_full_run.txt:1330:tests/test_v19_modules.py::TestOutputFormatter::test_to_dict PASSED      [ 21%]
+tests/_full_run.txt:1331:tests/test_v19_modules.py::TestOutputFormatter::test_to_html PASSED      [ 21%]
+tests/_full_run.txt:1332:tests/test_v19_modules.py::TestOutputFormatter::test_truncate_no_op PASSED [ 21%]
+tests/_full_run.txt:1333:tests/test_v19_modules.py::TestOutputFormatter::test_truncate_smart PASSED [ 22%]
+tests/_full_run.txt:1334:tests/test_v19_modules.py::TestOutputFormatter::test_validate_direct PASSED [ 22%]
+tests/_full_run.txt:1335:tests/test_v19_modules.py::TestOutputFormatter::test_validate_enum PASSED [ 22%]
+tests/_full_run.txt:1595:tests/test_v22_modules.py::TestStreamingAggregator::test_async_transform PASSED [ 26%]
+tests/_full_run.txt:1610:tests/test_v22_modules.py::TestStreamingAggregator::test_transform PASSED [ 26%]
+tests/_full_run.txt:1611:tests/test_v22_modules.py::TestStreamingAggregator::test_transform_filter_none PASSED [ 26%]
+tests/_full_run.txt:1870:tests/test_v26_modules.py::TestPromptOptimizer::test_generate_variant_output_format FAILED [ 31%]
+tests/_full_run.txt:1903:tests/test_v26_modules.py::TestDataPipeline::test_transform_modifies_records FAILED [ 32%]
+tests/_full_run.txt:1924:tests/test_v26_modules.py::TestHealthDashboard::test_alert_cooldown 
+tests/_full_run.txt:1926:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] cool_svc: HealthState.UNHEALTHY
+tests/_full_run.txt:1928:tests/test_v26_modules.py::TestHealthDashboard::test_alert_fired 
+tests/_full_run.txt:1930:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] bad_svc: HealthState.UNHEALTHY
+tests/_full_run.txt:1932:tests/test_v26_modules.py::TestHealthDashboard::test_async_check_fn PASSED [ 32%]
+tests/_full_run.txt:1933:tests/test_v26_modules.py::TestHealthDashboard::test_check_all PASSED    [ 32%]
+tests/_full_run.txt:1934:tests/test_v26_modules.py::TestHealthDashboard::test_check_degraded 
+tests/_full_run.txt:1936:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] slow_svc: HealthState.DEGRADED
+tests/_full_run.txt:1938:tests/test_v26_modules.py::TestHealthDashboard::test_check_exception 
+tests/_full_run.txt:1940:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] exc_svc: HealthState.UNHEALTHY
+tests/_full_run.txt:1942:tests/test_v26_modules.py::TestHealthDashboard::test_check_healthy PASSED [ 32%]
+tests/_full_run.txt:1943:tests/test_v26_modules.py::TestHealthDashboard::test_check_unhealthy 
+tests/_full_run.txt:1945:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] dead_svc: HealthState.UNHEALTHY
+tests/_full_run.txt:1947:tests/test_v26_modules.py::TestHealthDashboard::test_check_unknown_component PASSED [ 32%]
+tests/_full_run.txt:1948:tests/test_v26_modules.py::TestHealthDashboard::test_get_status PASSED   [ 32%]
+tests/_full_run.txt:1949:tests/test_v26_modules.py::TestHealthDashboard::test_history_populated PASSED [ 32%]
+tests/_full_run.txt:1950:tests/test_v26_modules.py::TestHealthDashboard::test_latency_stats PASSED [ 32%]
+tests/_full_run.txt:1951:tests/test_v26_modules.py::TestHealthDashboard::test_numeric_return_threshold PASSED [ 32%]
+tests/_full_run.txt:1952:tests/test_v26_modules.py::TestHealthDashboard::test_overall_score_all_healthy PASSED [ 32%]
+tests/_full_run.txt:1953:tests/test_v26_modules.py::TestHealthDashboard::test_overall_score_degraded 
+tests/_full_run.txt:1955:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.HIGH] deg: HealthState.DEGRADED
+tests/_full_run.txt:1957:tests/test_v26_modules.py::TestHealthDashboard::test_register_component PASSED [ 32%]
+tests/_full_run.txt:1958:tests/test_v26_modules.py::TestHealthDashboard::test_resolve_alert 
+tests/_full_run.txt:1960:WARNING  agent.health_dashboard:health_dashboard.py:314 ALERT [Criticality.MEDIUM] resolve_svc: HealthState.UNHEALTHY
+tests/_full_run.txt:1962:tests/test_v26_modules.py::TestHealthDashboard::test_result_to_dict PASSED [ 32%]
+tests/_full_run.txt:1963:tests/test_v26_modules.py::TestHealthDashboard::test_spec_to_dict PASSED [ 32%]
+tests/_full_run.txt:1964:tests/test_v26_modules.py::TestHealthDashboard::test_stats PASSED        [ 32%]
+tests/_full_run.txt:1965:tests/test_v26_modules.py::TestHealthDashboard::test_trend_rising PASSED [ 32%]
+tests/_full_run.txt:1966:tests/test_v26_modules.py::TestHealthDashboard::test_trend_stable PASSED [ 32%]
+tests/_full_run.txt:2078:tests/test_v28_modules.py::TestResponseRanker::test_format_bonus_code PASSED [ 34%]
+tests/_full_run.txt:2079:tests/test_v28_modules.py::TestResponseRanker::test_format_bonus_json PASSED [ 34%]
+tests/_full_run.txt:2361:tests/test_v31_modules.py::TestFeedbackCollector::test_dedup_prevents_double_submit PASSED [ 39%]
+tests/_full_run.txt:2370:tests/test_v31_modules.py::TestFeedbackCollector::test_submit_rating PASSED [ 40%]
+tests/_full_run.txt:2371:tests/test_v31_modules.py::TestFeedbackCollector::test_submit_text PASSED [ 40%]
+tests/_full_run.txt:2372:tests/test_v31_modules.py::TestFeedbackCollector::test_submit_thumbs_up PASSED [ 40%]
+tests/_full_run.txt:2399:tests/test_v32_modules.py::TestConversationManager::test_get_context_format PASSED [ 40%]
+tests/_full_run.txt:2424:tests/test_v32_modules.py::TestToolRegistry::test_openai_schema_format PASSED [ 41%]
+tests/_full_run.txt:2580:tests/test_v34_modules.py::TestStreamProcessor::test_transform_modifies_payload PASSED [ 43%]
+tests/_full_run.txt:2686:tests/test_v35_modules.py::TestSchemaValidator::test_format_email_invalid PASSED [ 45%]
+tests/_full_run.txt:2687:tests/test_v35_modules.py::TestSchemaValidator::test_format_email_valid PASSED [ 45%]
+tests/_full_run.txt:3262:tests/test_v42_modules.py::TestDataValidator::test_email_format PASSED   [ 55%]
+tests/_full_run.txt:3277:tests/test_v42_modules.py::TestDataValidator::test_url_format PASSED     [ 56%]
+tests/_full_run.txt:3278:tests/test_v42_modules.py::TestDataValidator::test_uuid_format PASSED    [ 56%]
+tests/_full_run.txt:3446:tests/test_v44_modules.py::TestAPIGateway::test_request_transform PASSED [ 59%]
+tests/_full_run.txt:3447:tests/test_v44_modules.py::TestAPIGateway::test_response_transform PASSED [ 59%]
+tests/_full_run.txt:3515:tests/test_v45_modules.py::TestTelemetry::test_traceparent_format PASSED [ 60%]
+tests/_full_run.txt:3851:tests/test_v49_modules.py::TestStreamAggregatorV2::test_stream_transform FAILED [ 66%]
+tests/_full_run.txt:3908:tests/test_v50_modules.py::TestReplayBuffer::test_sample_uniform PASSED  [ 67%]
+tests/_full_run.txt:4001:tests/test_v51_modules.py::TestFeedbackAnalyzer::test_submit_correction PASSED [ 69%]
+tests/_full_run.txt:4002:tests/test_v51_modules.py::TestFeedbackAnalyzer::test_submit_rating PASSED [ 69%]
+tests/_full_run.txt:4003:tests/test_v51_modules.py::TestFeedbackAnalyzer::test_submit_thumbs_down PASSED [ 69%]
+tests/_full_run.txt:4004:tests/test_v51_modules.py::TestFeedbackAnalyzer::test_submit_thumbs_up PASSED [ 69%]
+tests/_full_run.txt:4197:tests/test_v54_modules.py::TestConversationState::test_to_messages_format PASSED [ 72%]
+tests/_full_run.txt:4351:tests/test_v56_modules.py::TestContextWindowManager::test_to_messages_format PASSED [ 75%]
+tests/_full_run.txt:4355:tests/test_v57_modules.py::TestSemanticRouter::test_add_route PASSED     [ 75%]
+tests/_full_run.txt:4409:tests/test_v57_modules.py::TestDataPipelineV3::test_map_transform FAILED [ 76%]
+tests/_full_run.txt:4523:tests/test_v59_modules.py::TestResponseStreamerV2::test_redact_transform FAILED [ 78%]
+tests/_full_run.txt:4524:tests/test_v59_modules.py::TestResponseStreamerV2::test_sse_format FAILED [ 78%]
+tests/_full_run.txt:4529:tests/test_v59_modules.py::TestResponseStreamerV2::test_token_filter_transform FAILED [ 78%]
+tests/_full_run.txt:4530:tests/test_v59_modules.py::TestResponseStreamerV2::test_token_map_transform FAILED [ 78%]
+tests/_full_run.txt:4567:tests/test_v60_modules.py::TestFeatureStore::test_transform_on_ingest PASSED [ 79%]
+tests/_full_run.txt:4815:tests/test_v64_modules.py::TestEventBusV2::test_middleware_transform FAILED [ 83%]
+tests/SUPPORT_MATRIX.md:49:- Performance smoke summary — `snapshot-phase-3-3/performance_smoke_summary.json`
+tests/SUPPORT_MATRIX.md:50:- Performance baseline summary — `snapshot-phase-3-3/performance_baseline_summary.json`
+tests/SUPPORT_MATRIX.md:65:- `test_dashboard.py` — dashboard UI
+tests/SUPPORT_MATRIX.md:71:- `test_main_entrypoint_quality_ratchet.py` — Phase 3.7 entrypoint/API quality ratchet
+tests/SUPPORT_MATRIX.md:79:- `test_performance_harness.py` — local performance harness contract
+tests/SUPPORT_MATRIX.md:80:- `test_performance_smoke_summary.py` — smoke summary schema and redaction
+tests/SUPPORT_MATRIX.md:112:- Use `docs/performance.md` for the Phase 3.3 local workload contract and baseline metrics.
+tests/test_advanced_modules.py:840:    async def test_run_transform_workflow_allows_safe_expressions(self, mock_agent):
+tests/test_advanced_modules.py:846:            "name": "transform_safe",
+tests/test_advanced_modules.py:848:                {"name": "double", "action": "transform", "transform": "value * 2", "output": "doubled"},
+tests/test_advanced_modules.py:849:                {"name": "shout", "action": "transform", "transform": "text.upper()", "output": "shout"},
+tests/test_advanced_modules.py:850:                {"name": "lookup", "action": "transform", "transform": "payload.get('city', 'unknown')", "output": "city"},
+tests/test_advanced_modules.py:854:        run = await wm.run("transform_safe", {
+tests/test_advanced_modules.py:866:    async def test_run_transform_workflow_blocks_unsafe_calls(self, mock_agent):
+tests/test_advanced_modules.py:872:            "name": "transform_blocked",
+tests/test_advanced_modules.py:876:                    "action": "transform",
+tests/test_advanced_modules.py:877:                    "transform": "__import__('os').system('echo nope')",
+tests/test_advanced_modules.py:883:        run = await wm.run("transform_blocked", {})
+tests/test_advanced_modules.py:1003:    def test_sse_format(self):
+tests/test_advanced_modules.py:1004:        from agent.streaming import sse_format
+tests/test_advanced_modules.py:1005:        frame = sse_format({"key": "val"}, event="token", id="abc")
+tests/test_auth_ownership_binding.py:174:        app.router.add_post("/chat", chat)
+tests/test_auth_ownership_binding.py:190:            "/chat",
+tests/test_auth_ownership_binding.py:253:            "/export/conversation/user:alice:shared?format=json",
+tests/test_coverage_config.py:69:    assert "tools/performance/*" in omit
+tests/test_crypto_utils_quality_ratchet.py:71:def test_password_hashing_rejects_malformed_payload_without_leaking_secret() -> None:
+tests/test_crypto_utils_quality_ratchet.py:79:    malformed = "not-base64:abc:super-secret-material"
+tests/test_crypto_utils_quality_ratchet.py:80:    assert verify_password("hunter2", malformed) is False
+tests/test_crypto_utils_quality_ratchet.py:116:    with pytest.raises(ValueError, match="Invalid JWT format") as fmt_exc:
+tests/test_crypto_utils_quality_ratchet.py:190:    cu.register_routes(app, prefix="/api")
+tests/test_crypto_utils_quality_ratchet.py:196:        ok_resp = await client.post("/api/crypto/hash", json={"algo": "sha256", "data": "hello"})
+tests/test_crypto_utils_quality_ratchet.py:199:        blake_resp = await client.post("/api/crypto/hash", json={"algo": "blake2b", "data": "hello"})
+tests/test_crypto_utils_quality_ratchet.py:202:        bad_resp = await client.post("/api/crypto/hash", json={"algo": "md5", "data": "hello"})
+tests/test_dashboard.py:13:def test_dashboard_html_contains_dedicated_job_search_button():
+tests/test_dashboard.py:14:    from agent.dashboard import DASHBOARD_HTML
+tests/test_dashboard.py:16:    assert "ADR Tanker Job Search — Quick Launch" in DASHBOARD_HTML
+tests/test_dashboard.py:17:    assert "Quick Run ADR Job Search" in DASHBOARD_HTML
+tests/test_dashboard.py:18:    assert "runAdrJobSearch('ov-job-search')" in DASHBOARD_HTML
+tests/test_dashboard.py:19:    assert "ov-job-search-export" in DASHBOARD_HTML
+tests/test_dashboard.py:20:    assert "ov-job-search-out" in DASHBOARD_HTML
+tests/test_dashboard.py:21:    assert "ADR Tanker Job Search" in DASHBOARD_HTML
+tests/test_dashboard.py:22:    assert "Run ADR Job Search" in DASHBOARD_HTML
+tests/test_dashboard.py:23:    assert "runAdrJobSearch('job-search')" in DASHBOARD_HTML
+tests/test_dashboard.py:24:    assert "run_job_search_tank_adr_improved" in DASHBOARD_HTML
+tests/test_dashboard.py:25:    assert "job-search-export" in DASHBOARD_HTML
+tests/test_dashboard.py:26:    assert "job-search-out" in DASHBOARD_HTML
+tests/test_dashboard.py:29:def test_dashboard_html_uses_session_storage_and_escaped_innerhtml_sinks():
+tests/test_dashboard.py:30:    from agent.dashboard import DASHBOARD_HTML
+tests/test_dashboard.py:32:    assert "sessionStorage" in DASHBOARD_HTML
+tests/test_dashboard.py:33:    assert "localStorage" not in DASHBOARD_HTML
+tests/test_dashboard.py:34:    assert "escHtml(d.status||'running')" in DASHBOARD_HTML
+tests/test_dashboard.py:35:    assert "escAttr(m.id)" in DASHBOARD_HTML
+tests/test_dashboard.py:36:    assert "escHtml(res.model||'?')" in DASHBOARD_HTML
+tests/test_dashboard.py:37:    assert "escHtml(t.name||t.id)" in DASHBOARD_HTML
+tests/test_dashboard.py:41:async def test_dashboard_route_serves_dedicated_job_search_ui():
+tests/test_dashboard.py:42:    from agent.dashboard import register_dashboard
+tests/test_dashboard.py:52:    register_dashboard(app, DummyAgent())
+tests/test_dashboard.py:58:        response = await client.get("/dashboard")
+tests/test_dashboard.py:72:async def test_dashboard_route_sets_nonce_based_csp_header():
+tests/test_dashboard.py:73:    from agent.dashboard import register_dashboard
+tests/test_dashboard.py:83:    register_dashboard(app, DummyAgent())
+tests/test_dashboard.py:89:        response = await client.get("/dashboard")
+tests/test_export_api_contracts.py:65:    from agent.export import ExportFormat, Exporter
+tests/test_export_api_contracts.py:77:    memories_payload = json.loads(exporter.export_memories(ExportFormat.JSON))
+tests/test_export_api_contracts.py:78:    kg_payload = json.loads(exporter.export_kg(ExportFormat.JSON))
+tests/test_health_endpoint_contract.py:159:        path = canonical or info.get("path") or info.get("formatter")
+tests/test_health_endpoint_contract.py:171:    assert "/health" in routes
+tests/test_health_endpoint_contract.py:172:    assert "/health" in agent.auth.public_paths
+tests/test_health_endpoint_contract.py:178:        health_resp = await client.get("/health")
+tests/test_health_endpoint_contract.py:181:        status_resp = await client.get("/status")
+tests/test_health_endpoint_contract.py:201:    assert "/health" in agent.auth.anonymous_hits
+tests/test_health_endpoint_contract.py:202:    assert "/status" in agent.auth.anonymous_hits
+tests/test_http_tracing.py:24:        return {"formatter": self.canonical}
+tests/test_http_tracing.py:32:        path: str = "/status",
+tests/test_http_tracing.py:33:        canonical: str | None = "/status",
+tests/test_http_tracing.py:100:        path="/chat",
+tests/test_http_tracing.py:101:        canonical="/chat",
+tests/test_http_tracing.py:115:    assert attrs["http_route"] == "/chat"
+tests/test_job_search_tank_adr_improved.py:109:def test_compute_score_caps_informational_pages_without_job_signal():
+tests/test_knowledge_graph_quality_ratchet.py:155:    kg.register_routes(app, prefix="/api")
+tests/test_knowledge_graph_quality_ratchet.py:162:            "/api/kg/edge",
+tests/test_knowledge_graph_quality_ratchet.py:168:            "/api/kg/node",
+tests/test_knowledge_graph_quality_ratchet.py:178:            "/api/kg/node",
+tests/test_knowledge_graph_quality_ratchet.py:182:            "/api/kg/edge",
+tests/test_knowledge_graph_quality_ratchet.py:191:        query_resp = await client.get("/api/kg/query?type=PERSON")
+tests/test_knowledge_graph_quality_ratchet.py:193:            "/api/kg/path",
+tests/test_knowledge_graph_quality_ratchet.py:196:        stats_resp = await client.get("/api/kg/stats")
+tests/test_main_entrypoint_quality_ratchet.py:44:    def route(self, text: str, session_id: str = "", has_image: bool = False) -> Any:
+tests/test_main_entrypoint_quality_ratchet.py:420:    assert "/dashboard" in agent.auth.public_paths
+tests/test_main_entrypoint_quality_ratchet.py:431:        status_resp = await client.get("/status")
+tests/test_main_entrypoint_quality_ratchet.py:434:        dashboard_resp = await client.get("/dashboard")
+tests/test_main_entrypoint_quality_ratchet.py:437:        empty_chat_resp = await client.post("/chat", json={})
+tests/test_main_entrypoint_quality_ratchet.py:441:            "/chat",
+tests/test_main_entrypoint_quality_ratchet.py:447:            "/chat",
+tests/test_main_entrypoint_quality_ratchet.py:470:        persona_set_resp = await client.post("/personas/session/chat", json={"persona": "assistant"})
+tests/test_main_entrypoint_quality_ratchet.py:471:        persona_info_resp = await client.get("/personas/session/chat")
+tests/test_main_entrypoint_quality_ratchet.py:479:    assert dashboard_resp.status == 200
+tests/test_main_entrypoint_quality_ratchet.py:551:        tools_openai_resp = await client.get("/tools?format=openai")
+tests/test_model_routing_tracing.py:40:    decision = router.route(prompt, session_id="sess-route")
+tests/test_model_routing_tracing.py:57:    routed_decision = client.router.route(prompt)
+tests/test_models.py:227:        decision = router.route("Write a Python sorting algorithm")
+tests/test_models.py:234:        decision = router.route("Debug this Python code: def broken(")
+tests/test_models.py:238:        decision = router.route("What is in this image?", has_image=True)
+tests/test_models.py:243:        decision = router.route("Write a complex ML algorithm", session_id="sess1")
+tests/test_models.py:258:        decision = router.route("complex reasoning task")
+tests/test_models.py:285:        decision = router.route("Write a Python class")
+tests/test_new_modules.py:438:        t = PromptTemplate("t", "Style: {{style:formal}}. Length: {{length:short}}.")
+tests/test_new_modules.py:440:        assert v["style"] == "formal"
+tests/test_new_modules.py:451:        t = PromptTemplate("t", "Style: {{style:formal}}.")
+tests/test_new_modules.py:453:        assert result == "Style: formal."
+tests/test_new_modules.py:768:        async def fake_run_search_with_summary(export_format="html", verbose=False, output_dir=None):
+tests/test_new_modules.py:769:            assert export_format == "json"
+tests/test_new_modules.py:777:        run = await executor.run(pipeline, {"export_format": "json", "verbose": False})
+tests/test_ollama_client_quality_ratchet.py:124:        "http://ollama.local/api/tags",
+tests/test_ollama_client_quality_ratchet.py:125:        "http://ollama.local/api/tags",
+tests/test_ollama_client_quality_ratchet.py:151:    assert fake_session.post_calls[0]["url"] == "http://ollama.local/api/pull"
+tests/test_performance_harness.py:10:from tools.performance.reporting import validate_summary_payload
+tests/test_performance_harness.py:11:from tools.performance.run_local_baseline import build_command, build_config, is_loopback_target, parse_args
+tests/test_performance_harness.py:14:def test_performance_harness_modules_import() -> None:
+tests/test_performance_harness.py:15:    import tools.performance.local_fixture as local_fixture
+tests/test_performance_harness.py:16:    import tools.performance.run_local_baseline as run_local_baseline
+tests/test_performance_harness.py:23:    source = (PROJECT_ROOT / "tools" / "performance" / "run_local_baseline.py").read_text(encoding="utf-8")
+tests/test_performance_harness.py:60:                "route": "/status",
+tests/test_performance_harness.py:81:    assert command[:2] == ["python", "tools/performance/run_local_baseline.py"]
+tests/test_performance_smoke_summary.py:11:from tools.performance.reporting import contains_sensitive_content, summary_to_markdown, validate_summary_payload
+tests/test_performance_smoke_summary.py:12:from tools.performance.run_local_baseline import build_command
+tests/test_performance_smoke_summary.py:30:                "route": "/chat",
+tests/test_performance_smoke_summary.py:40:                "route": "/status",
+tests/test_phase2_import_compatibility.py:31:    ("agent.dashboard", "agent.observability.dashboard", "register_dashboard"),
+tests/test_phase2_refactor_equivalence.py:161:            "properties": {"value": {"type": "string", "format": "email"}},
+tests/test_phase2_refactor_equivalence.py:170:        "Invalid format: email" in error.message
+tests/test_security_auth_tools.py:26:            self.auth.middleware(public_paths=["/status", "/auth/bootstrap"])
+tests/test_security_auth_tools.py:35:        app.router.add_get("/status", status)
+tests/test_security_auth_tools.py:36:        app.router.add_get("/chat", chat)
+tests/test_security_auth_tools.py:55:        status_resp = await self.client.get("/status")
+tests/test_security_auth_tools.py:58:        chat_resp = await self.client.get("/chat")
+tests/test_security_auth_tools.py:232:                    arguments={"export_format": "html", "verbose": False},
+tests/test_security_event_audit.py:29:                public_paths=["/status"],
+tests/test_security_event_audit.py:37:        app.router.add_get("/chat", chat)
+tests/test_security_event_audit.py:44:                "/chat",
+tests/test_security_event_audit.py:58:        self.assertEqual(details["path"], "/chat")
+tests/test_ssrf_validator.py:52:            result = await scraper.fetch("http://127.0.0.1/admin")
+tests/test_streaming_quality_ratchet.py:161:    from agent.streaming import register_streaming_routes, sse_format
+tests/test_streaming_quality_ratchet.py:167:        yield sse_format({"token": "Hi"}, event="token")
+tests/test_streaming_quality_ratchet.py:168:        yield sse_format({"content": "Hi", "done": True}, event="done")
+tests/test_streaming_quality_ratchet.py:179:        ok_resp = await client.get("/stream/chat?prompt=hello&session_id=chat-1&model=phi4")
+tests/test_streaming_quality_ratchet.py:182:        bad_resp = await client.get("/stream/chat")
+tests/test_streaming_quality_ratchet.py:220:        resp = await client.get("/stream/chat?prompt=hello&session_id=user:bob:chat")
+README.md:31:Dashboard: **http://localhost:8000/dashboard**
+README.md:33:### One-click local dashboard start (Windows)
+README.md:38:.\start_dashboard.bat
+README.md:44:.\stop_dashboard.bat
+README.md:57:- disables auth for local dashboard use by setting `AUTH_ENFORCE=false`
+README.md:58:- opens the dashboard automatically in your browser
+README.md:59:- reuses the existing local dashboard if it is already running
+README.md:63:- `start_dashboard.bat` starts or reuses OMNI API mode and opens the dashboard
+README.md:64:- `stop_dashboard.bat` stops OMNI processes running in `api` or `all` mode because they own the dashboard server
+README.md:69:- `start_all.bat` starts OMNI in `all` mode and opens the dashboard when the API is ready
+README.md:98:│   ├── dashboard.py          # Real-time web dashboard
+README.md:130:| **Cogito** | cogito-2.1:671b-cloud | Formal reasoning, math proofs |
+README.md:153:POST /chat                    Chat with the agent
+README.md:154:GET  /status                  System health + model stats
+README.md:215:/status                       System status
+README.md:223:/start    /help    /status    /clear    /memory
+README.md:239:results = await agent.rag.retrieve("transformer architecture", top_k=5)
+README.md:340:## Performance Baseline
+README.md:342:Phase 3.3 adds a loopback-only local performance harness for `GET /status` and a deterministic `POST /chat` fixture route.
+README.md:346:python tools/performance/run_local_baseline.py --smoke
+README.md:347:python tools/performance/run_local_baseline.py --baseline
+README.md:351:This baseline is **local-only** and does **not** define production SLOs. See `docs/performance.md` for workload scope, safety rules, and the latest recorded baseline.
