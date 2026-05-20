@@ -27,6 +27,7 @@ import hashlib
 import logging
 import subprocess
 import tempfile
+import shutil
 from typing import Any, Dict, List, Mapping, Optional, Set, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
@@ -185,6 +186,28 @@ _ESSENTIAL_RUNTIME_ENV_KEYS: Set[str] = {
     "USERPROFILE",
     "WINDIR",
 }
+
+_WINDOWS_GIT_BASH_CANDIDATES: Tuple[str, ...] = (
+    r"C:\Program Files\Git\bin\bash.exe",
+    r"C:\Program Files\Git\usr\bin\bash.exe",
+    r"C:\Program Files (x86)\Git\bin\bash.exe",
+    r"C:\Program Files (x86)\Git\usr\bin\bash.exe",
+)
+
+
+def _resolve_bash_executable() -> str:
+    explicit = os.environ.get("OMNI_BASH_EXE")
+    if explicit:
+        expanded = str(Path(explicit).expanduser())
+        if Path(expanded).exists():
+            return expanded
+
+    if os.name == "nt":
+        for candidate in _WINDOWS_GIT_BASH_CANDIDATES:
+            if Path(candidate).exists():
+                return candidate
+
+    return shutil.which("bash") or "bash"
 
 
 def _normalize_policy_paths(paths: Tuple[str, ...]) -> Tuple[str, ...]:
@@ -613,8 +636,9 @@ _sys.__stdout__.write(_json_mod.dumps({
             "shell execution explicitly enabled for sandbox backend",
             language=ExecLanguage.BASH.value,
         )
+        bash_executable = _resolve_bash_executable()
         return await self._run_subprocess(
-            cmd=["bash", "-c", code],
+            cmd=[bash_executable, "-c", code],
             exec_id=exec_id,
             language=ExecLanguage.BASH,
             code=code,
