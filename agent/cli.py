@@ -164,6 +164,7 @@ HELP_TEXT = """
   /stats                 Model usage statistics
   /skills                List loaded skills
   /memory <query>        Search memory
+  /chronicle tips        Review session history and get personalized tips
   /help                  Show this help
   /quit  /exit           Exit
 """
@@ -283,6 +284,7 @@ class EnhancedCLI:
             "/stats":      self._cmd_stats,
             "/skills":     self._cmd_skills,
             "/memory":     self._cmd_memory,
+            "/chronicle":  self._cmd_chronicle,
             "/quit":       self._cmd_quit,
             "/exit":       self._cmd_quit,
         }
@@ -586,6 +588,55 @@ class EnhancedCLI:
                  str(r.get("importance",""))) for r in results]
         _table(f"Memory Search: '{query}'",
                ["Key", "Value", "Category", "Importance"], rows)
+
+    async def _cmd_chronicle(self, subcommand: str = "", *_):
+        """Review session history and get personalized tips."""
+        if subcommand.lower() != "tips" and subcommand != "":
+            _print("[yellow]Usage: /chronicle tips[/yellow]")
+            return
+
+        from agent.chronicle_analyzer import ChronicleAnalyzer
+
+        analyzer = ChronicleAnalyzer(self.agent.memory)
+        result = analyzer.analyze_all_sessions()
+
+        # Display personalized tips
+        if result.get("tips"):
+            _print("\n[bold cyan]✨ Personalized Tips for You:[/bold cyan]")
+            for i, tip in enumerate(result["tips"], 1):
+                _print(f"  {i}. {tip}")
+
+        # Display patterns detected
+        patterns = result.get("patterns", [])
+        if patterns:
+            _print("\n[bold cyan]📊 Usage Patterns Detected:[/bold cyan]")
+            for pattern in patterns:
+                name = pattern.get("name", "Unknown")
+                _print(f"\n  [bold]{name}[/bold]")
+
+                if "short" in pattern:
+                    _print(f"    • Short sessions: {pattern['short']}%")
+                    _print(f"    • Medium sessions: {pattern['medium']}%")
+                    _print(f"    • Long sessions: {pattern['long']}%")
+                elif "tasks" in pattern:
+                    for task in pattern["tasks"]:
+                        _print(f"    • {task['type']}: {task['frequency']} occurrences")
+                elif "domains" in pattern:
+                    _print(f"    • Focus areas: {', '.join(pattern['domains'])}")
+
+        # Display aggregate statistics
+        stats = result.get("stats", {})
+        if stats:
+            _print("\n[bold cyan]📈 Your Statistics:[/bold cyan]")
+            rows = [
+                ("Total Sessions", stats.get("total_sessions", 0)),
+                ("Total Messages", stats.get("total_messages", 0)),
+                ("Total Turns", stats.get("total_turns", 0)),
+                ("Avg Session Length", f"{stats.get('avg_session_length', 0)} messages"),
+                ("Avg Turns/Session", f"{stats.get('avg_turns_per_session', 0)} turns"),
+            ]
+            for key, value in rows:
+                _print(f"  • {key}: {value}")
 
     async def _cmd_quit(self, *_):
         _print("[dim]Shutting down...[/dim]")
